@@ -11,11 +11,15 @@ import quotationsRouter from "./quotations";
 import proposalsRouter from "./proposals";
 import usersRouter from "./users";
 import dashboardRouter from "./dashboard";
+import { requireAuth } from "../middleware/auth";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
 router.use(authRouter);
+
+router.use(requireAuth);
+
 router.use("/clients", clientsRouter);
 router.use("/leads", leadsRouter);
 router.use("/projects", projectsRouter);

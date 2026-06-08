@@ -23,10 +23,19 @@ router.get("/stats", async (req, res) => {
       .filter((i) => i.status === "PAID" && i.invoiceDate && i.invoiceDate >= monthStart.slice(0, 10))
       .reduce((sum, i) => sum + (i.total ?? 0), 0);
 
+    const revenuePaid = invoices
+      .filter((i) => i.status === "PAID")
+      .reduce((sum, i) => sum + (i.total ?? 0), 0);
+    const outstanding = invoices
+      .filter((i) => ["SENT", "DRAFT", "OVERDUE"].includes(i.status ?? ""))
+      .reduce((sum, i) => sum + (i.total ?? 0), 0);
+
     return res.json({
-      clientCount: clients.length,
+      totalClients: clients.length,
       activeProjects: projects.filter((p) => p.status === "IN_PROGRESS").length,
-      openLeads: leads.filter((l) => !["CLOSED_WON", "CLOSED_LOST"].includes(l.stage)).length,
+      openLeads: leads.filter((l) => !["WON", "LOST", "CLOSED_WON", "CLOSED_LOST"].includes(l.stage)).length,
+      revenuePaid,
+      outstanding,
       monthlyRevenue,
       tasksDue: tasks.filter((t) => t.status !== "DONE" && t.dueDate && t.dueDate <= new Date().toISOString().slice(0, 10)).length,
     });
@@ -54,7 +63,7 @@ router.get("/revenue-chart", async (req, res) => {
         }
       }
     }
-    return res.json(Object.entries(months).map(([month, revenue]) => ({ month, revenue })));
+    return res.json(Object.entries(months).map(([month, amount]) => ({ month, amount })));
   } catch {
     return res.status(500).json({ error: "Internal error" });
   }
