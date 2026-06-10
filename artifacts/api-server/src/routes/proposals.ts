@@ -21,6 +21,7 @@ router.get("/", async (req, res) => {
         deliverables: proposalsTable.deliverables,
         timeline: proposalsTable.timeline,
         notes: proposalsTable.notes,
+        createdAt: proposalsTable.createdAt,
       })
       .from(proposalsTable)
       .leftJoin(clientsTable, eq(proposalsTable.clientId, clientsTable.id));

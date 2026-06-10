@@ -80,9 +80,9 @@ export default function DashboardPage() {
   // Filter Team Tasks (Admin only)
   const teamTasks = (allTasks ?? []).filter(t => t.assigneeId !== user?.id && t.status !== "DONE");
 
-  const toggleTaskStatus = (taskId: string, currentStatus: string) => {
+  const toggleTaskStatus = (taskId: string, currentStatus: string, taskTitle: string) => {
     const newStatus = currentStatus === "DONE" ? "TODO" : "DONE";
-    updateTaskMutation.mutate({ id: taskId, data: { status: newStatus } });
+    updateTaskMutation.mutate({ id: taskId, data: { title: taskTitle, status: newStatus } });
     if (newStatus === "DONE") {
       toast.success("Task completed!");
     }
@@ -98,7 +98,7 @@ export default function DashboardPage() {
           <div key={task.id} className="flex items-start gap-3 p-3 rounded-lg border border-border bg-card/50 hover:bg-muted/30 transition-colors group">
             <Checkbox 
               checked={task.status === "DONE"} 
-              onCheckedChange={() => toggleTaskStatus(task.id, task.status)}
+              onCheckedChange={() => toggleTaskStatus(task.id, task.status, task.title)}
               className="mt-1"
             />
             <div className="flex-1 min-w-0">

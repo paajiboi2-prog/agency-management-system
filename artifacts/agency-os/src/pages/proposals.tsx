@@ -3,7 +3,7 @@ import {
   useListProposals, useCreateProposal, useUpdateProposal, useDeleteProposal,
   useListClients, getListProposalsQueryKey,
 } from "@workspace/api-client-react";
-import type { ProposalInput, ProposalUpdate } from "@workspace/api-client-react";
+import type { ProposalInput } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -41,7 +41,7 @@ const TEMPLATE_CONFIG: Record<string, string> = {
 interface ProposalFormData {
   title: string;
   clientId: string;
-  content?: string;
+  notes?: string;
   template?: string;
   status?: string;
 }
@@ -92,20 +92,20 @@ export default function ProposalsPage() {
   });
 
   const openAdd = () => {
-    reset({ title: "", clientId: "", status: "DRAFT", template: "social" });
+    reset({ title: "", clientId: "", status: "DRAFT", template: "social", notes: "" });
     setEditId(null);
     setDialogOpen(true);
   };
 
   const openEdit = (p: NonNullable<typeof proposals>[number]) => {
     setEditId(p.id);
-    reset({ title: p.title, clientId: p.clientId ?? "", status: p.status ?? "DRAFT", template: p.template ?? "social", content: p.content ?? "" });
+    reset({ title: p.title ?? "", clientId: p.clientId ?? "", status: p.status ?? "DRAFT", template: p.template ?? "social", notes: p.notes ?? "" });
     setDialogOpen(true);
   };
 
   const onSubmit = (data: ProposalFormData) => {
     if (editId) {
-      updateMutation.mutate({ id: editId, data: data as ProposalUpdate });
+      updateMutation.mutate({ id: editId, data: data as ProposalInput });
     } else {
       const { status, ...inputData } = data;
       createMutation.mutate({ data: inputData });
@@ -262,7 +262,7 @@ export default function ProposalsPage() {
               <Label>Content (Live Document View)</Label>
               <Controller
                 control={control}
-                name="content"
+                name="notes"
                 render={({ field }) => (
                   <TiptapEditor
                     value={field.value ?? ""}

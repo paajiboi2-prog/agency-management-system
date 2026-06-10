@@ -2,7 +2,7 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { usersTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
-import { compare } from "bcryptjs";
+import { hash, compare } from "bcryptjs";
 import { signToken } from "../lib/jwt";
 
 const router = Router();
@@ -23,7 +23,8 @@ router.post("/auth/login", async (req, res) => {
     }
     const token = signToken(user.id);
     return res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, systemRole: user.systemRole } });
-  } catch {
+  } catch (err) {
+    console.error("Login error:", err);
     return res.status(500).json({ error: "Internal error" });
   }
 });

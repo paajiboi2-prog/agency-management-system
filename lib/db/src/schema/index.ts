@@ -7,3 +7,26 @@ export * from "./content";
 export * from "./invoices";
 export * from "./quotations";
 export * from "./proposals";
+export * from "./attendance";
+export * from "./leaves";
+export * from "./settings";
+
+export * from "./proformaInvoices";
+export * from "./purchaseOrders";
+export * from "./deliveryChallans";
+
+export { usersTable as users } from "./users";
+export { clientsTable as clients } from "./clients";
+export { leadsTable as leads } from "./leads";
+export { projectsTable as projects } from "./projects";
+export { tasksTable as tasks } from "./tasks";
+export { contentPostsTable as contentPosts } from "./content";
+export { invoicesTable as invoices } from "./invoices";
+export { quotationsTable as quotations } from "./quotations";
+export { proposalsTable as proposals } from "./proposals";
+export { attendanceTable as attendance } from "./attendance";
+export { leaveRequestsTable as leaveRequests } from "./leaves";
+export { agencySettingsTable as agencySettings } from "./settings";
+export { proformaInvoicesTable as proformaInvoices } from "./proformaInvoices";
+export { purchaseOrdersTable as purchaseOrders } from "./purchaseOrders";
+export { deliveryChallansTable as deliveryChallans } from "./deliveryChallans";

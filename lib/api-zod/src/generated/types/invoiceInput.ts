@@ -5,6 +5,7 @@
  * AgencyOS API
  * OpenAPI spec version: 0.1.0
  */
+import type { InvoiceInputBankDetails } from './invoiceInputBankDetails';
 import type { LineItem } from './lineItem';
 
 export interface InvoiceInput {
@@ -24,6 +25,18 @@ export interface InvoiceInput {
   total?: number | null;
   /** @nullable */
   notes?: string | null;
+  /** @nullable */
+  companyGstin?: string | null;
+  /** @nullable */
+  clientGstin?: string | null;
+  /** @nullable */
+  billingAddress?: string | null;
+  /** @nullable */
+  shippingAddress?: string | null;
+  /** @nullable */
+  termsAndConditions?: string | null;
+  /** @nullable */
+  bankDetails?: InvoiceInputBankDetails;
   /** @nullable */
   lineItems?: LineItem[] | null;
 }

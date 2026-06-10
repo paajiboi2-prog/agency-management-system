@@ -43,13 +43,10 @@ interface ProjectFormData {
   name: string;
   description?: string;
   clientId?: string;
-  type?: string;
   status?: string;
   priority?: string;
   startDate?: string;
-  endDate?: string;
-  budget?: number;
-  progress?: number;
+  dueDate?: string;
 }
 
 export default function ProjectsPage() {
@@ -96,11 +93,11 @@ export default function ProjectsPage() {
   });
 
   const { register, handleSubmit, control, reset } = useForm<ProjectFormData>({
-    defaultValues: { name: "", status: "NOT_STARTED", priority: "MEDIUM", progress: 0 },
+    defaultValues: { name: "", status: "NOT_STARTED", priority: "MEDIUM" },
   });
 
   const openAdd = () => {
-    reset({ name: "", status: "NOT_STARTED", priority: "MEDIUM", progress: 0 });
+    reset({ name: "", status: "NOT_STARTED", priority: "MEDIUM" });
     setEditId(null);
     setDialogOpen(true);
   };
@@ -111,20 +108,18 @@ export default function ProjectsPage() {
       name: p.name,
       status: p.status ?? "NOT_STARTED",
       priority: p.priority ?? "MEDIUM",
-      progress: p.progress ?? 0,
       clientId: p.clientId ?? undefined,
       startDate: p.startDate ? p.startDate.split("T")[0] : undefined,
-      endDate: p.endDate ? p.endDate.split("T")[0] : undefined,
+      dueDate: p.dueDate ? p.dueDate.split("T")[0] : undefined,
     });
     setDialogOpen(true);
   };
 
   const onSubmit = (data: ProjectFormData) => {
     if (editId) {
-      updateMutation.mutate({ id: editId, data: { ...data, progress: Number(data.progress || 0) } });
+      updateMutation.mutate({ id: editId, data });
     } else {
-      const { progress, ...inputData } = data;
-      createMutation.mutate({ data: inputData });
+      createMutation.mutate({ data });
     }
   };
 
@@ -212,25 +207,12 @@ export default function ProjectsPage() {
                     <Badge variant="outline" className={pc.className + " text-[11px]"}>{pc.label}</Badge>
                   </div>
 
-                  <div>
-                    <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                      <span>Progress</span>
-                      <span>{p.progress ?? 0}%</span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-                      <div
-                        className="h-full bg-primary rounded-full transition-all"
-                        style={{ width: `${p.progress ?? 0}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {(p.startDate || p.endDate) && (
+                  {(p.startDate || p.dueDate) && (
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Calendar className="h-3 w-3" />
                       {p.startDate && <span>{format(new Date(p.startDate), "dd MMM")}</span>}
-                      {p.startDate && p.endDate && <span>—</span>}
-                      {p.endDate && <span>{format(new Date(p.endDate), "dd MMM yyyy")}</span>}
+                      {p.startDate && p.dueDate && <span>—</span>}
+                      {p.dueDate && <span>{format(new Date(p.dueDate), "dd MMM yyyy")}</span>}
                     </div>
                   )}
                 </CardContent>
@@ -304,12 +286,8 @@ export default function ProjectsPage() {
               </div>
               <div className="space-y-1.5">
                 <Label>Due Date</Label>
-                <Input {...register("endDate")} type="date" />
+                <Input {...register("dueDate")} type="date" />
               </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Progress (%)</Label>
-              <Input {...register("progress")} type="number" min={0} max={100} placeholder="0" />
             </div>
             <div className="space-y-1.5">
               <Label>Description</Label>

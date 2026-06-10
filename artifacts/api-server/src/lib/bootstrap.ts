@@ -84,7 +84,10 @@ export async function bootstrapDatabase(): Promise<void> {
     }
 
     for (const col of [
-      "system_role TEXT NOT NULL DEFAULT 'ACCOUNT_MANAGER'", "department TEXT",
+      "system_role TEXT NOT NULL DEFAULT 'ACCOUNT_MANAGER'",
+      "department TEXT",
+      "role TEXT NOT NULL DEFAULT 'MANAGER'",
+      "password TEXT",
     ]) {
       await db.execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS ${col}`).catch(() => {});
     }
@@ -182,6 +185,57 @@ export async function bootstrapDatabase(): Promise<void> {
     `);
 
     await db.execute(`
+      CREATE TABLE IF NOT EXISTS proforma_invoices (
+        id TEXT PRIMARY KEY,
+        proforma_number TEXT,
+        client_id TEXT REFERENCES clients(id) ON DELETE SET NULL,
+        client_name TEXT,
+        status TEXT DEFAULT 'DRAFT',
+        invoice_date TEXT,
+        valid_until TEXT,
+        subtotal NUMERIC DEFAULT 0,
+        tax NUMERIC DEFAULT 0,
+        total NUMERIC DEFAULT 0,
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS purchase_orders (
+        id TEXT PRIMARY KEY,
+        po_number TEXT,
+        client_id TEXT REFERENCES clients(id) ON DELETE SET NULL,
+        client_name TEXT,
+        status TEXT DEFAULT 'DRAFT',
+        po_date TEXT,
+        delivery_date TEXT,
+        subtotal NUMERIC DEFAULT 0,
+        tax NUMERIC DEFAULT 0,
+        total NUMERIC DEFAULT 0,
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS delivery_challans (
+        id TEXT PRIMARY KEY,
+        dc_number TEXT,
+        client_id TEXT REFERENCES clients(id) ON DELETE SET NULL,
+        client_name TEXT,
+        status TEXT DEFAULT 'DRAFT',
+        dc_date TEXT,
+        delivery_date TEXT,
+        subtotal NUMERIC DEFAULT 0,
+        tax NUMERIC DEFAULT 0,
+        total NUMERIC DEFAULT 0,
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS proposals (
         id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
@@ -212,7 +266,10 @@ export async function bootstrapDatabase(): Promise<void> {
         logger.info({ email, generatedPassword: password }, "Bootstrap: one-time generated password — save this now");
       }
     } else {
-      logger.info({ email }, "Bootstrap: admin user already exists");
+      // Always sync the password so login always works with the configured password
+      const passwordHash = await hash(password, 12);
+      await db.update(usersTable).set({ password: passwordHash }).where(eq(usersTable.email, email));
+      logger.info({ email }, "Bootstrap: admin user already exists — password synced");
     }
   } catch (err) {
     logger.error({ err }, "Bootstrap failed");

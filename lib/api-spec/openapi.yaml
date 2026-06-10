@@ -19,6 +19,9 @@ tags:
   - name: users
   - name: dashboard
   - name: settings
+  - name: proforma-invoices
+  - name: purchase-orders
+  - name: delivery-challans
 
 paths:
   /healthz:
@@ -883,6 +886,440 @@ paths:
                 items:
                   $ref: "#/components/schemas/ActivityItem"
 
+  /attendance:
+    get:
+      operationId: listAttendance
+      tags: [attendance]
+      summary: List attendance records
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: string
+        - in: query
+          name: month
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Attendance records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Attendance"
+
+  /attendance/check-in:
+    post:
+      operationId: checkIn
+      tags: [attendance]
+      summary: Check in
+      responses:
+        "200":
+          description: Checked in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attendance"
+
+  /attendance/check-out:
+    post:
+      operationId: checkOut
+      tags: [attendance]
+      summary: Check out
+      responses:
+        "200":
+          description: Checked out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attendance"
+
+  /attendance/today:
+    get:
+      operationId: getTodayAttendance
+      tags: [attendance]
+      summary: Get today's attendance status for current user
+      responses:
+        "200":
+          description: Today attendance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TodayAttendance"
+
+  /leaves:
+    get:
+      operationId: listLeaveRequests
+      tags: [leaves]
+      summary: List leave requests
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: string
+        - in: query
+          name: status
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Leave requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaveRequest"
+    post:
+      operationId: createLeaveRequest
+      tags: [leaves]
+      summary: Submit a leave request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeaveRequestInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaveRequest"
+
+  /leaves/{id}/approve:
+    post:
+      operationId: approveLeaveRequest
+      tags: [leaves]
+      summary: Approve a leave request
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Approved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaveRequest"
+
+  /leaves/{id}/reject:
+    post:
+      operationId: rejectLeaveRequest
+      tags: [leaves]
+      summary: Reject a leave request
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaveRequest"
+
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get agency settings
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgencySettings"
+    patch:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update agency settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgencySettingsUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgencySettings"
+
+
+  /proforma-invoices:
+    get:
+      operationId: listProformaInvoices
+      tags: [proforma-invoices]
+      summary: List proforma invoices
+      responses:
+        "200":
+          description: List of proforma invoices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProformaInvoice"
+    post:
+      operationId: createProformaInvoice
+      tags: [proforma-invoices]
+      summary: Create proforma invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProformaInvoiceInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProformaInvoice"
+
+  /proforma-invoices/{id}:
+    get:
+      operationId: getProformaInvoice
+      tags: [proforma-invoices]
+      summary: Get proforma invoice
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProformaInvoice"
+    patch:
+      operationId: updateProformaInvoice
+      tags: [proforma-invoices]
+      summary: Update proforma invoice
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProformaInvoiceInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProformaInvoice"
+    delete:
+      operationId: deleteProformaInvoice
+      tags: [proforma-invoices]
+      summary: Delete proforma invoice
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /purchase-orders:
+    get:
+      operationId: listPurchaseOrders
+      tags: [purchase-orders]
+      summary: List purchase orders
+      responses:
+        "200":
+          description: List of purchase orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PurchaseOrder"
+    post:
+      operationId: createPurchaseOrder
+      tags: [purchase-orders]
+      summary: Create purchase order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurchaseOrderInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurchaseOrder"
+
+  /purchase-orders/{id}:
+    get:
+      operationId: getPurchaseOrder
+      tags: [purchase-orders]
+      summary: Get purchase order
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurchaseOrder"
+    patch:
+      operationId: updatePurchaseOrder
+      tags: [purchase-orders]
+      summary: Update purchase order
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurchaseOrderInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurchaseOrder"
+    delete:
+      operationId: deletePurchaseOrder
+      tags: [purchase-orders]
+      summary: Delete purchase order
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /delivery-challans:
+    get:
+      operationId: listDeliveryChallans
+      tags: [delivery-challans]
+      summary: List delivery challans
+      responses:
+        "200":
+          description: List of delivery challans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DeliveryChallan"
+    post:
+      operationId: createDeliveryChallan
+      tags: [delivery-challans]
+      summary: Create delivery challan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryChallanInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryChallan"
+
+  /delivery-challans/{id}:
+    get:
+      operationId: getDeliveryChallan
+      tags: [delivery-challans]
+      summary: Get delivery challan
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryChallan"
+    patch:
+      operationId: updateDeliveryChallan
+      tags: [delivery-challans]
+      summary: Update delivery challan
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryChallanInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryChallan"
+    delete:
+      operationId: deleteDeliveryChallan
+      tags: [delivery-challans]
+      summary: Delete delivery challan
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
 components:
   schemas:
     HealthStatus:
@@ -1370,6 +1807,18 @@ components:
           type: ["number", "null"]
         notes:
           type: ["string", "null"]
+        companyGstin:
+          type: ["string", "null"]
+        clientGstin:
+          type: ["string", "null"]
+        billingAddress:
+          type: ["string", "null"]
+        shippingAddress:
+          type: ["string", "null"]
+        termsAndConditions:
+          type: ["string", "null"]
+        bankDetails:
+          type: ["object", "null"]
         lineItems:
           type: ["array", "null"]
           items:
@@ -1394,6 +1843,18 @@ components:
           type: ["number", "null"]
         notes:
           type: ["string", "null"]
+        companyGstin:
+          type: ["string", "null"]
+        clientGstin:
+          type: ["string", "null"]
+        billingAddress:
+          type: ["string", "null"]
+        shippingAddress:
+          type: ["string", "null"]
+        termsAndConditions:
+          type: ["string", "null"]
+        bankDetails:
+          type: ["object", "null"]
         lineItems:
           type: ["array", "null"]
           items:
@@ -1404,6 +1865,8 @@ components:
       properties:
         description:
           type: string
+        hsnSac:
+          type: ["string", "null"]
         qty:
           type: number
         unitPrice:
@@ -1453,6 +1916,8 @@ components:
           type: ["array", "null"]
           items:
             $ref: "#/components/schemas/LineItem"
+        createdAt:
+          type: string
 
     QuotationInput:
       type: object
@@ -1504,6 +1969,8 @@ components:
           type: ["string", "null"]
         notes:
           type: ["string", "null"]
+        createdAt:
+          type: string
 
     ProposalInput:
       type: object
@@ -1566,3 +2033,371 @@ components:
           type: string
         createdAt:
           type: string
+
+    Attendance:
+      type: object
+      required: [id, userId, checkInAt, date]
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        userName:
+          type: ["string", "null"]
+        checkInAt:
+          type: string
+        checkOutAt:
+          type: ["string", "null"]
+        isLate:
+          type: boolean
+        overtimeMin:
+          type: integer
+        date:
+          type: string
+
+    TodayAttendance:
+      type: object
+      required: [checkedIn]
+      properties:
+        checkedIn:
+          type: boolean
+        checkInAt:
+          type: ["string", "null"]
+        checkOutAt:
+          type: ["string", "null"]
+        attendanceId:
+          type: ["string", "null"]
+
+    LeaveRequest:
+      type: object
+      required: [id, userId, type, startDate, endDate, status, createdAt]
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        userName:
+          type: ["string", "null"]
+        type:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        reason:
+          type: ["string", "null"]
+        status:
+          type: string
+        createdAt:
+          type: string
+
+    LeaveRequestInput:
+      type: object
+      required: [type, startDate, endDate]
+      properties:
+        type:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        reason:
+          type: string
+
+    AgencySettings:
+      type: object
+      required: [id, agencyName]
+      properties:
+        id:
+          type: string
+        agencyName:
+          type: string
+        email:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        primaryColor:
+          type: string
+        currency:
+          type: string
+        taxLabel:
+          type: string
+        taxPercent:
+          type: number
+        logoUrl:
+          type: ["string", "null"]
+        workDayStart:
+          type: string
+        workDayEnd:
+          type: string
+
+    AgencySettingsUpdate:
+      type: object
+      properties:
+        agencyName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        website:
+          type: string
+        primaryColor:
+          type: string
+        currency:
+          type: string
+        taxLabel:
+          type: string
+        taxPercent:
+          type: number
+        logoUrl:
+          type: string
+        workDayStart:
+          type: string
+        workDayEnd:
+          type: string
+
+    ProformaInvoice:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+        number:
+          type: ["string", "null"]
+        clientId:
+          type: ["string", "null"]
+        clientName:
+          type: ["string", "null"]
+        status:
+          type: ["string", "null"]
+        invoiceDate:
+          type: ["string", "null"]
+        dueDate:
+          type: ["string", "null"]
+        subtotal:
+          type: ["number", "null"]
+        taxAmount:
+          type: ["number", "null"]
+        total:
+          type: ["number", "null"]
+        notes:
+          type: ["string", "null"]
+        companyGstin:
+          type: ["string", "null"]
+        clientGstin:
+          type: ["string", "null"]
+        billingAddress:
+          type: ["string", "null"]
+        shippingAddress:
+          type: ["string", "null"]
+        termsAndConditions:
+          type: ["string", "null"]
+        bankDetails:
+          type: ["object", "null"]
+        lineItems:
+          type: ["array", "null"]
+          items:
+            $ref: "#/components/schemas/LineItem"
+        createdAt:
+          type: string
+
+    ProformaInvoiceInput:
+      type: object
+      properties:
+        clientId:
+          type: ["string", "null"]
+        status:
+          type: ["string", "null"]
+        invoiceDate:
+          type: ["string", "null"]
+        dueDate:
+          type: ["string", "null"]
+        subtotal:
+          type: ["number", "null"]
+        taxAmount:
+          type: ["number", "null"]
+        total:
+          type: ["number", "null"]
+        notes:
+          type: ["string", "null"]
+        companyGstin:
+          type: ["string", "null"]
+        clientGstin:
+          type: ["string", "null"]
+        billingAddress:
+          type: ["string", "null"]
+        shippingAddress:
+          type: ["string", "null"]
+        termsAndConditions:
+          type: ["string", "null"]
+        bankDetails:
+          type: ["object", "null"]
+        lineItems:
+          type: ["array", "null"]
+          items:
+            $ref: "#/components/schemas/LineItem"
+
+    PurchaseOrder:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+        number:
+          type: ["string", "null"]
+        clientId:
+          type: ["string", "null"]
+        clientName:
+          type: ["string", "null"]
+        status:
+          type: ["string", "null"]
+        orderDate:
+          type: ["string", "null"]
+        deliveryDate:
+          type: ["string", "null"]
+        subtotal:
+          type: ["number", "null"]
+        taxAmount:
+          type: ["number", "null"]
+        total:
+          type: ["number", "null"]
+        notes:
+          type: ["string", "null"]
+        vendorGstin:
+          type: ["string", "null"]
+        companyGstin:
+          type: ["string", "null"]
+        clientGstin:
+          type: ["string", "null"]
+        billingAddress:
+          type: ["string", "null"]
+        shippingAddress:
+          type: ["string", "null"]
+        termsAndConditions:
+          type: ["string", "null"]
+        bankDetails:
+          type: ["object", "null"]
+        lineItems:
+          type: ["array", "null"]
+          items:
+            $ref: "#/components/schemas/LineItem"
+        createdAt:
+          type: string
+
+    PurchaseOrderInput:
+      type: object
+      properties:
+        clientId:
+          type: ["string", "null"]
+        status:
+          type: ["string", "null"]
+        orderDate:
+          type: ["string", "null"]
+        deliveryDate:
+          type: ["string", "null"]
+        subtotal:
+          type: ["number", "null"]
+        taxAmount:
+          type: ["number", "null"]
+        total:
+          type: ["number", "null"]
+        notes:
+          type: ["string", "null"]
+        vendorGstin:
+          type: ["string", "null"]
+        companyGstin:
+          type: ["string", "null"]
+        clientGstin:
+          type: ["string", "null"]
+        billingAddress:
+          type: ["string", "null"]
+        shippingAddress:
+          type: ["string", "null"]
+        termsAndConditions:
+          type: ["string", "null"]
+        bankDetails:
+          type: ["object", "null"]
+        lineItems:
+          type: ["array", "null"]
+          items:
+            $ref: "#/components/schemas/LineItem"
+
+    DeliveryChallan:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+        number:
+          type: ["string", "null"]
+        clientId:
+          type: ["string", "null"]
+        clientName:
+          type: ["string", "null"]
+        status:
+          type: ["string", "null"]
+        challanDate:
+          type: ["string", "null"]
+        vehicleNumber:
+          type: ["string", "null"]
+        dispatchMode:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        companyGstin:
+          type: ["string", "null"]
+        clientGstin:
+          type: ["string", "null"]
+        billingAddress:
+          type: ["string", "null"]
+        shippingAddress:
+          type: ["string", "null"]
+        termsAndConditions:
+          type: ["string", "null"]
+        bankDetails:
+          type: ["object", "null"]
+        lineItems:
+          type: ["array", "null"]
+          items:
+            $ref: "#/components/schemas/LineItem"
+        createdAt:
+          type: string
+
+    DeliveryChallanInput:
+      type: object
+      properties:
+        clientId:
+          type: ["string", "null"]
+        status:
+          type: ["string", "null"]
+        challanDate:
+          type: ["string", "null"]
+        vehicleNumber:
+          type: ["string", "null"]
+        dispatchMode:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        companyGstin:
+          type: ["string", "null"]
+        clientGstin:
+          type: ["string", "null"]
+        billingAddress:
+          type: ["string", "null"]
+        shippingAddress:
+          type: ["string", "null"]
+        termsAndConditions:
+          type: ["string", "null"]
+        bankDetails:
+          type: ["object", "null"]
+        lineItems:
+          type: ["array", "null"]
+          items:
+            $ref: "#/components/schemas/LineItem"

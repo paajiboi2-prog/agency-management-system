@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Phone, Mail, Globe, MapPin, Instagram, Youtube, Facebook, Linkedin } from "lucide-react";
+import { ArrowLeft, Phone, Mail, Globe, MapPin, Instagram } from "lucide-react";
 import { format } from "date-fns";
 
 const STATUS_MAP: Record<string, string> = {
@@ -25,8 +25,11 @@ const INV_STATUS_MAP: Record<string, { label: string; variant: "default" | "seco
 export default function ClientDetailPage({ id }: { id: string }) {
   const { data: client, isLoading } = useGetClient(id);
   const { data: contracts } = useGetClientContracts(id);
-  const { data: projects } = useListProjects({ clientId: id });
-  const { data: invoices } = useListInvoices({ clientId: id });
+  const { data: allProjects } = useListProjects();
+  const { data: allInvoices } = useListInvoices();
+
+  const projects = (allProjects ?? []).filter(p => p.clientId === id);
+  const invoices = (allInvoices ?? []).filter(inv => inv.clientId === id);
 
   if (isLoading) {
     return (
@@ -93,44 +96,30 @@ export default function ClientDetailPage({ id }: { id: string }) {
                 <span className="truncate">{client.email}</span>
               </div>
             )}
-            {client.website && (
+            {client.websiteUrl && (
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Globe className="h-4 w-4 shrink-0" />
-                <a href={client.website} target="_blank" rel="noopener noreferrer" className="text-primary truncate hover:underline">
-                  {client.website}
+                <a href={client.websiteUrl} target="_blank" rel="noopener noreferrer" className="text-primary truncate hover:underline">
+                  {client.websiteUrl}
                 </a>
-              </div>
-            )}
-            {client.billingAddress && (
-              <div className="flex items-start gap-2 text-muted-foreground">
-                <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                <span>{client.billingAddress}</span>
               </div>
             )}
 
             {/* Social handles */}
-            {(client.instagram || client.youtube || client.facebook || client.linkedin) && (
+            {client.socialHandles && (
               <div className="pt-2 border-t border-border space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Social Accounts</p>
-                {client.instagram && (
-                  <div className="flex items-center gap-2"><Instagram className="h-4 w-4 text-pink-500" /><span>{client.instagram}</span></div>
-                )}
-                {client.youtube && (
-                  <div className="flex items-center gap-2"><Youtube className="h-4 w-4 text-red-500" /><span>{client.youtube}</span></div>
-                )}
-                {client.facebook && (
-                  <div className="flex items-center gap-2"><Facebook className="h-4 w-4 text-blue-500" /><span>{client.facebook}</span></div>
-                )}
-                {client.linkedin && (
-                  <div className="flex items-center gap-2"><Linkedin className="h-4 w-4 text-blue-600" /><span>{client.linkedin}</span></div>
-                )}
+                <div className="flex items-center gap-2">
+                  <Instagram className="h-4 w-4 text-pink-500" />
+                  <span>{client.socialHandles}</span>
+                </div>
               </div>
             )}
 
-            {client.internalNotes && (
+            {client.notes && (
               <div className="pt-2 border-t border-border">
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Notes</p>
-                <p className="text-muted-foreground text-xs whitespace-pre-line">{client.internalNotes}</p>
+                <p className="text-muted-foreground text-xs whitespace-pre-line">{client.notes}</p>
               </div>
             )}
           </CardContent>
@@ -147,12 +136,12 @@ export default function ClientDetailPage({ id }: { id: string }) {
                   {contracts.map((c) => (
                     <div key={c.id} className="py-2.5 flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium capitalize">{c.platform}</p>
+                        <p className="text-sm font-medium">{c.title}</p>
                         <p className="text-xs text-muted-foreground">
-                          {c.postsPerMonth}P / {c.reelsPerMonth}R / {c.storiesPerMonth}S per month
+                          Status: {c.status} | Period: {c.startDate ? format(new Date(c.startDate), "PP") : "—"} to {c.endDate ? format(new Date(c.endDate), "PP") : "—"}
                         </p>
                       </div>
-                      <p className="text-sm font-semibold">₹{c.monthlyRetainer?.toLocaleString("en-IN")}</p>
+                      <p className="text-sm font-semibold">₹{c.value?.toLocaleString("en-IN")}</p>
                     </div>
                   ))}
                 </div>
@@ -174,14 +163,9 @@ export default function ClientDetailPage({ id }: { id: string }) {
                         <p className="text-sm font-medium">{p.name}</p>
                         <p className="text-xs text-muted-foreground">{STATUS_MAP[p.status ?? "NOT_STARTED"]}</p>
                       </div>
-                      <div className="w-24">
-                        <div className="flex justify-between text-xs text-muted-foreground mb-0.5">
-                          <span>{p.progress ?? 0}%</span>
-                        </div>
-                        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-                          <div className="h-full bg-primary rounded-full" style={{ width: `${p.progress ?? 0}%` }} />
-                        </div>
-                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        Due: {p.dueDate ? format(new Date(p.dueDate), "PP") : "—"}
+                      </Badge>
                     </div>
                   ))}
                 </div>

@@ -8,6 +8,8 @@
 
 export interface LineItem {
   description?: string;
+  /** @nullable */
+  hsnSac?: string | null;
   qty?: number;
   unitPrice?: number;
   taxPercent?: number;

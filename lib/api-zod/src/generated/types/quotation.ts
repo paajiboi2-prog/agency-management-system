@@ -29,4 +29,5 @@ export interface Quotation {
   notes?: string | null;
   /** @nullable */
   lineItems?: LineItem[] | null;
+  createdAt?: string;
 }

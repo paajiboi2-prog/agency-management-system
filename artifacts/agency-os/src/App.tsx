@@ -117,6 +117,9 @@ import HawanHubPage from "@/pages/hawan";
 import NotFound from "@/pages/not-found";
 import ClientPortalPage from "@/pages/portal";
 import PublicCalendarPage from "@/pages/public-calendar";
+import ProformaInvoicesPage from "@/pages/proforma-invoices";
+import PurchaseOrdersPage from "@/pages/purchase-orders";
+import DeliveryChallansPage from "@/pages/delivery-challans";
 
 // ─── Protected route wrapper ────────────────────────────────────
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -227,6 +230,33 @@ function AppRouter() {
           <ProtectedRoute>
             <DashboardLayout>
               <QuotationsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/proforma-invoices">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ProformaInvoicesPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/purchase-orders">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <PurchaseOrdersPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/delivery-challans">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <DeliveryChallansPage />
             </DashboardLayout>
           </ProtectedRoute>
         )}

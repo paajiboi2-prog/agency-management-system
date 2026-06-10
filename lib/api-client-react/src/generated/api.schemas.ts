@@ -350,8 +350,15 @@ export interface ContentPostUpdate {
   description?: string | null;
 }
 
+/**
+ * @nullable
+ */
+export type InvoiceBankDetails = { [key: string]: unknown } | null;
+
 export interface LineItem {
   description?: string;
+  /** @nullable */
+  hsnSac?: string | null;
   qty?: number;
   unitPrice?: number;
   taxPercent?: number;
@@ -380,8 +387,25 @@ export interface Invoice {
   /** @nullable */
   notes?: string | null;
   /** @nullable */
+  companyGstin?: string | null;
+  /** @nullable */
+  clientGstin?: string | null;
+  /** @nullable */
+  billingAddress?: string | null;
+  /** @nullable */
+  shippingAddress?: string | null;
+  /** @nullable */
+  termsAndConditions?: string | null;
+  /** @nullable */
+  bankDetails?: InvoiceBankDetails;
+  /** @nullable */
   lineItems?: LineItem[] | null;
 }
+
+/**
+ * @nullable
+ */
+export type InvoiceInputBankDetails = { [key: string]: unknown } | null;
 
 export interface InvoiceInput {
   /** @nullable */
@@ -400,6 +424,18 @@ export interface InvoiceInput {
   total?: number | null;
   /** @nullable */
   notes?: string | null;
+  /** @nullable */
+  companyGstin?: string | null;
+  /** @nullable */
+  clientGstin?: string | null;
+  /** @nullable */
+  billingAddress?: string | null;
+  /** @nullable */
+  shippingAddress?: string | null;
+  /** @nullable */
+  termsAndConditions?: string | null;
+  /** @nullable */
+  bankDetails?: InvoiceInputBankDetails;
   /** @nullable */
   lineItems?: LineItem[] | null;
 }
@@ -439,6 +475,7 @@ export interface Quotation {
   notes?: string | null;
   /** @nullable */
   lineItems?: LineItem[] | null;
+  createdAt?: string;
 }
 
 export interface QuotationInput {
@@ -484,6 +521,7 @@ export interface Proposal {
   timeline?: string | null;
   /** @nullable */
   notes?: string | null;
+  createdAt?: string;
 }
 
 export interface ProposalInput {
@@ -538,6 +576,328 @@ export interface ActivityItem {
   createdAt?: string;
 }
 
+export interface Attendance {
+  id: string;
+  userId: string;
+  /** @nullable */
+  userName?: string | null;
+  checkInAt: string;
+  /** @nullable */
+  checkOutAt?: string | null;
+  isLate?: boolean;
+  overtimeMin?: number;
+  date: string;
+}
+
+export interface TodayAttendance {
+  checkedIn: boolean;
+  /** @nullable */
+  checkInAt?: string | null;
+  /** @nullable */
+  checkOutAt?: string | null;
+  /** @nullable */
+  attendanceId?: string | null;
+}
+
+export interface LeaveRequest {
+  id: string;
+  userId: string;
+  /** @nullable */
+  userName?: string | null;
+  type: string;
+  startDate: string;
+  endDate: string;
+  /** @nullable */
+  reason?: string | null;
+  status: string;
+  createdAt: string;
+}
+
+export interface LeaveRequestInput {
+  type: string;
+  startDate: string;
+  endDate: string;
+  reason?: string;
+}
+
+export interface AgencySettings {
+  id: string;
+  agencyName: string;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  phone?: string | null;
+  /** @nullable */
+  address?: string | null;
+  /** @nullable */
+  website?: string | null;
+  primaryColor?: string;
+  currency?: string;
+  taxLabel?: string;
+  taxPercent?: number;
+  /** @nullable */
+  logoUrl?: string | null;
+  workDayStart?: string;
+  workDayEnd?: string;
+}
+
+export interface AgencySettingsUpdate {
+  agencyName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  website?: string;
+  primaryColor?: string;
+  currency?: string;
+  taxLabel?: string;
+  taxPercent?: number;
+  logoUrl?: string;
+  workDayStart?: string;
+  workDayEnd?: string;
+}
+
+/**
+ * @nullable
+ */
+export type ProformaInvoiceBankDetails = { [key: string]: unknown } | null;
+
+export interface ProformaInvoice {
+  id: string;
+  /** @nullable */
+  number?: string | null;
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  clientName?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  invoiceDate?: string | null;
+  /** @nullable */
+  dueDate?: string | null;
+  /** @nullable */
+  subtotal?: number | null;
+  /** @nullable */
+  taxAmount?: number | null;
+  /** @nullable */
+  total?: number | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  companyGstin?: string | null;
+  /** @nullable */
+  clientGstin?: string | null;
+  /** @nullable */
+  billingAddress?: string | null;
+  /** @nullable */
+  shippingAddress?: string | null;
+  /** @nullable */
+  termsAndConditions?: string | null;
+  /** @nullable */
+  bankDetails?: ProformaInvoiceBankDetails;
+  /** @nullable */
+  lineItems?: LineItem[] | null;
+  createdAt?: string;
+}
+
+/**
+ * @nullable
+ */
+export type ProformaInvoiceInputBankDetails = { [key: string]: unknown } | null;
+
+export interface ProformaInvoiceInput {
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  invoiceDate?: string | null;
+  /** @nullable */
+  dueDate?: string | null;
+  /** @nullable */
+  subtotal?: number | null;
+  /** @nullable */
+  taxAmount?: number | null;
+  /** @nullable */
+  total?: number | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  companyGstin?: string | null;
+  /** @nullable */
+  clientGstin?: string | null;
+  /** @nullable */
+  billingAddress?: string | null;
+  /** @nullable */
+  shippingAddress?: string | null;
+  /** @nullable */
+  termsAndConditions?: string | null;
+  /** @nullable */
+  bankDetails?: ProformaInvoiceInputBankDetails;
+  /** @nullable */
+  lineItems?: LineItem[] | null;
+}
+
+/**
+ * @nullable
+ */
+export type PurchaseOrderBankDetails = { [key: string]: unknown } | null;
+
+export interface PurchaseOrder {
+  id: string;
+  /** @nullable */
+  number?: string | null;
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  clientName?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  orderDate?: string | null;
+  /** @nullable */
+  deliveryDate?: string | null;
+  /** @nullable */
+  subtotal?: number | null;
+  /** @nullable */
+  taxAmount?: number | null;
+  /** @nullable */
+  total?: number | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  vendorGstin?: string | null;
+  /** @nullable */
+  companyGstin?: string | null;
+  /** @nullable */
+  clientGstin?: string | null;
+  /** @nullable */
+  billingAddress?: string | null;
+  /** @nullable */
+  shippingAddress?: string | null;
+  /** @nullable */
+  termsAndConditions?: string | null;
+  /** @nullable */
+  bankDetails?: PurchaseOrderBankDetails;
+  /** @nullable */
+  lineItems?: LineItem[] | null;
+  createdAt?: string;
+}
+
+/**
+ * @nullable
+ */
+export type PurchaseOrderInputBankDetails = { [key: string]: unknown } | null;
+
+export interface PurchaseOrderInput {
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  orderDate?: string | null;
+  /** @nullable */
+  deliveryDate?: string | null;
+  /** @nullable */
+  subtotal?: number | null;
+  /** @nullable */
+  taxAmount?: number | null;
+  /** @nullable */
+  total?: number | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  vendorGstin?: string | null;
+  /** @nullable */
+  companyGstin?: string | null;
+  /** @nullable */
+  clientGstin?: string | null;
+  /** @nullable */
+  billingAddress?: string | null;
+  /** @nullable */
+  shippingAddress?: string | null;
+  /** @nullable */
+  termsAndConditions?: string | null;
+  /** @nullable */
+  bankDetails?: PurchaseOrderInputBankDetails;
+  /** @nullable */
+  lineItems?: LineItem[] | null;
+}
+
+/**
+ * @nullable
+ */
+export type DeliveryChallanBankDetails = { [key: string]: unknown } | null;
+
+export interface DeliveryChallan {
+  id: string;
+  /** @nullable */
+  number?: string | null;
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  clientName?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  challanDate?: string | null;
+  /** @nullable */
+  vehicleNumber?: string | null;
+  /** @nullable */
+  dispatchMode?: string | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  companyGstin?: string | null;
+  /** @nullable */
+  clientGstin?: string | null;
+  /** @nullable */
+  billingAddress?: string | null;
+  /** @nullable */
+  shippingAddress?: string | null;
+  /** @nullable */
+  termsAndConditions?: string | null;
+  /** @nullable */
+  bankDetails?: DeliveryChallanBankDetails;
+  /** @nullable */
+  lineItems?: LineItem[] | null;
+  createdAt?: string;
+}
+
+/**
+ * @nullable
+ */
+export type DeliveryChallanInputBankDetails = { [key: string]: unknown } | null;
+
+export interface DeliveryChallanInput {
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  challanDate?: string | null;
+  /** @nullable */
+  vehicleNumber?: string | null;
+  /** @nullable */
+  dispatchMode?: string | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  companyGstin?: string | null;
+  /** @nullable */
+  clientGstin?: string | null;
+  /** @nullable */
+  billingAddress?: string | null;
+  /** @nullable */
+  shippingAddress?: string | null;
+  /** @nullable */
+  termsAndConditions?: string | null;
+  /** @nullable */
+  bankDetails?: DeliveryChallanInputBankDetails;
+  /** @nullable */
+  lineItems?: LineItem[] | null;
+}
+
 export type ListClientsParams = {
 search?: string;
 category?: string;
@@ -550,5 +910,15 @@ month?: string;
 
 export type ListCalendarSharesParams = {
 clientId?: string;
+};
+
+export type ListAttendanceParams = {
+userId?: string;
+month?: string;
+};
+
+export type ListLeaveRequestsParams = {
+userId?: string;
+status?: string;
 };
 

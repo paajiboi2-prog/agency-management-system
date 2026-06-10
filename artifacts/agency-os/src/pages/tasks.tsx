@@ -100,7 +100,7 @@ export default function TasksPage() {
   };
 
   const handleDrop = (taskId: string, newStatus: string) => {
-    updateMutation.mutate({ id: taskId, data: { status: newStatus } });
+    updateMutation.mutate({ id: taskId, data: { status: newStatus } as any });
   };
 
   const filtered = (tasks ?? []).filter((t) => {

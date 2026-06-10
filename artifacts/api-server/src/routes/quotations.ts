@@ -22,7 +22,14 @@ router.get("/", async (req, res) => {
         taxAmount: quotationsTable.taxAmount,
         total: quotationsTable.total,
         notes: quotationsTable.notes,
+        companyGstin: quotationsTable.companyGstin,
+        clientGstin: quotationsTable.clientGstin,
+        billingAddress: quotationsTable.billingAddress,
+        shippingAddress: quotationsTable.shippingAddress,
+        termsAndConditions: quotationsTable.termsAndConditions,
+        bankDetails: quotationsTable.bankDetails,
         lineItems: quotationsTable.lineItems,
+        createdAt: quotationsTable.createdAt,
       })
       .from(quotationsTable)
       .leftJoin(clientsTable, eq(quotationsTable.clientId, clientsTable.id));
@@ -81,6 +88,12 @@ router.post("/:id/convert-to-invoice", async (req, res) => {
         taxAmount: quot.taxAmount,
         total: quot.total,
         notes: quot.notes,
+        companyGstin: quot.companyGstin,
+        clientGstin: quot.clientGstin,
+        billingAddress: quot.billingAddress,
+        shippingAddress: quot.shippingAddress,
+        termsAndConditions: quot.termsAndConditions,
+        bankDetails: quot.bankDetails as unknown as typeof invoicesTable.$inferInsert["bankDetails"],
         lineItems: quot.lineItems as unknown as typeof invoicesTable.$inferInsert["lineItems"],
       })
       .returning();

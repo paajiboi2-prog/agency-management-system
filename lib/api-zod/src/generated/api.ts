@@ -600,8 +600,17 @@ export const ListInvoicesResponseItem = zod.object({
   "taxAmount": zod.number().nullish(),
   "total": zod.number().nullish(),
   "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
   "lineItems": zod.array(zod.object({
   "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
   "qty": zod.number().optional(),
   "unitPrice": zod.number().optional(),
   "taxPercent": zod.number().optional()
@@ -622,8 +631,17 @@ export const CreateInvoiceBody = zod.object({
   "taxAmount": zod.number().nullish(),
   "total": zod.number().nullish(),
   "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
   "lineItems": zod.array(zod.object({
   "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
   "qty": zod.number().optional(),
   "unitPrice": zod.number().optional(),
   "taxPercent": zod.number().optional()
@@ -659,8 +677,17 @@ export const UpdateInvoiceBody = zod.object({
   "taxAmount": zod.number().nullish(),
   "total": zod.number().nullish(),
   "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
   "lineItems": zod.array(zod.object({
   "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
   "qty": zod.number().optional(),
   "unitPrice": zod.number().optional(),
   "taxPercent": zod.number().optional()
@@ -679,8 +706,17 @@ export const UpdateInvoiceResponse = zod.object({
   "taxAmount": zod.number().nullish(),
   "total": zod.number().nullish(),
   "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
   "lineItems": zod.array(zod.object({
   "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
   "qty": zod.number().optional(),
   "unitPrice": zod.number().optional(),
   "taxPercent": zod.number().optional()
@@ -712,10 +748,12 @@ export const ListQuotationsResponseItem = zod.object({
   "notes": zod.string().nullish(),
   "lineItems": zod.array(zod.object({
   "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
   "qty": zod.number().optional(),
   "unitPrice": zod.number().optional(),
   "taxPercent": zod.number().optional()
-})).nullish()
+})).nullish(),
+  "createdAt": zod.string().optional()
 })
 export const ListQuotationsResponse = zod.array(ListQuotationsResponseItem)
 
@@ -733,6 +771,7 @@ export const CreateQuotationBody = zod.object({
   "notes": zod.string().nullish(),
   "lineItems": zod.array(zod.object({
   "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
   "qty": zod.number().optional(),
   "unitPrice": zod.number().optional(),
   "taxPercent": zod.number().optional()
@@ -757,6 +796,7 @@ export const UpdateQuotationBody = zod.object({
   "notes": zod.string().nullish(),
   "lineItems": zod.array(zod.object({
   "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
   "qty": zod.number().optional(),
   "unitPrice": zod.number().optional(),
   "taxPercent": zod.number().optional()
@@ -776,10 +816,12 @@ export const UpdateQuotationResponse = zod.object({
   "notes": zod.string().nullish(),
   "lineItems": zod.array(zod.object({
   "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
   "qty": zod.number().optional(),
   "unitPrice": zod.number().optional(),
   "taxPercent": zod.number().optional()
-})).nullish()
+})).nullish(),
+  "createdAt": zod.string().optional()
 })
 
 
@@ -814,7 +856,8 @@ export const ListProposalsResponseItem = zod.object({
   "scope": zod.string().nullish(),
   "deliverables": zod.string().nullish(),
   "timeline": zod.string().nullish(),
-  "notes": zod.string().nullish()
+  "notes": zod.string().nullish(),
+  "createdAt": zod.string().optional()
 })
 export const ListProposalsResponse = zod.array(ListProposalsResponseItem)
 
@@ -868,7 +911,8 @@ export const UpdateProposalResponse = zod.object({
   "scope": zod.string().nullish(),
   "deliverables": zod.string().nullish(),
   "timeline": zod.string().nullish(),
-  "notes": zod.string().nullish()
+  "notes": zod.string().nullish(),
+  "createdAt": zod.string().optional()
 })
 
 
@@ -975,5 +1019,715 @@ export const GetRecentActivityResponseItem = zod.object({
   "createdAt": zod.string().optional()
 })
 export const GetRecentActivityResponse = zod.array(GetRecentActivityResponseItem)
+
+
+/**
+ * @summary List attendance records
+ */
+export const ListAttendanceQueryParams = zod.object({
+  "userId": zod.coerce.string().optional(),
+  "month": zod.coerce.string().optional()
+})
+
+export const ListAttendanceResponseItem = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userName": zod.string().nullish(),
+  "checkInAt": zod.string(),
+  "checkOutAt": zod.string().nullish(),
+  "isLate": zod.boolean().optional(),
+  "overtimeMin": zod.number().optional(),
+  "date": zod.string()
+})
+export const ListAttendanceResponse = zod.array(ListAttendanceResponseItem)
+
+
+/**
+ * @summary Check in
+ */
+export const CheckInResponse = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userName": zod.string().nullish(),
+  "checkInAt": zod.string(),
+  "checkOutAt": zod.string().nullish(),
+  "isLate": zod.boolean().optional(),
+  "overtimeMin": zod.number().optional(),
+  "date": zod.string()
+})
+
+
+/**
+ * @summary Check out
+ */
+export const CheckOutResponse = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userName": zod.string().nullish(),
+  "checkInAt": zod.string(),
+  "checkOutAt": zod.string().nullish(),
+  "isLate": zod.boolean().optional(),
+  "overtimeMin": zod.number().optional(),
+  "date": zod.string()
+})
+
+
+/**
+ * @summary Get today's attendance status for current user
+ */
+export const GetTodayAttendanceResponse = zod.object({
+  "checkedIn": zod.boolean(),
+  "checkInAt": zod.string().nullish(),
+  "checkOutAt": zod.string().nullish(),
+  "attendanceId": zod.string().nullish()
+})
+
+
+/**
+ * @summary List leave requests
+ */
+export const ListLeaveRequestsQueryParams = zod.object({
+  "userId": zod.coerce.string().optional(),
+  "status": zod.coerce.string().optional()
+})
+
+export const ListLeaveRequestsResponseItem = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userName": zod.string().nullish(),
+  "type": zod.string(),
+  "startDate": zod.string(),
+  "endDate": zod.string(),
+  "reason": zod.string().nullish(),
+  "status": zod.string(),
+  "createdAt": zod.string()
+})
+export const ListLeaveRequestsResponse = zod.array(ListLeaveRequestsResponseItem)
+
+
+/**
+ * @summary Submit a leave request
+ */
+export const CreateLeaveRequestBody = zod.object({
+  "type": zod.string(),
+  "startDate": zod.string(),
+  "endDate": zod.string(),
+  "reason": zod.string().optional()
+})
+
+
+/**
+ * @summary Approve a leave request
+ */
+export const ApproveLeaveRequestParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const ApproveLeaveRequestResponse = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userName": zod.string().nullish(),
+  "type": zod.string(),
+  "startDate": zod.string(),
+  "endDate": zod.string(),
+  "reason": zod.string().nullish(),
+  "status": zod.string(),
+  "createdAt": zod.string()
+})
+
+
+/**
+ * @summary Reject a leave request
+ */
+export const RejectLeaveRequestParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const RejectLeaveRequestResponse = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userName": zod.string().nullish(),
+  "type": zod.string(),
+  "startDate": zod.string(),
+  "endDate": zod.string(),
+  "reason": zod.string().nullish(),
+  "status": zod.string(),
+  "createdAt": zod.string()
+})
+
+
+/**
+ * @summary Get agency settings
+ */
+export const GetSettingsResponse = zod.object({
+  "id": zod.string(),
+  "agencyName": zod.string(),
+  "email": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "address": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "primaryColor": zod.string().optional(),
+  "currency": zod.string().optional(),
+  "taxLabel": zod.string().optional(),
+  "taxPercent": zod.number().optional(),
+  "logoUrl": zod.string().nullish(),
+  "workDayStart": zod.string().optional(),
+  "workDayEnd": zod.string().optional()
+})
+
+
+/**
+ * @summary Update agency settings
+ */
+export const UpdateSettingsBody = zod.object({
+  "agencyName": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "address": zod.string().optional(),
+  "website": zod.string().optional(),
+  "primaryColor": zod.string().optional(),
+  "currency": zod.string().optional(),
+  "taxLabel": zod.string().optional(),
+  "taxPercent": zod.number().optional(),
+  "logoUrl": zod.string().optional(),
+  "workDayStart": zod.string().optional(),
+  "workDayEnd": zod.string().optional()
+})
+
+export const UpdateSettingsResponse = zod.object({
+  "id": zod.string(),
+  "agencyName": zod.string(),
+  "email": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "address": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "primaryColor": zod.string().optional(),
+  "currency": zod.string().optional(),
+  "taxLabel": zod.string().optional(),
+  "taxPercent": zod.number().optional(),
+  "logoUrl": zod.string().nullish(),
+  "workDayStart": zod.string().optional(),
+  "workDayEnd": zod.string().optional()
+})
+
+
+/**
+ * @summary List proforma invoices
+ */
+export const ListProformaInvoicesResponseItem = zod.object({
+  "id": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "invoiceDate": zod.string().nullish(),
+  "dueDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish(),
+  "createdAt": zod.string().optional()
+})
+export const ListProformaInvoicesResponse = zod.array(ListProformaInvoicesResponseItem)
+
+
+/**
+ * @summary Create proforma invoice
+ */
+export const CreateProformaInvoiceBody = zod.object({
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "invoiceDate": zod.string().nullish(),
+  "dueDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
+})
+
+
+/**
+ * @summary Get proforma invoice
+ */
+export const GetProformaInvoiceParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const GetProformaInvoiceResponse = zod.object({
+  "id": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "invoiceDate": zod.string().nullish(),
+  "dueDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish(),
+  "createdAt": zod.string().optional()
+})
+
+
+/**
+ * @summary Update proforma invoice
+ */
+export const UpdateProformaInvoiceParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const UpdateProformaInvoiceBody = zod.object({
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "invoiceDate": zod.string().nullish(),
+  "dueDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
+})
+
+export const UpdateProformaInvoiceResponse = zod.object({
+  "id": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "invoiceDate": zod.string().nullish(),
+  "dueDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish(),
+  "createdAt": zod.string().optional()
+})
+
+
+/**
+ * @summary Delete proforma invoice
+ */
+export const DeleteProformaInvoiceParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+/**
+ * @summary List purchase orders
+ */
+export const ListPurchaseOrdersResponseItem = zod.object({
+  "id": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "orderDate": zod.string().nullish(),
+  "deliveryDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "vendorGstin": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish(),
+  "createdAt": zod.string().optional()
+})
+export const ListPurchaseOrdersResponse = zod.array(ListPurchaseOrdersResponseItem)
+
+
+/**
+ * @summary Create purchase order
+ */
+export const CreatePurchaseOrderBody = zod.object({
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "orderDate": zod.string().nullish(),
+  "deliveryDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "vendorGstin": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
+})
+
+
+/**
+ * @summary Get purchase order
+ */
+export const GetPurchaseOrderParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const GetPurchaseOrderResponse = zod.object({
+  "id": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "orderDate": zod.string().nullish(),
+  "deliveryDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "vendorGstin": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish(),
+  "createdAt": zod.string().optional()
+})
+
+
+/**
+ * @summary Update purchase order
+ */
+export const UpdatePurchaseOrderParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const UpdatePurchaseOrderBody = zod.object({
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "orderDate": zod.string().nullish(),
+  "deliveryDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "vendorGstin": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
+})
+
+export const UpdatePurchaseOrderResponse = zod.object({
+  "id": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "orderDate": zod.string().nullish(),
+  "deliveryDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "vendorGstin": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish(),
+  "createdAt": zod.string().optional()
+})
+
+
+/**
+ * @summary Delete purchase order
+ */
+export const DeletePurchaseOrderParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+/**
+ * @summary List delivery challans
+ */
+export const ListDeliveryChallansResponseItem = zod.object({
+  "id": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "challanDate": zod.string().nullish(),
+  "vehicleNumber": zod.string().nullish(),
+  "dispatchMode": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish(),
+  "createdAt": zod.string().optional()
+})
+export const ListDeliveryChallansResponse = zod.array(ListDeliveryChallansResponseItem)
+
+
+/**
+ * @summary Create delivery challan
+ */
+export const CreateDeliveryChallanBody = zod.object({
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "challanDate": zod.string().nullish(),
+  "vehicleNumber": zod.string().nullish(),
+  "dispatchMode": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
+})
+
+
+/**
+ * @summary Get delivery challan
+ */
+export const GetDeliveryChallanParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const GetDeliveryChallanResponse = zod.object({
+  "id": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "challanDate": zod.string().nullish(),
+  "vehicleNumber": zod.string().nullish(),
+  "dispatchMode": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish(),
+  "createdAt": zod.string().optional()
+})
+
+
+/**
+ * @summary Update delivery challan
+ */
+export const UpdateDeliveryChallanParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const UpdateDeliveryChallanBody = zod.object({
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "challanDate": zod.string().nullish(),
+  "vehicleNumber": zod.string().nullish(),
+  "dispatchMode": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
+})
+
+export const UpdateDeliveryChallanResponse = zod.object({
+  "id": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "challanDate": zod.string().nullish(),
+  "vehicleNumber": zod.string().nullish(),
+  "dispatchMode": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "companyGstin": zod.string().nullish(),
+  "clientGstin": zod.string().nullish(),
+  "billingAddress": zod.string().nullish(),
+  "shippingAddress": zod.string().nullish(),
+  "termsAndConditions": zod.string().nullish(),
+  "bankDetails": zod.object({
+
+}).passthrough().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "hsnSac": zod.string().nullish(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish(),
+  "createdAt": zod.string().optional()
+})
+
+
+/**
+ * @summary Delete delivery challan
+ */
+export const DeleteDeliveryChallanParams = zod.object({
+  "id": zod.coerce.string()
+})
 
 

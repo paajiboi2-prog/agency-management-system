@@ -40,6 +40,12 @@ router.get("/", async (req, res) => {
         taxAmount: invoicesTable.taxAmount,
         total: invoicesTable.total,
         notes: invoicesTable.notes,
+        companyGstin: invoicesTable.companyGstin,
+        clientGstin: invoicesTable.clientGstin,
+        billingAddress: invoicesTable.billingAddress,
+        shippingAddress: invoicesTable.shippingAddress,
+        termsAndConditions: invoicesTable.termsAndConditions,
+        bankDetails: invoicesTable.bankDetails,
         lineItems: invoicesTable.lineItems,
       })
       .from(invoicesTable)

@@ -77,9 +77,6 @@ export default function ClientPortalPage({ clientId }: { clientId: string }) {
                             <p className="text-base text-foreground leading-relaxed">
                               {post.caption || <span className="text-muted-foreground italic">Caption is being drafted...</span>}
                             </p>
-                            {post.hashtags && (
-                              <p className="text-sm text-primary/70 mt-2">{post.hashtags}</p>
-                            )}
                           </div>
                         </div>
                       </div>

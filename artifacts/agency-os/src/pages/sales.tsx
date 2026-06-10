@@ -183,7 +183,7 @@ export default function SalesPage() {
         if (!old) return old;
         return old.map((l: any) => l.id === leadId ? { ...l, stage: newStage } : l);
       });
-      updateMutation.mutate({ id: leadId, data: { stage: newStage } });
+      updateMutation.mutate({ id: leadId, data: { stage: newStage } as any });
     }
   };
 
@@ -352,7 +352,7 @@ export default function SalesPage() {
             </div>
             <div className="space-y-1.5">
               <Label>Email</Label>
-              <Input {...register("contactEmail")} type="email" placeholder="lead@company.com" />
+              <Input {...register("email")} type="email" placeholder="lead@company.com" />
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>

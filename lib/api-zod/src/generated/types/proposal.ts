@@ -30,4 +30,5 @@ export interface Proposal {
   timeline?: string | null;
   /** @nullable */
   notes?: string | null;
+  createdAt?: string;
 }

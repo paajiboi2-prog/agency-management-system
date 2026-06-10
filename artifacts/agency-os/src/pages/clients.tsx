@@ -49,7 +49,6 @@ export default function ClientsPage() {
   const { data: clients, isLoading } = useListClients({
     search: search || undefined,
     category: category !== "ALL" ? category : undefined,
-    health: health !== "ALL" ? health : undefined,
   });
 
   const createMutation = useCreateClient({
@@ -86,12 +85,12 @@ export default function ClientsPage() {
   });
 
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm<any>({
-    defaultValues: { companyName: "", category: "RETAINER", health: "GREEN", internalNotes: "" },
+    defaultValues: { companyName: "", category: "RETAINER", health: "GREEN", notes: "" },
   });
 
   const openAdd = () => {
     setServiceType("SOCIAL_MEDIA");
-    reset({ companyName: "", category: "RETAINER", health: "GREEN", internalNotes: "", platforms: "", audience: "", siteType: "", techStack: "" });
+    reset({ companyName: "", category: "RETAINER", health: "GREEN", notes: "", platforms: "", audience: "", siteType: "", techStack: "" });
     setEditClient(null);
     setDialogOpen(true);
   };
@@ -106,7 +105,7 @@ export default function ClientsPage() {
       email: c.email ?? "",
       category: c.category ?? "RETAINER",
       health: c.health ?? "GREEN",
-      internalNotes: c.internalNotes ?? "",
+      notes: c.notes ?? "",
     });
     setDialogOpen(true);
   };
@@ -134,7 +133,7 @@ export default function ClientsPage() {
       email: data.email,
       category: data.category,
       health: data.health,
-      internalNotes: extraDetails + (data.internalNotes || ""),
+      notes: extraDetails + (data.notes || ""),
     };
 
     if (editClient) {
@@ -300,7 +299,7 @@ export default function ClientsPage() {
 
               <div className="space-y-1.5">
                 <Label>Primary Service Required</Label>
-                <Select value={serviceType} onValueChange={setServiceType}>
+                <Select value={serviceType} onValueChange={(val) => setServiceType(val ?? "SOCIAL_MEDIA")}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="SOCIAL_MEDIA">Social Media</SelectItem>
@@ -391,7 +390,7 @@ export default function ClientsPage() {
 
             <div className="space-y-1.5">
               <Label>Additional Notes</Label>
-              <Textarea {...register("internalNotes")} placeholder="Other requirements or internal notes..." rows={3} />
+              <Textarea {...register("notes")} placeholder="Other requirements or internal notes..." rows={3} />
             </div>
 
             <DialogFooter className="pt-2">

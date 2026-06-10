@@ -11,6 +11,12 @@ import quotationsRouter from "./quotations";
 import proposalsRouter from "./proposals";
 import usersRouter from "./users";
 import dashboardRouter from "./dashboard";
+import attendanceRouter from "./attendance";
+import leavesRouter from "./leaves";
+import settingsRouter from "./settings";
+import proformaInvoicesRouter from "./proforma-invoices";
+import purchaseOrdersRouter from "./purchase-orders";
+import deliveryChallansRouter from "./delivery-challans";
 import { requireAuth } from "../middleware/auth";
 
 const router: IRouter = Router();
@@ -30,5 +36,11 @@ router.use("/quotations", quotationsRouter);
 router.use("/proposals", proposalsRouter);
 router.use("/users", usersRouter);
 router.use("/dashboard", dashboardRouter);
+router.use(attendanceRouter);
+router.use(leavesRouter);
+router.use(settingsRouter);
+router.use("/proforma-invoices", proformaInvoicesRouter);
+router.use("/purchase-orders", purchaseOrdersRouter);
+router.use("/delivery-challans", deliveryChallansRouter);
 
 export default router;
