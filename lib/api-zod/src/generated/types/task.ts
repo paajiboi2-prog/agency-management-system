@@ -10,9 +10,9 @@ export interface Task {
   id: string;
   title: string;
   /** @nullable */
-  description?: string | null;
-  status: string;
-  priority: string;
+  status?: string | null;
+  /** @nullable */
+  priority?: string | null;
   /** @nullable */
   projectId?: string | null;
   /** @nullable */
@@ -23,5 +23,6 @@ export interface Task {
   assigneeName?: string | null;
   /** @nullable */
   dueDate?: string | null;
-  createdAt: string;
+  /** @nullable */
+  description?: string | null;
 }

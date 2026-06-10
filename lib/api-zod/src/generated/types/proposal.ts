@@ -8,15 +8,26 @@
 
 export interface Proposal {
   id: string;
-  title: string;
-  clientId: string;
+  /** @nullable */
+  title?: string | null;
+  /** @nullable */
+  clientId?: string | null;
   /** @nullable */
   clientName?: string | null;
-  status: string;
   /** @nullable */
-  content?: string | null;
+  status?: string | null;
   /** @nullable */
   template?: string | null;
-  createdAt: string;
-  updatedAt?: string;
+  /** @nullable */
+  value?: number | null;
+  /** @nullable */
+  validUntil?: string | null;
+  /** @nullable */
+  scope?: string | null;
+  /** @nullable */
+  deliverables?: string | null;
+  /** @nullable */
+  timeline?: string | null;
+  /** @nullable */
+  notes?: string | null;
 }

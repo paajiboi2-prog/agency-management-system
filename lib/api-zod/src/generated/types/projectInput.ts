@@ -8,12 +8,16 @@
 
 export interface ProjectInput {
   name: string;
-  description?: string;
-  clientId?: string;
-  type?: string;
-  status?: string;
-  priority?: string;
-  startDate?: string;
-  endDate?: string;
-  budget?: number;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  priority?: string | null;
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  startDate?: string | null;
+  /** @nullable */
+  dueDate?: string | null;
+  /** @nullable */
+  description?: string | null;
 }

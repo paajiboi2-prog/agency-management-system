@@ -8,8 +8,12 @@
 
 export interface UserUpdate {
   name?: string;
-  phone?: string;
-  department?: string;
+  email?: string;
   systemRole?: string;
-  isActive?: boolean;
+  /** @nullable */
+  password?: string | null;
+  /** @nullable */
+  department?: string | null;
+  /** @nullable */
+  isActive?: boolean | null;
 }

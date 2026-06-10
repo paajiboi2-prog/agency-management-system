@@ -7,10 +7,8 @@
  */
 
 export interface LineItem {
-  description: string;
-  quantity: number;
-  unitPrice: number;
+  description?: string;
+  qty?: number;
+  unitPrice?: number;
   taxPercent?: number;
-  discount?: number;
-  total?: number;
 }

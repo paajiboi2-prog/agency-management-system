@@ -8,10 +8,16 @@
 
 export interface TaskInput {
   title: string;
-  description?: string;
-  status?: string;
-  priority?: string;
-  projectId?: string;
-  assigneeId?: string;
-  dueDate?: string;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  priority?: string | null;
+  /** @nullable */
+  projectId?: string | null;
+  /** @nullable */
+  assigneeId?: string | null;
+  /** @nullable */
+  dueDate?: string | null;
+  /** @nullable */
+  description?: string | null;
 }

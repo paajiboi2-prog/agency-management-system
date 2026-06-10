@@ -9,28 +9,15 @@
 export interface Lead {
   id: string;
   title: string;
+  stage: string;
   /** @nullable */
   companyName?: string | null;
   /** @nullable */
   contactName?: string | null;
   /** @nullable */
-  contactEmail?: string | null;
-  /** @nullable */
-  contactPhone?: string | null;
+  email?: string | null;
   /** @nullable */
   value?: number | null;
-  stage: string;
   /** @nullable */
-  probability?: number | null;
-  /** @nullable */
-  notes?: string | null;
-  /** @nullable */
-  industry?: string | null;
-  /** @nullable */
-  assigneeId?: string | null;
-  /** @nullable */
-  assigneeName?: string | null;
-  daysInStage?: number;
-  createdAt: string;
-  updatedAt?: string;
+  daysInStage?: number | null;
 }

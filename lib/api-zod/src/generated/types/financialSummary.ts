@@ -5,13 +5,16 @@
  * AgencyOS API
  * OpenAPI spec version: 0.1.0
  */
-import type { FinancialSummaryRevenueByClientItem } from './financialSummaryRevenueByClientItem';
 
 export interface FinancialSummary {
-  totalRevenue: number;
-  outstanding: number;
-  overdue: number;
-  invoiceCount: number;
-  paidCount: number;
-  revenueByClient?: FinancialSummaryRevenueByClientItem[];
+  /** @nullable */
+  totalRevenue?: number | null;
+  /** @nullable */
+  outstanding?: number | null;
+  /** @nullable */
+  overdue?: number | null;
+  /** @nullable */
+  paidCount?: number | null;
+  /** @nullable */
+  invoiceCount?: number | null;
 }

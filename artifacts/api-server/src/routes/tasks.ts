@@ -1,94 +1,64 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { tasks, users, projects } from "@workspace/db/schema";
-import { eq, and, sql } from "drizzle-orm";
-import { requireAuth } from "../lib/auth";
-import { createId } from "@paralleldrive/cuid2";
+import { tasksTable, projectsTable, usersTable } from "@workspace/db/schema";
+import { eq } from "drizzle-orm";
 
 const router = Router();
 
-router.get("/tasks", requireAuth, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const { projectId, assigneeId, status } = req.query as Record<string, string>;
-    let conditions = [];
-    if (projectId) conditions.push(eq(tasks.projectId, projectId));
-    if (assigneeId) conditions.push(eq(tasks.assigneeId, assigneeId));
-    if (status) conditions.push(eq(tasks.status, status as any));
-
-    const allTasks = await db.select().from(tasks)
-      .where(conditions.length > 0 ? and(...conditions) : undefined)
-      .orderBy(sql`created_at desc`);
-
-    const allUsers = await db.select({ id: users.id, name: users.name }).from(users);
-    const allProjects = await db.select({ id: projects.id, name: projects.name }).from(projects);
-    const userMap: Record<string, string> = {};
-    const projectMap: Record<string, string> = {};
-    for (const u of allUsers) userMap[u.id] = u.name;
-    for (const p of allProjects) projectMap[p.id] = p.name;
-
-    res.json(allTasks.map((t) => ({
-      ...t,
-      assigneeName: t.assigneeId ? userMap[t.assigneeId] ?? null : null,
-      projectName: t.projectId ? projectMap[t.projectId] ?? null : null,
-      createdAt: t.createdAt.toISOString(),
-    })));
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
+    const rows = await db
+      .select({
+        id: tasksTable.id,
+        title: tasksTable.title,
+        status: tasksTable.status,
+        priority: tasksTable.priority,
+        projectId: tasksTable.projectId,
+        projectName: projectsTable.name,
+        assigneeId: tasksTable.assigneeId,
+        assigneeName: usersTable.name,
+        dueDate: tasksTable.dueDate,
+        description: tasksTable.description,
+      })
+      .from(tasksTable)
+      .leftJoin(projectsTable, eq(tasksTable.projectId, projectsTable.id))
+      .leftJoin(usersTable, eq(tasksTable.assigneeId, usersTable.id));
+    return res.json(rows);
+  } catch {
+    return res.status(500).json({ error: "Internal error" });
   }
 });
 
-router.post("/tasks", requireAuth, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const data = req.body;
-    const [task] = await db.insert(tasks).values({
-      id: createId(),
-      title: data.title,
-      description: data.description ?? null,
-      status: data.status ?? "TODO",
-      priority: data.priority ?? "MEDIUM",
-      projectId: data.projectId ?? null,
-      assigneeId: data.assigneeId ?? null,
-      creatorId: req.user!.id,
-      dueDate: data.dueDate ?? null,
-    }).returning();
-    res.status(201).json({ ...task, assigneeName: null, projectName: null, createdAt: task.createdAt.toISOString() });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
+    const body = { ...req.body };
+    if (!body.projectId) delete body.projectId;
+    if (!body.assigneeId) delete body.assigneeId;
+    const [row] = await db.insert(tasksTable).values(body).returning();
+    return res.status(201).json(row);
+  } catch {
+    return res.status(500).json({ error: "Internal error" });
   }
 });
 
-router.get("/tasks/:id", requireAuth, async (req, res) => {
+router.patch("/:id", async (req, res) => {
   try {
-    const task = await db.query.tasks.findFirst({ where: eq(tasks.id, (req.params.id as string)) });
-    if (!task) { res.status(404).json({ error: "Task not found" }); return; }
-    res.json({ ...task, assigneeName: null, projectName: null, createdAt: task.createdAt.toISOString() });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
+    const body = { ...req.body };
+    if (body.projectId === "") body.projectId = null;
+    if (body.assigneeId === "") body.assigneeId = null;
+    const [row] = await db.update(tasksTable).set(body).where(eq(tasksTable.id, req.params.id)).returning();
+    return res.json(row);
+  } catch {
+    return res.status(500).json({ error: "Internal error" });
   }
 });
 
-router.patch("/tasks/:id", requireAuth, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
-    const [updated] = await db.update(tasks).set({ ...req.body, updatedAt: new Date() })
-      .where(eq(tasks.id, (req.params.id as string))).returning();
-    if (!updated) { res.status(404).json({ error: "Task not found" }); return; }
-    res.json({ ...updated, assigneeName: null, projectName: null, createdAt: updated.createdAt.toISOString() });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-router.delete("/tasks/:id", requireAuth, async (req, res) => {
-  try {
-    await db.delete(tasks).where(eq(tasks.id, (req.params.id as string)));
-    res.status(204).end();
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
+    await db.delete(tasksTable).where(eq(tasksTable.id, req.params.id));
+    return res.status(204).send();
+  } catch {
+    return res.status(500).json({ error: "Internal error" });
   }
 });
 

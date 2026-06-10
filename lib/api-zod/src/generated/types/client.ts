@@ -16,27 +16,21 @@ export interface Client {
   /** @nullable */
   email?: string | null;
   /** @nullable */
-  billingAddress?: string | null;
+  category?: string | null;
   /** @nullable */
-  gstin?: string | null;
-  category: string;
-  health: string;
+  health?: string | null;
   /** @nullable */
-  source?: string | null;
+  notes?: string | null;
   /** @nullable */
-  internalNotes?: string | null;
+  serviceType?: string | null;
   /** @nullable */
-  website?: string | null;
+  serviceDetails?: string | null;
   /** @nullable */
-  instagram?: string | null;
+  socialHandles?: string | null;
   /** @nullable */
-  facebook?: string | null;
+  websiteUrl?: string | null;
   /** @nullable */
-  youtube?: string | null;
+  contentFrequency?: string | null;
   /** @nullable */
-  linkedin?: string | null;
-  /** @nullable */
-  brandColors?: string | null;
-  createdAt: string;
-  updatedAt?: string;
+  targetAudience?: string | null;
 }

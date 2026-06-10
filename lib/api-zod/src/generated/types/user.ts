@@ -8,15 +8,11 @@
 
 export interface User {
   id: string;
-  email: string;
   name: string;
-  /** @nullable */
-  phone?: string | null;
+  email: string;
+  systemRole: string;
   /** @nullable */
   department?: string | null;
   /** @nullable */
-  avatarUrl?: string | null;
-  systemRole: string;
-  isActive: boolean;
-  createdAt: string;
+  isActive?: boolean | null;
 }

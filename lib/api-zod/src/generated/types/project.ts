@@ -10,22 +10,17 @@ export interface Project {
   id: string;
   name: string;
   /** @nullable */
-  description?: string | null;
+  status?: string | null;
+  /** @nullable */
+  priority?: string | null;
   /** @nullable */
   clientId?: string | null;
   /** @nullable */
   clientName?: string | null;
-  type?: string;
-  status: string;
-  priority: string;
-  progress: number;
   /** @nullable */
   startDate?: string | null;
   /** @nullable */
-  endDate?: string | null;
+  dueDate?: string | null;
   /** @nullable */
-  budget?: number | null;
-  taskCount?: number;
-  completedTaskCount?: number;
-  createdAt: string;
+  description?: string | null;
 }

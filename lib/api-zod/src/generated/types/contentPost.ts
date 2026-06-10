@@ -5,28 +5,37 @@
  * AgencyOS API
  * OpenAPI spec version: 0.1.0
  */
+import type { ReferenceLink } from './referenceLink';
 
 export interface ContentPost {
   id: string;
-  clientId: string;
   /** @nullable */
-  clientName?: string | null;
-  platform: string;
-  contentType: string;
+  platform?: string | null;
+  /** @nullable */
+  contentType?: string | null;
+  /** @nullable */
+  status?: string | null;
   /** @nullable */
   caption?: string | null;
   /** @nullable */
-  hashtags?: string | null;
-  status: string;
-  /** @nullable */
   scheduledAt?: string | null;
   /** @nullable */
-  publishedAt?: string | null;
+  clientId?: string | null;
   /** @nullable */
-  assigneeId?: string | null;
+  clientName?: string | null;
   /** @nullable */
   assigneeName?: string | null;
   /** @nullable */
   notes?: string | null;
-  createdAt: string;
+  /** @nullable */
+  script?: string | null;
+  /** @nullable */
+  ideation?: string | null;
+  /** @nullable */
+  referenceLinks?: ReferenceLink[] | null;
+  /** @nullable */
+  referenceUrl?: string | null;
+  /** @nullable */
+  description?: string | null;
+  createdAt?: string;
 }

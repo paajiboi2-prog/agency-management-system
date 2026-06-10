@@ -8,6 +8,8 @@
 
 export interface PipelineStageSummary {
   stage: string;
-  count: number;
-  totalValue: number;
+  /** @nullable */
+  count?: number | null;
+  /** @nullable */
+  totalValue?: number | null;
 }

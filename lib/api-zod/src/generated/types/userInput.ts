@@ -7,10 +7,13 @@
  */
 
 export interface UserInput {
-  email: string;
   name: string;
-  password: string;
-  phone?: string;
-  department?: string;
+  email: string;
   systemRole: string;
+  /** @nullable */
+  password?: string | null;
+  /** @nullable */
+  department?: string | null;
+  /** @nullable */
+  isActive?: boolean | null;
 }

@@ -16,17 +16,13 @@ export interface LoginInput {
 
 export interface User {
   id: string;
-  email: string;
   name: string;
-  /** @nullable */
-  phone?: string | null;
+  email: string;
+  systemRole: string;
   /** @nullable */
   department?: string | null;
   /** @nullable */
-  avatarUrl?: string | null;
-  systemRole: string;
-  isActive: boolean;
-  createdAt: string;
+  isActive?: boolean | null;
 }
 
 export interface AuthResponse {
@@ -34,65 +30,51 @@ export interface AuthResponse {
   user: User;
 }
 
+export interface ReferenceLink {
+  label: string;
+  url: string;
+}
+
+export interface ClientCalendarShareInput {
+  clientId: string;
+  label?: string;
+}
+
+export interface ClientCalendarShare {
+  id: string;
+  clientId: string;
+  shareToken: string;
+  /** @nullable */
+  label?: string | null;
+  createdAt: string;
+  /** @nullable */
+  expiresAt?: string | null;
+  token?: string;
+  user?: User;
+}
+
 export interface UserInput {
-  email: string;
   name: string;
-  password: string;
-  phone?: string;
-  department?: string;
+  email: string;
   systemRole: string;
+  /** @nullable */
+  password?: string | null;
+  /** @nullable */
+  department?: string | null;
+  /** @nullable */
+  isActive?: boolean | null;
 }
 
 export interface UserUpdate {
   name?: string;
-  phone?: string;
-  department?: string;
+  email?: string;
   systemRole?: string;
-  isActive?: boolean;
-}
-
-export interface DashboardStats {
-  activeProjects: number;
-  totalClients: number;
-  openLeads: number;
-  pipelineValue: number;
-  tasksDue: number;
-  checkedInToday: number;
-  totalEmployees: number;
-  publishedContent: number;
-  revenuePaid: number;
-  outstanding: number;
-}
-
-export interface RevenueChartPoint {
-  month: string;
-  amount: number;
-}
-
-export interface ActivityItem {
-  id: string;
-  type: string;
-  message: string;
-  createdAt: string;
   /** @nullable */
-  userName?: string | null;
-}
-
-export interface ClientSummary {
-  id: string;
-  companyName: string;
+  password?: string | null;
   /** @nullable */
-  contactPerson?: string | null;
+  department?: string | null;
   /** @nullable */
-  phone?: string | null;
-  /** @nullable */
-  email?: string | null;
-  category: string;
-  health: string;
-  /** @nullable */
-  source?: string | null;
-  projectCount: number;
-  createdAt: string;
+  isActive?: boolean | null;
 }
 
 export interface Client {
@@ -105,220 +87,161 @@ export interface Client {
   /** @nullable */
   email?: string | null;
   /** @nullable */
-  billingAddress?: string | null;
+  category?: string | null;
   /** @nullable */
-  gstin?: string | null;
-  category: string;
-  health: string;
+  health?: string | null;
   /** @nullable */
-  source?: string | null;
+  notes?: string | null;
   /** @nullable */
-  internalNotes?: string | null;
+  serviceType?: string | null;
   /** @nullable */
-  website?: string | null;
+  serviceDetails?: string | null;
   /** @nullable */
-  instagram?: string | null;
+  socialHandles?: string | null;
   /** @nullable */
-  facebook?: string | null;
+  websiteUrl?: string | null;
   /** @nullable */
-  youtube?: string | null;
+  contentFrequency?: string | null;
   /** @nullable */
-  linkedin?: string | null;
-  /** @nullable */
-  brandColors?: string | null;
-  createdAt: string;
-  updatedAt?: string;
+  targetAudience?: string | null;
 }
 
 export interface ClientInput {
   companyName: string;
-  contactPerson?: string;
-  phone?: string;
-  email?: string;
-  billingAddress?: string;
-  gstin?: string;
-  category?: string;
-  health?: string;
-  source?: string;
-  internalNotes?: string;
-  website?: string;
-  instagram?: string;
-  facebook?: string;
-  youtube?: string;
-  linkedin?: string;
-  brandColors?: string;
-}
-
-export interface ClientUpdate {
-  companyName?: string;
-  contactPerson?: string;
-  phone?: string;
-  email?: string;
-  billingAddress?: string;
-  gstin?: string;
-  category?: string;
-  health?: string;
-  source?: string;
-  internalNotes?: string;
-  website?: string;
-  instagram?: string;
-  facebook?: string;
-  youtube?: string;
-  linkedin?: string;
-  brandColors?: string;
-}
-
-export interface ContentContract {
-  id: string;
-  clientId: string;
-  platform: string;
-  postsPerMonth: number;
-  reelsPerMonth: number;
-  storiesPerMonth: number;
-  carouselsPerMonth: number;
-  captionWriting?: boolean;
-  hashtagResearch?: boolean;
-  scheduling?: boolean;
-  contractMonths: number;
-  startDate: string;
   /** @nullable */
-  monthlyRetainer?: number | null;
-  createdAt: string;
+  contactPerson?: string | null;
+  /** @nullable */
+  phone?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  category?: string | null;
+  /** @nullable */
+  health?: string | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  serviceType?: string | null;
+  /** @nullable */
+  serviceDetails?: string | null;
+  /** @nullable */
+  socialHandles?: string | null;
+  /** @nullable */
+  websiteUrl?: string | null;
+  /** @nullable */
+  contentFrequency?: string | null;
+  /** @nullable */
+  targetAudience?: string | null;
+  /** @nullable */
+  platforms?: string | null;
+  /** @nullable */
+  socialGoals?: string | null;
+  /** @nullable */
+  contentTypes?: string | null;
+  /** @nullable */
+  websiteType?: string | null;
+  /** @nullable */
+  websiteFeatures?: string | null;
+  /** @nullable */
+  cmsPreference?: string | null;
+  /** @nullable */
+  budgetRange?: string | null;
 }
 
-export interface ContentContractInput {
-  platform: string;
-  postsPerMonth: number;
-  reelsPerMonth: number;
-  storiesPerMonth: number;
-  carouselsPerMonth: number;
-  captionWriting?: boolean;
-  hashtagResearch?: boolean;
-  scheduling?: boolean;
-  contractMonths: number;
-  startDate: string;
-  monthlyRetainer?: number;
+export interface Contract {
+  id: string;
+  /** @nullable */
+  title?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  value?: number | null;
+  /** @nullable */
+  startDate?: string | null;
+  /** @nullable */
+  endDate?: string | null;
 }
 
 export interface Lead {
   id: string;
   title: string;
+  stage: string;
   /** @nullable */
   companyName?: string | null;
   /** @nullable */
   contactName?: string | null;
   /** @nullable */
-  contactEmail?: string | null;
-  /** @nullable */
-  contactPhone?: string | null;
+  email?: string | null;
   /** @nullable */
   value?: number | null;
-  stage: string;
   /** @nullable */
-  probability?: number | null;
-  /** @nullable */
-  notes?: string | null;
-  /** @nullable */
-  industry?: string | null;
-  /** @nullable */
-  assigneeId?: string | null;
-  /** @nullable */
-  assigneeName?: string | null;
-  daysInStage?: number;
-  createdAt: string;
-  updatedAt?: string;
+  daysInStage?: number | null;
 }
 
 export interface LeadInput {
   title: string;
-  companyName?: string;
-  contactName?: string;
-  contactEmail?: string;
-  contactPhone?: string;
-  value?: number;
-  stage: string;
-  probability?: number;
-  notes?: string;
-  industry?: string;
-  assigneeId?: string;
-}
-
-export interface LeadUpdate {
-  title?: string;
-  companyName?: string;
-  contactName?: string;
-  contactEmail?: string;
-  contactPhone?: string;
-  value?: number;
-  stage?: string;
-  probability?: number;
-  notes?: string;
-  industry?: string;
-  assigneeId?: string;
+  /** @nullable */
+  stage?: string | null;
+  /** @nullable */
+  companyName?: string | null;
+  /** @nullable */
+  contactName?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  value?: number | null;
 }
 
 export interface PipelineStageSummary {
   stage: string;
-  count: number;
-  totalValue: number;
+  /** @nullable */
+  count?: number | null;
+  /** @nullable */
+  totalValue?: number | null;
 }
 
 export interface Project {
   id: string;
   name: string;
   /** @nullable */
-  description?: string | null;
+  status?: string | null;
+  /** @nullable */
+  priority?: string | null;
   /** @nullable */
   clientId?: string | null;
   /** @nullable */
   clientName?: string | null;
-  type?: string;
-  status: string;
-  priority: string;
-  progress: number;
   /** @nullable */
   startDate?: string | null;
   /** @nullable */
-  endDate?: string | null;
+  dueDate?: string | null;
   /** @nullable */
-  budget?: number | null;
-  taskCount?: number;
-  completedTaskCount?: number;
-  createdAt: string;
+  description?: string | null;
 }
 
 export interface ProjectInput {
   name: string;
-  description?: string;
-  clientId?: string;
-  type?: string;
-  status?: string;
-  priority?: string;
-  startDate?: string;
-  endDate?: string;
-  budget?: number;
-}
-
-export interface ProjectUpdate {
-  name?: string;
-  description?: string;
-  clientId?: string;
-  type?: string;
-  status?: string;
-  priority?: string;
-  progress?: number;
-  startDate?: string;
-  endDate?: string;
-  budget?: number;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  priority?: string | null;
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  startDate?: string | null;
+  /** @nullable */
+  dueDate?: string | null;
+  /** @nullable */
+  description?: string | null;
 }
 
 export interface Task {
   id: string;
   title: string;
   /** @nullable */
-  description?: string | null;
-  status: string;
-  priority: string;
+  status?: string | null;
+  /** @nullable */
+  priority?: string | null;
   /** @nullable */
   projectId?: string | null;
   /** @nullable */
@@ -329,52 +252,57 @@ export interface Task {
   assigneeName?: string | null;
   /** @nullable */
   dueDate?: string | null;
-  createdAt: string;
+  /** @nullable */
+  description?: string | null;
 }
 
 export interface TaskInput {
   title: string;
-  description?: string;
-  status?: string;
-  priority?: string;
-  projectId?: string;
-  assigneeId?: string;
-  dueDate?: string;
-}
-
-export interface TaskUpdate {
-  title?: string;
-  description?: string;
-  status?: string;
-  priority?: string;
-  projectId?: string;
-  assigneeId?: string;
-  dueDate?: string;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  priority?: string | null;
+  /** @nullable */
+  projectId?: string | null;
+  /** @nullable */
+  assigneeId?: string | null;
+  /** @nullable */
+  dueDate?: string | null;
+  /** @nullable */
+  description?: string | null;
 }
 
 export interface ContentPost {
   id: string;
-  clientId: string;
   /** @nullable */
-  clientName?: string | null;
-  platform: string;
-  contentType: string;
+  platform?: string | null;
+  /** @nullable */
+  contentType?: string | null;
+  /** @nullable */
+  status?: string | null;
   /** @nullable */
   caption?: string | null;
   /** @nullable */
-  hashtags?: string | null;
-  status: string;
-  /** @nullable */
   scheduledAt?: string | null;
   /** @nullable */
-  publishedAt?: string | null;
+  clientId?: string | null;
   /** @nullable */
-  assigneeId?: string | null;
+  clientName?: string | null;
   /** @nullable */
   assigneeName?: string | null;
   /** @nullable */
   notes?: string | null;
-  createdAt: string;
+  /** @nullable */
+  script?: string | null;
+  /** @nullable */
+  ideation?: string | null;
+  /** @nullable */
+  referenceLinks?: ReferenceLink[] | null;
+  /** @nullable */
+  referenceUrl?: string | null;
+  /** @nullable */
+  description?: string | null;
+  createdAt?: string;
 }
 
 export interface ContentPostInput {
@@ -387,284 +315,240 @@ export interface ContentPostInput {
   scheduledAt?: string;
   assigneeId?: string;
   notes?: string;
+  script?: string;
+  ideation?: string;
+  referenceLinks?: ReferenceLink[];
+  referenceUrl?: string;
+  description?: string;
 }
 
 export interface ContentPostUpdate {
-  platform?: string;
-  contentType?: string;
-  caption?: string;
-  hashtags?: string;
-  status?: string;
-  scheduledAt?: string;
-  assigneeId?: string;
-  notes?: string;
-}
-
-export interface ContentQuota {
-  clientId: string;
-  month: string;
-  postsTarget: number;
-  postsCompleted: number;
-  reelsTarget: number;
-  reelsCompleted: number;
-  storiesTarget: number;
-  storiesCompleted: number;
-  carouselsTarget?: number;
-  carouselsCompleted?: number;
+  /** @nullable */
+  platform?: string | null;
+  /** @nullable */
+  contentType?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  caption?: string | null;
+  /** @nullable */
+  scheduledAt?: string | null;
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  assigneeId?: string | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  script?: string | null;
+  /** @nullable */
+  ideation?: string | null;
+  referenceLinks?: ReferenceLink[];
+  /** @nullable */
+  referenceUrl?: string | null;
+  /** @nullable */
+  description?: string | null;
 }
 
 export interface LineItem {
-  description: string;
-  quantity: number;
-  unitPrice: number;
+  description?: string;
+  qty?: number;
+  unitPrice?: number;
   taxPercent?: number;
-  discount?: number;
-  total?: number;
 }
 
 export interface Invoice {
   id: string;
-  number: string;
-  clientId: string;
+  /** @nullable */
+  number?: string | null;
+  /** @nullable */
+  clientId?: string | null;
   /** @nullable */
   clientName?: string | null;
-  status: string;
-  lineItems?: LineItem[];
-  subtotal: number;
-  tax: number;
-  discount: number;
-  total: number;
   /** @nullable */
-  notes?: string | null;
+  status?: string | null;
   /** @nullable */
-  paymentInstructions?: string | null;
-  invoiceDate?: string;
+  invoiceDate?: string | null;
   /** @nullable */
   dueDate?: string | null;
   /** @nullable */
-  paidAt?: string | null;
-  createdAt: string;
+  subtotal?: number | null;
+  /** @nullable */
+  taxAmount?: number | null;
+  /** @nullable */
+  total?: number | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  lineItems?: LineItem[] | null;
 }
 
 export interface InvoiceInput {
-  clientId: string;
-  lineItems: LineItem[];
-  notes?: string;
-  paymentInstructions?: string;
-  invoiceDate: string;
-  dueDate?: string;
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  invoiceDate?: string | null;
+  /** @nullable */
+  dueDate?: string | null;
+  /** @nullable */
+  subtotal?: number | null;
+  /** @nullable */
+  taxAmount?: number | null;
+  /** @nullable */
+  total?: number | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  lineItems?: LineItem[] | null;
 }
-
-export interface InvoiceUpdate {
-  status?: string;
-  lineItems?: LineItem[];
-  notes?: string;
-  paymentInstructions?: string;
-  dueDate?: string;
-  paidAt?: string;
-}
-
-export type FinancialSummaryRevenueByClientItem = {
-  clientName: string;
-  amount: number;
-};
 
 export interface FinancialSummary {
-  totalRevenue: number;
-  outstanding: number;
-  overdue: number;
-  invoiceCount: number;
-  paidCount: number;
-  revenueByClient?: FinancialSummaryRevenueByClientItem[];
+  /** @nullable */
+  totalRevenue?: number | null;
+  /** @nullable */
+  outstanding?: number | null;
+  /** @nullable */
+  overdue?: number | null;
+  /** @nullable */
+  paidCount?: number | null;
+  /** @nullable */
+  invoiceCount?: number | null;
 }
 
 export interface Quotation {
   id: string;
-  number: string;
-  clientId: string;
+  /** @nullable */
+  number?: string | null;
+  /** @nullable */
+  clientId?: string | null;
   /** @nullable */
   clientName?: string | null;
-  status: string;
-  lineItems?: LineItem[];
-  subtotal: number;
-  tax: number;
-  discount: number;
-  total: number;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  validUntil?: string | null;
+  /** @nullable */
+  subtotal?: number | null;
+  /** @nullable */
+  taxAmount?: number | null;
+  /** @nullable */
+  total?: number | null;
   /** @nullable */
   notes?: string | null;
   /** @nullable */
-  validUntil?: string | null;
-  createdAt: string;
+  lineItems?: LineItem[] | null;
 }
 
 export interface QuotationInput {
-  clientId: string;
-  lineItems: LineItem[];
-  notes?: string;
-  validUntil?: string;
-}
-
-export interface QuotationUpdate {
-  status?: string;
-  lineItems?: LineItem[];
-  notes?: string;
-  validUntil?: string;
-}
-
-export interface Attendance {
-  id: string;
-  userId: string;
   /** @nullable */
-  userName?: string | null;
-  checkInAt: string;
+  clientId?: string | null;
   /** @nullable */
-  checkOutAt?: string | null;
-  isLate?: boolean;
-  overtimeMin?: number;
-  date: string;
-}
-
-export interface TodayAttendance {
-  checkedIn: boolean;
+  status?: string | null;
   /** @nullable */
-  checkInAt?: string | null;
+  validUntil?: string | null;
   /** @nullable */
-  checkOutAt?: string | null;
+  subtotal?: number | null;
   /** @nullable */
-  attendanceId?: string | null;
-}
-
-export interface LeaveRequest {
-  id: string;
-  userId: string;
+  taxAmount?: number | null;
   /** @nullable */
-  userName?: string | null;
-  type: string;
-  startDate: string;
-  endDate: string;
+  total?: number | null;
   /** @nullable */
-  reason?: string | null;
-  status: string;
-  createdAt: string;
-}
-
-export interface LeaveRequestInput {
-  type: string;
-  startDate: string;
-  endDate: string;
-  reason?: string;
+  notes?: string | null;
+  /** @nullable */
+  lineItems?: LineItem[] | null;
 }
 
 export interface Proposal {
   id: string;
-  title: string;
-  clientId: string;
+  /** @nullable */
+  title?: string | null;
+  /** @nullable */
+  clientId?: string | null;
   /** @nullable */
   clientName?: string | null;
-  status: string;
   /** @nullable */
-  content?: string | null;
+  status?: string | null;
   /** @nullable */
   template?: string | null;
-  createdAt: string;
-  updatedAt?: string;
+  /** @nullable */
+  value?: number | null;
+  /** @nullable */
+  validUntil?: string | null;
+  /** @nullable */
+  scope?: string | null;
+  /** @nullable */
+  deliverables?: string | null;
+  /** @nullable */
+  timeline?: string | null;
+  /** @nullable */
+  notes?: string | null;
 }
 
 export interface ProposalInput {
-  title: string;
-  clientId: string;
-  content?: string;
-  template?: string;
+  /** @nullable */
+  title?: string | null;
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  template?: string | null;
+  /** @nullable */
+  value?: number | null;
+  /** @nullable */
+  validUntil?: string | null;
+  /** @nullable */
+  scope?: string | null;
+  /** @nullable */
+  deliverables?: string | null;
+  /** @nullable */
+  timeline?: string | null;
+  /** @nullable */
+  notes?: string | null;
 }
 
-export interface ProposalUpdate {
-  title?: string;
-  status?: string;
-  content?: string;
-  template?: string;
+export interface DashboardStats {
+  /** @nullable */
+  totalClients?: number | null;
+  /** @nullable */
+  activeProjects?: number | null;
+  /** @nullable */
+  openLeads?: number | null;
+  /** @nullable */
+  revenuePaid?: number | null;
+  /** @nullable */
+  outstanding?: number | null;
+  /** @nullable */
+  monthlyRevenue?: number | null;
+  /** @nullable */
+  tasksDue?: number | null;
 }
 
-export interface AgencySettings {
-  id: string;
-  agencyName: string;
-  /** @nullable */
-  email?: string | null;
-  /** @nullable */
-  phone?: string | null;
-  /** @nullable */
-  address?: string | null;
-  /** @nullable */
-  website?: string | null;
-  primaryColor?: string;
-  currency?: string;
-  taxLabel?: string;
-  taxPercent?: number;
-  /** @nullable */
-  logoUrl?: string | null;
-  workDayStart?: string;
-  workDayEnd?: string;
+export interface RevenueDataPoint {
+  month?: string;
+  revenue?: number;
 }
 
-export interface AgencySettingsUpdate {
-  agencyName?: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  website?: string;
-  primaryColor?: string;
-  currency?: string;
-  taxLabel?: string;
-  taxPercent?: number;
-  logoUrl?: string;
-  workDayStart?: string;
-  workDayEnd?: string;
+export interface ActivityItem {
+  id?: string;
+  type?: string;
+  message?: string;
+  createdAt?: string;
 }
 
 export type ListClientsParams = {
 search?: string;
 category?: string;
-health?: string;
-};
-
-export type ListProjectsParams = {
-clientId?: string;
-status?: string;
-};
-
-export type ListTasksParams = {
-projectId?: string;
-assigneeId?: string;
-status?: string;
 };
 
 export type ListContentPostsParams = {
 clientId?: string;
-/**
- * YYYY-MM format
- */
 month?: string;
 };
 
-export type ListInvoicesParams = {
-clientId?: string;
-status?: string;
-};
-
-export type ListQuotationsParams = {
-clientId?: string;
-};
-
-export type ListAttendanceParams = {
-userId?: string;
-month?: string;
-};
-
-export type ListLeaveRequestsParams = {
-userId?: string;
-status?: string;
-};
-
-export type ListProposalsParams = {
+export type ListCalendarSharesParams = {
 clientId?: string;
 };
 

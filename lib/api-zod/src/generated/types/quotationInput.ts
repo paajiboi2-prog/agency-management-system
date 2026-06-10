@@ -8,8 +8,20 @@
 import type { LineItem } from './lineItem';
 
 export interface QuotationInput {
-  clientId: string;
-  lineItems: LineItem[];
-  notes?: string;
-  validUntil?: string;
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  validUntil?: string | null;
+  /** @nullable */
+  subtotal?: number | null;
+  /** @nullable */
+  taxAmount?: number | null;
+  /** @nullable */
+  total?: number | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  lineItems?: LineItem[] | null;
 }

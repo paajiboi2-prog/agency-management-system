@@ -8,19 +8,42 @@
 
 export interface ClientInput {
   companyName: string;
-  contactPerson?: string;
-  phone?: string;
-  email?: string;
-  billingAddress?: string;
-  gstin?: string;
-  category?: string;
-  health?: string;
-  source?: string;
-  internalNotes?: string;
-  website?: string;
-  instagram?: string;
-  facebook?: string;
-  youtube?: string;
-  linkedin?: string;
-  brandColors?: string;
+  /** @nullable */
+  contactPerson?: string | null;
+  /** @nullable */
+  phone?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  category?: string | null;
+  /** @nullable */
+  health?: string | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  serviceType?: string | null;
+  /** @nullable */
+  serviceDetails?: string | null;
+  /** @nullable */
+  socialHandles?: string | null;
+  /** @nullable */
+  websiteUrl?: string | null;
+  /** @nullable */
+  contentFrequency?: string | null;
+  /** @nullable */
+  targetAudience?: string | null;
+  /** @nullable */
+  platforms?: string | null;
+  /** @nullable */
+  socialGoals?: string | null;
+  /** @nullable */
+  contentTypes?: string | null;
+  /** @nullable */
+  websiteType?: string | null;
+  /** @nullable */
+  websiteFeatures?: string | null;
+  /** @nullable */
+  cmsPreference?: string | null;
+  /** @nullable */
+  budgetRange?: string | null;
 }

@@ -8,14 +8,14 @@
 
 export interface LeadInput {
   title: string;
-  companyName?: string;
-  contactName?: string;
-  contactEmail?: string;
-  contactPhone?: string;
-  value?: number;
-  stage: string;
-  probability?: number;
-  notes?: string;
-  industry?: string;
-  assigneeId?: string;
+  /** @nullable */
+  stage?: string | null;
+  /** @nullable */
+  companyName?: string | null;
+  /** @nullable */
+  contactName?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  value?: number | null;
 }

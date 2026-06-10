@@ -1,83 +1,63 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { proposals, clients } from "@workspace/db/schema";
-import { eq, and, sql } from "drizzle-orm";
-import { requireAuth } from "../lib/auth";
-import { createId } from "@paralleldrive/cuid2";
+import { proposalsTable, clientsTable } from "@workspace/db/schema";
+import { eq } from "drizzle-orm";
 
 const router = Router();
 
-router.get("/proposals", requireAuth, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const { clientId } = req.query as Record<string, string>;
-    const allProposals = await db.select().from(proposals)
-      .where(clientId ? eq(proposals.clientId, clientId) : undefined)
-      .orderBy(sql`created_at desc`);
-
-    const allClients = await db.select({ id: clients.id, companyName: clients.companyName }).from(clients);
-    const clientMap: Record<string, string> = {};
-    for (const c of allClients) clientMap[c.id] = c.companyName;
-
-    res.json(allProposals.map((p) => ({
-      ...p,
-      clientName: clientMap[p.clientId] ?? null,
-      createdAt: p.createdAt.toISOString(),
-      updatedAt: p.updatedAt.toISOString(),
-    })));
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
+    const rows = await db
+      .select({
+        id: proposalsTable.id,
+        title: proposalsTable.title,
+        clientId: proposalsTable.clientId,
+        clientName: clientsTable.companyName,
+        status: proposalsTable.status,
+        template: proposalsTable.template,
+        value: proposalsTable.value,
+        validUntil: proposalsTable.validUntil,
+        scope: proposalsTable.scope,
+        deliverables: proposalsTable.deliverables,
+        timeline: proposalsTable.timeline,
+        notes: proposalsTable.notes,
+      })
+      .from(proposalsTable)
+      .leftJoin(clientsTable, eq(proposalsTable.clientId, clientsTable.id));
+    return res.json(rows);
+  } catch {
+    return res.status(500).json({ error: "Internal error" });
   }
 });
 
-router.post("/proposals", requireAuth, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const data = req.body;
-    const [proposal] = await db.insert(proposals).values({
-      id: createId(),
-      title: data.title,
-      clientId: data.clientId,
-      status: "DRAFT",
-      content: data.content ?? null,
-      template: data.template ?? null,
-    }).returning();
-    res.status(201).json({ ...proposal, clientName: null, createdAt: proposal.createdAt.toISOString(), updatedAt: proposal.updatedAt.toISOString() });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
+    const body = { ...req.body };
+    if (!body.clientId) delete body.clientId;
+    const [row] = await db.insert(proposalsTable).values(body).returning();
+    return res.status(201).json(row);
+  } catch {
+    return res.status(500).json({ error: "Internal error" });
   }
 });
 
-router.get("/proposals/:id", requireAuth, async (req, res) => {
+router.patch("/:id", async (req, res) => {
   try {
-    const proposal = await db.query.proposals.findFirst({ where: eq(proposals.id, (req.params.id as string)) });
-    if (!proposal) { res.status(404).json({ error: "Not found" }); return; }
-    res.json({ ...proposal, clientName: null, createdAt: proposal.createdAt.toISOString(), updatedAt: proposal.updatedAt.toISOString() });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
+    const body = { ...req.body };
+    if (body.clientId === "") body.clientId = null;
+    const [row] = await db.update(proposalsTable).set(body).where(eq(proposalsTable.id, req.params.id)).returning();
+    return res.json(row);
+  } catch {
+    return res.status(500).json({ error: "Internal error" });
   }
 });
 
-router.patch("/proposals/:id", requireAuth, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
-    const [updated] = await db.update(proposals).set({ ...req.body, updatedAt: new Date() })
-      .where(eq(proposals.id, (req.params.id as string))).returning();
-    if (!updated) { res.status(404).json({ error: "Not found" }); return; }
-    res.json({ ...updated, clientName: null, createdAt: updated.createdAt.toISOString(), updatedAt: updated.updatedAt.toISOString() });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-router.delete("/proposals/:id", requireAuth, async (req, res) => {
-  try {
-    await db.delete(proposals).where(eq(proposals.id, (req.params.id as string)));
-    res.status(204).end();
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
+    await db.delete(proposalsTable).where(eq(proposalsTable.id, req.params.id));
+    return res.status(204).send();
+  } catch {
+    return res.status(500).json({ error: "Internal error" });
   }
 });
 

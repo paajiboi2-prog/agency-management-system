@@ -7,14 +7,18 @@
  */
 
 export interface DashboardStats {
-  activeProjects: number;
-  totalClients: number;
-  openLeads: number;
-  pipelineValue: number;
-  tasksDue: number;
-  checkedInToday: number;
-  totalEmployees: number;
-  publishedContent: number;
-  revenuePaid: number;
-  outstanding: number;
+  /** @nullable */
+  totalClients?: number | null;
+  /** @nullable */
+  activeProjects?: number | null;
+  /** @nullable */
+  openLeads?: number | null;
+  /** @nullable */
+  revenuePaid?: number | null;
+  /** @nullable */
+  outstanding?: number | null;
+  /** @nullable */
+  monthlyRevenue?: number | null;
+  /** @nullable */
+  tasksDue?: number | null;
 }

@@ -8,8 +8,5 @@
 
 export type ListContentPostsParams = {
 clientId?: string;
-/**
- * YYYY-MM format
- */
 month?: string;
 };

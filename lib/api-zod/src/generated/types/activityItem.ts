@@ -7,10 +7,8 @@
  */
 
 export interface ActivityItem {
-  id: string;
-  type: string;
-  message: string;
-  createdAt: string;
-  /** @nullable */
-  userName?: string | null;
+  id?: string;
+  type?: string;
+  message?: string;
+  createdAt?: string;
 }

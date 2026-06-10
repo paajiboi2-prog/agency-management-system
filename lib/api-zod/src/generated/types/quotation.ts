@@ -9,19 +9,24 @@ import type { LineItem } from './lineItem';
 
 export interface Quotation {
   id: string;
-  number: string;
-  clientId: string;
+  /** @nullable */
+  number?: string | null;
+  /** @nullable */
+  clientId?: string | null;
   /** @nullable */
   clientName?: string | null;
-  status: string;
-  lineItems?: LineItem[];
-  subtotal: number;
-  tax: number;
-  discount: number;
-  total: number;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  validUntil?: string | null;
+  /** @nullable */
+  subtotal?: number | null;
+  /** @nullable */
+  taxAmount?: number | null;
+  /** @nullable */
+  total?: number | null;
   /** @nullable */
   notes?: string | null;
   /** @nullable */
-  validUntil?: string | null;
-  createdAt: string;
+  lineItems?: LineItem[] | null;
 }

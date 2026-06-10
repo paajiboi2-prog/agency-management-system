@@ -17,7 +17,7 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
- * @summary Login with email + password
+ * @summary Login
  */
 export const LoginBody = zod.object({
   "email": zod.string(),
@@ -28,81 +28,21 @@ export const LoginResponse = zod.object({
   "token": zod.string(),
   "user": zod.object({
   "id": zod.string(),
-  "email": zod.string(),
   "name": zod.string(),
-  "phone": zod.string().nullish(),
-  "department": zod.string().nullish(),
-  "avatarUrl": zod.string().nullish(),
-  "systemRole": zod.string(),
-  "isActive": zod.boolean(),
-  "createdAt": zod.string()
-})
-})
-
-
-/**
- * @summary Get current authenticated user
- */
-export const GetMeResponse = zod.object({
-  "id": zod.string(),
   "email": zod.string(),
-  "name": zod.string(),
-  "phone": zod.string().nullish(),
-  "department": zod.string().nullish(),
-  "avatarUrl": zod.string().nullish(),
   "systemRole": zod.string(),
-  "isActive": zod.boolean(),
-  "createdAt": zod.string()
+  "department": zod.string().nullish(),
+  "isActive": zod.boolean().nullish()
+})
 })
 
 
 /**
- * @summary Get dashboard KPI stats
- */
-export const GetDashboardStatsResponse = zod.object({
-  "activeProjects": zod.number(),
-  "totalClients": zod.number(),
-  "openLeads": zod.number(),
-  "pipelineValue": zod.number(),
-  "tasksDue": zod.number(),
-  "checkedInToday": zod.number(),
-  "totalEmployees": zod.number(),
-  "publishedContent": zod.number(),
-  "revenuePaid": zod.number(),
-  "outstanding": zod.number()
-})
-
-
-/**
- * @summary Get monthly revenue chart data (last 12 months)
- */
-export const GetRevenueChartResponseItem = zod.object({
-  "month": zod.string(),
-  "amount": zod.number()
-})
-export const GetRevenueChartResponse = zod.array(GetRevenueChartResponseItem)
-
-
-/**
- * @summary Get recent activity feed
- */
-export const GetRecentActivityResponseItem = zod.object({
-  "id": zod.string(),
-  "type": zod.string(),
-  "message": zod.string(),
-  "createdAt": zod.string(),
-  "userName": zod.string().nullish()
-})
-export const GetRecentActivityResponse = zod.array(GetRecentActivityResponseItem)
-
-
-/**
- * @summary List all clients
+ * @summary List clients
  */
 export const ListClientsQueryParams = zod.object({
   "search": zod.coerce.string().optional(),
-  "category": zod.coerce.string().optional(),
-  "health": zod.coerce.string().optional()
+  "category": zod.coerce.string().optional()
 })
 
 export const ListClientsResponseItem = zod.object({
@@ -111,40 +51,48 @@ export const ListClientsResponseItem = zod.object({
   "contactPerson": zod.string().nullish(),
   "phone": zod.string().nullish(),
   "email": zod.string().nullish(),
-  "category": zod.string(),
-  "health": zod.string(),
-  "source": zod.string().nullish(),
-  "projectCount": zod.number(),
-  "createdAt": zod.string()
+  "category": zod.string().nullish(),
+  "health": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "serviceType": zod.string().nullish(),
+  "serviceDetails": zod.string().nullish(),
+  "socialHandles": zod.string().nullish(),
+  "websiteUrl": zod.string().nullish(),
+  "contentFrequency": zod.string().nullish(),
+  "targetAudience": zod.string().nullish()
 })
 export const ListClientsResponse = zod.array(ListClientsResponseItem)
 
 
 /**
- * @summary Create a new client
+ * @summary Create client
  */
 export const CreateClientBody = zod.object({
   "companyName": zod.string(),
-  "contactPerson": zod.string().optional(),
-  "phone": zod.string().optional(),
-  "email": zod.string().optional(),
-  "billingAddress": zod.string().optional(),
-  "gstin": zod.string().optional(),
-  "category": zod.string().optional(),
-  "health": zod.string().optional(),
-  "source": zod.string().optional(),
-  "internalNotes": zod.string().optional(),
-  "website": zod.string().optional(),
-  "instagram": zod.string().optional(),
-  "facebook": zod.string().optional(),
-  "youtube": zod.string().optional(),
-  "linkedin": zod.string().optional(),
-  "brandColors": zod.string().optional()
+  "contactPerson": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "category": zod.string().nullish(),
+  "health": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "serviceType": zod.string().nullish(),
+  "serviceDetails": zod.string().nullish(),
+  "socialHandles": zod.string().nullish(),
+  "websiteUrl": zod.string().nullish(),
+  "contentFrequency": zod.string().nullish(),
+  "targetAudience": zod.string().nullish(),
+  "platforms": zod.string().nullish(),
+  "socialGoals": zod.string().nullish(),
+  "contentTypes": zod.string().nullish(),
+  "websiteType": zod.string().nullish(),
+  "websiteFeatures": zod.string().nullish(),
+  "cmsPreference": zod.string().nullish(),
+  "budgetRange": zod.string().nullish()
 })
 
 
 /**
- * @summary Get a client by ID
+ * @summary Get client
  */
 export const GetClientParams = zod.object({
   "id": zod.coerce.string()
@@ -156,47 +104,46 @@ export const GetClientResponse = zod.object({
   "contactPerson": zod.string().nullish(),
   "phone": zod.string().nullish(),
   "email": zod.string().nullish(),
-  "billingAddress": zod.string().nullish(),
-  "gstin": zod.string().nullish(),
-  "category": zod.string(),
-  "health": zod.string(),
-  "source": zod.string().nullish(),
-  "internalNotes": zod.string().nullish(),
-  "website": zod.string().nullish(),
-  "instagram": zod.string().nullish(),
-  "facebook": zod.string().nullish(),
-  "youtube": zod.string().nullish(),
-  "linkedin": zod.string().nullish(),
-  "brandColors": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string().optional()
+  "category": zod.string().nullish(),
+  "health": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "serviceType": zod.string().nullish(),
+  "serviceDetails": zod.string().nullish(),
+  "socialHandles": zod.string().nullish(),
+  "websiteUrl": zod.string().nullish(),
+  "contentFrequency": zod.string().nullish(),
+  "targetAudience": zod.string().nullish()
 })
 
 
 /**
- * @summary Update a client
+ * @summary Update client
  */
 export const UpdateClientParams = zod.object({
   "id": zod.coerce.string()
 })
 
 export const UpdateClientBody = zod.object({
-  "companyName": zod.string().optional(),
-  "contactPerson": zod.string().optional(),
-  "phone": zod.string().optional(),
-  "email": zod.string().optional(),
-  "billingAddress": zod.string().optional(),
-  "gstin": zod.string().optional(),
-  "category": zod.string().optional(),
-  "health": zod.string().optional(),
-  "source": zod.string().optional(),
-  "internalNotes": zod.string().optional(),
-  "website": zod.string().optional(),
-  "instagram": zod.string().optional(),
-  "facebook": zod.string().optional(),
-  "youtube": zod.string().optional(),
-  "linkedin": zod.string().optional(),
-  "brandColors": zod.string().optional()
+  "companyName": zod.string(),
+  "contactPerson": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "category": zod.string().nullish(),
+  "health": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "serviceType": zod.string().nullish(),
+  "serviceDetails": zod.string().nullish(),
+  "socialHandles": zod.string().nullish(),
+  "websiteUrl": zod.string().nullish(),
+  "contentFrequency": zod.string().nullish(),
+  "targetAudience": zod.string().nullish(),
+  "platforms": zod.string().nullish(),
+  "socialGoals": zod.string().nullish(),
+  "contentTypes": zod.string().nullish(),
+  "websiteType": zod.string().nullish(),
+  "websiteFeatures": zod.string().nullish(),
+  "cmsPreference": zod.string().nullish(),
+  "budgetRange": zod.string().nullish()
 })
 
 export const UpdateClientResponse = zod.object({
@@ -205,25 +152,20 @@ export const UpdateClientResponse = zod.object({
   "contactPerson": zod.string().nullish(),
   "phone": zod.string().nullish(),
   "email": zod.string().nullish(),
-  "billingAddress": zod.string().nullish(),
-  "gstin": zod.string().nullish(),
-  "category": zod.string(),
-  "health": zod.string(),
-  "source": zod.string().nullish(),
-  "internalNotes": zod.string().nullish(),
-  "website": zod.string().nullish(),
-  "instagram": zod.string().nullish(),
-  "facebook": zod.string().nullish(),
-  "youtube": zod.string().nullish(),
-  "linkedin": zod.string().nullish(),
-  "brandColors": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string().optional()
+  "category": zod.string().nullish(),
+  "health": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "serviceType": zod.string().nullish(),
+  "serviceDetails": zod.string().nullish(),
+  "socialHandles": zod.string().nullish(),
+  "websiteUrl": zod.string().nullish(),
+  "contentFrequency": zod.string().nullish(),
+  "targetAudience": zod.string().nullish()
 })
 
 
 /**
- * @summary Delete a client
+ * @summary Delete client
  */
 export const DeleteClientParams = zod.object({
   "id": zod.coerce.string()
@@ -231,7 +173,7 @@ export const DeleteClientParams = zod.object({
 
 
 /**
- * @summary Get content contracts for a client
+ * @summary Get client contracts
  */
 export const GetClientContractsParams = zod.object({
   "id": zod.coerce.string()
@@ -239,152 +181,80 @@ export const GetClientContractsParams = zod.object({
 
 export const GetClientContractsResponseItem = zod.object({
   "id": zod.string(),
-  "clientId": zod.string(),
-  "platform": zod.string(),
-  "postsPerMonth": zod.number(),
-  "reelsPerMonth": zod.number(),
-  "storiesPerMonth": zod.number(),
-  "carouselsPerMonth": zod.number(),
-  "captionWriting": zod.boolean().optional(),
-  "hashtagResearch": zod.boolean().optional(),
-  "scheduling": zod.boolean().optional(),
-  "contractMonths": zod.number(),
-  "startDate": zod.string(),
-  "monthlyRetainer": zod.number().nullish(),
-  "createdAt": zod.string()
+  "title": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "value": zod.number().nullish(),
+  "startDate": zod.string().nullish(),
+  "endDate": zod.string().nullish()
 })
 export const GetClientContractsResponse = zod.array(GetClientContractsResponseItem)
 
 
 /**
- * @summary Create content contract for a client
- */
-export const CreateClientContractParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-export const CreateClientContractBody = zod.object({
-  "platform": zod.string(),
-  "postsPerMonth": zod.number(),
-  "reelsPerMonth": zod.number(),
-  "storiesPerMonth": zod.number(),
-  "carouselsPerMonth": zod.number(),
-  "captionWriting": zod.boolean().optional(),
-  "hashtagResearch": zod.boolean().optional(),
-  "scheduling": zod.boolean().optional(),
-  "contractMonths": zod.number(),
-  "startDate": zod.string(),
-  "monthlyRetainer": zod.number().optional()
-})
-
-
-/**
- * @summary List all leads (sales pipeline)
+ * @summary List leads
  */
 export const ListLeadsResponseItem = zod.object({
   "id": zod.string(),
   "title": zod.string(),
+  "stage": zod.string(),
   "companyName": zod.string().nullish(),
   "contactName": zod.string().nullish(),
-  "contactEmail": zod.string().nullish(),
-  "contactPhone": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "value": zod.number().nullish(),
-  "stage": zod.string(),
-  "probability": zod.number().nullish(),
-  "notes": zod.string().nullish(),
-  "industry": zod.string().nullish(),
-  "assigneeId": zod.string().nullish(),
-  "assigneeName": zod.string().nullish(),
-  "daysInStage": zod.number().optional(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string().optional()
+  "daysInStage": zod.number().nullish()
 })
 export const ListLeadsResponse = zod.array(ListLeadsResponseItem)
 
 
 /**
- * @summary Create a lead
+ * @summary Create lead
  */
 export const CreateLeadBody = zod.object({
   "title": zod.string(),
-  "companyName": zod.string().optional(),
-  "contactName": zod.string().optional(),
-  "contactEmail": zod.string().optional(),
-  "contactPhone": zod.string().optional(),
-  "value": zod.number().optional(),
-  "stage": zod.string(),
-  "probability": zod.number().optional(),
-  "notes": zod.string().optional(),
-  "industry": zod.string().optional(),
-  "assigneeId": zod.string().optional()
-})
-
-
-/**
- * @summary Get lead by ID
- */
-export const GetLeadParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-export const GetLeadResponse = zod.object({
-  "id": zod.string(),
-  "title": zod.string(),
+  "stage": zod.string().nullish(),
   "companyName": zod.string().nullish(),
   "contactName": zod.string().nullish(),
-  "contactEmail": zod.string().nullish(),
-  "contactPhone": zod.string().nullish(),
-  "value": zod.number().nullish(),
-  "stage": zod.string(),
-  "probability": zod.number().nullish(),
-  "notes": zod.string().nullish(),
-  "industry": zod.string().nullish(),
-  "assigneeId": zod.string().nullish(),
-  "assigneeName": zod.string().nullish(),
-  "daysInStage": zod.number().optional(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string().optional()
+  "email": zod.string().nullish(),
+  "value": zod.number().nullish()
 })
 
 
 /**
- * @summary Update lead (incl. stage change)
+ * @summary Pipeline summary
+ */
+export const GetPipelineSummaryResponseItem = zod.object({
+  "stage": zod.string(),
+  "count": zod.number().nullish(),
+  "totalValue": zod.number().nullish()
+})
+export const GetPipelineSummaryResponse = zod.array(GetPipelineSummaryResponseItem)
+
+
+/**
+ * @summary Update lead
  */
 export const UpdateLeadParams = zod.object({
   "id": zod.coerce.string()
 })
 
 export const UpdateLeadBody = zod.object({
-  "title": zod.string().optional(),
-  "companyName": zod.string().optional(),
-  "contactName": zod.string().optional(),
-  "contactEmail": zod.string().optional(),
-  "contactPhone": zod.string().optional(),
-  "value": zod.number().optional(),
-  "stage": zod.string().optional(),
-  "probability": zod.number().optional(),
-  "notes": zod.string().optional(),
-  "industry": zod.string().optional(),
-  "assigneeId": zod.string().optional()
+  "title": zod.string(),
+  "stage": zod.string().nullish(),
+  "companyName": zod.string().nullish(),
+  "contactName": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "value": zod.number().nullish()
 })
 
 export const UpdateLeadResponse = zod.object({
   "id": zod.string(),
   "title": zod.string(),
+  "stage": zod.string(),
   "companyName": zod.string().nullish(),
   "contactName": zod.string().nullish(),
-  "contactEmail": zod.string().nullish(),
-  "contactPhone": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "value": zod.number().nullish(),
-  "stage": zod.string(),
-  "probability": zod.number().nullish(),
-  "notes": zod.string().nullish(),
-  "industry": zod.string().nullish(),
-  "assigneeId": zod.string().nullish(),
-  "assigneeName": zod.string().nullish(),
-  "daysInStage": zod.number().optional(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string().optional()
+  "daysInStage": zod.number().nullish()
 })
 
 
@@ -397,83 +267,33 @@ export const DeleteLeadParams = zod.object({
 
 
 /**
- * @summary Get pipeline summary counts and values per stage
+ * @summary List projects
  */
-export const GetPipelineSummaryResponseItem = zod.object({
-  "stage": zod.string(),
-  "count": zod.number(),
-  "totalValue": zod.number()
-})
-export const GetPipelineSummaryResponse = zod.array(GetPipelineSummaryResponseItem)
-
-
-/**
- * @summary List all projects
- */
-export const ListProjectsQueryParams = zod.object({
-  "clientId": zod.coerce.string().optional(),
-  "status": zod.coerce.string().optional()
-})
-
 export const ListProjectsResponseItem = zod.object({
   "id": zod.string(),
   "name": zod.string(),
-  "description": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "priority": zod.string().nullish(),
   "clientId": zod.string().nullish(),
   "clientName": zod.string().nullish(),
-  "type": zod.string().optional(),
-  "status": zod.string(),
-  "priority": zod.string(),
-  "progress": zod.number(),
   "startDate": zod.string().nullish(),
-  "endDate": zod.string().nullish(),
-  "budget": zod.number().nullish(),
-  "taskCount": zod.number().optional(),
-  "completedTaskCount": zod.number().optional(),
-  "createdAt": zod.string()
+  "dueDate": zod.string().nullish(),
+  "description": zod.string().nullish()
 })
 export const ListProjectsResponse = zod.array(ListProjectsResponseItem)
 
 
 /**
- * @summary Create a project
+ * @summary Create project
  */
 export const CreateProjectBody = zod.object({
   "name": zod.string(),
-  "description": zod.string().optional(),
-  "clientId": zod.string().optional(),
-  "type": zod.string().optional(),
-  "status": zod.string().optional(),
-  "priority": zod.string().optional(),
-  "startDate": zod.string().optional(),
-  "endDate": zod.string().optional(),
-  "budget": zod.number().optional()
-})
-
-
-/**
- * @summary Get project by ID
- */
-export const GetProjectParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-export const GetProjectResponse = zod.object({
-  "id": zod.string(),
-  "name": zod.string(),
-  "description": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "priority": zod.string().nullish(),
   "clientId": zod.string().nullish(),
-  "clientName": zod.string().nullish(),
-  "type": zod.string().optional(),
-  "status": zod.string(),
-  "priority": zod.string(),
-  "progress": zod.number(),
   "startDate": zod.string().nullish(),
-  "endDate": zod.string().nullish(),
-  "budget": zod.number().nullish(),
-  "taskCount": zod.number().optional(),
-  "completedTaskCount": zod.number().optional(),
-  "createdAt": zod.string()
+  "dueDate": zod.string().nullish(),
+  "description": zod.string().nullish()
 })
 
 
@@ -485,34 +305,25 @@ export const UpdateProjectParams = zod.object({
 })
 
 export const UpdateProjectBody = zod.object({
-  "name": zod.string().optional(),
-  "description": zod.string().optional(),
-  "clientId": zod.string().optional(),
-  "type": zod.string().optional(),
-  "status": zod.string().optional(),
-  "priority": zod.string().optional(),
-  "progress": zod.number().optional(),
-  "startDate": zod.string().optional(),
-  "endDate": zod.string().optional(),
-  "budget": zod.number().optional()
+  "name": zod.string(),
+  "status": zod.string().nullish(),
+  "priority": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "startDate": zod.string().nullish(),
+  "dueDate": zod.string().nullish(),
+  "description": zod.string().nullish()
 })
 
 export const UpdateProjectResponse = zod.object({
   "id": zod.string(),
   "name": zod.string(),
-  "description": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "priority": zod.string().nullish(),
   "clientId": zod.string().nullish(),
   "clientName": zod.string().nullish(),
-  "type": zod.string().optional(),
-  "status": zod.string(),
-  "priority": zod.string(),
-  "progress": zod.number(),
   "startDate": zod.string().nullish(),
-  "endDate": zod.string().nullish(),
-  "budget": zod.number().nullish(),
-  "taskCount": zod.number().optional(),
-  "completedTaskCount": zod.number().optional(),
-  "createdAt": zod.string()
+  "dueDate": zod.string().nullish(),
+  "description": zod.string().nullish()
 })
 
 
@@ -525,95 +336,65 @@ export const DeleteProjectParams = zod.object({
 
 
 /**
- * @summary List tasks (optionally filtered by project/assignee)
+ * @summary List tasks
  */
-export const ListTasksQueryParams = zod.object({
-  "projectId": zod.coerce.string().optional(),
-  "assigneeId": zod.coerce.string().optional(),
-  "status": zod.coerce.string().optional()
-})
-
 export const ListTasksResponseItem = zod.object({
   "id": zod.string(),
   "title": zod.string(),
-  "description": zod.string().nullish(),
-  "status": zod.string(),
-  "priority": zod.string(),
+  "status": zod.string().nullish(),
+  "priority": zod.string().nullish(),
   "projectId": zod.string().nullish(),
   "projectName": zod.string().nullish(),
   "assigneeId": zod.string().nullish(),
   "assigneeName": zod.string().nullish(),
   "dueDate": zod.string().nullish(),
-  "createdAt": zod.string()
+  "description": zod.string().nullish()
 })
 export const ListTasksResponse = zod.array(ListTasksResponseItem)
 
 
 /**
- * @summary Create a task
+ * @summary Create task
  */
 export const CreateTaskBody = zod.object({
   "title": zod.string(),
-  "description": zod.string().optional(),
-  "status": zod.string().optional(),
-  "priority": zod.string().optional(),
-  "projectId": zod.string().optional(),
-  "assigneeId": zod.string().optional(),
-  "dueDate": zod.string().optional()
-})
-
-
-/**
- * @summary Get task by ID
- */
-export const GetTaskParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-export const GetTaskResponse = zod.object({
-  "id": zod.string(),
-  "title": zod.string(),
-  "description": zod.string().nullish(),
-  "status": zod.string(),
-  "priority": zod.string(),
+  "status": zod.string().nullish(),
+  "priority": zod.string().nullish(),
   "projectId": zod.string().nullish(),
-  "projectName": zod.string().nullish(),
   "assigneeId": zod.string().nullish(),
-  "assigneeName": zod.string().nullish(),
   "dueDate": zod.string().nullish(),
-  "createdAt": zod.string()
+  "description": zod.string().nullish()
 })
 
 
 /**
- * @summary Update task (incl. status change, drag-drop)
+ * @summary Update task
  */
 export const UpdateTaskParams = zod.object({
   "id": zod.coerce.string()
 })
 
 export const UpdateTaskBody = zod.object({
-  "title": zod.string().optional(),
-  "description": zod.string().optional(),
-  "status": zod.string().optional(),
-  "priority": zod.string().optional(),
-  "projectId": zod.string().optional(),
-  "assigneeId": zod.string().optional(),
-  "dueDate": zod.string().optional()
+  "title": zod.string(),
+  "status": zod.string().nullish(),
+  "priority": zod.string().nullish(),
+  "projectId": zod.string().nullish(),
+  "assigneeId": zod.string().nullish(),
+  "dueDate": zod.string().nullish(),
+  "description": zod.string().nullish()
 })
 
 export const UpdateTaskResponse = zod.object({
   "id": zod.string(),
   "title": zod.string(),
-  "description": zod.string().nullish(),
-  "status": zod.string(),
-  "priority": zod.string(),
+  "status": zod.string().nullish(),
+  "priority": zod.string().nullish(),
   "projectId": zod.string().nullish(),
   "projectName": zod.string().nullish(),
   "assigneeId": zod.string().nullish(),
   "assigneeName": zod.string().nullish(),
   "dueDate": zod.string().nullish(),
-  "createdAt": zod.string()
+  "description": zod.string().nullish()
 })
 
 
@@ -626,7 +407,7 @@ export const DeleteTaskParams = zod.object({
 
 
 /**
- * @summary List content posts (filtered by client, month)
+ * @summary List content posts
  */
 export const ListContentPostsQueryParams = zod.object({
   "clientId": zod.coerce.string().optional(),
@@ -635,25 +416,30 @@ export const ListContentPostsQueryParams = zod.object({
 
 export const ListContentPostsResponseItem = zod.object({
   "id": zod.string(),
-  "clientId": zod.string(),
-  "clientName": zod.string().nullish(),
-  "platform": zod.string(),
-  "contentType": zod.string(),
+  "platform": zod.string().nullish(),
+  "contentType": zod.string().nullish(),
+  "status": zod.string().nullish(),
   "caption": zod.string().nullish(),
-  "hashtags": zod.string().nullish(),
-  "status": zod.string(),
   "scheduledAt": zod.string().nullish(),
-  "publishedAt": zod.string().nullish(),
-  "assigneeId": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
   "assigneeName": zod.string().nullish(),
   "notes": zod.string().nullish(),
-  "createdAt": zod.string()
+  "script": zod.string().nullish(),
+  "ideation": zod.string().nullish(),
+  "referenceLinks": zod.array(zod.object({
+  "label": zod.string(),
+  "url": zod.string()
+})).nullish(),
+  "referenceUrl": zod.string().nullish(),
+  "description": zod.string().nullish(),
+  "createdAt": zod.string().optional()
 })
 export const ListContentPostsResponse = zod.array(ListContentPostsResponseItem)
 
 
 /**
- * @summary Create a content post
+ * @summary Create content post
  */
 export const CreateContentPostBody = zod.object({
   "clientId": zod.string(),
@@ -664,8 +450,52 @@ export const CreateContentPostBody = zod.object({
   "status": zod.string().optional(),
   "scheduledAt": zod.string().optional(),
   "assigneeId": zod.string().optional(),
-  "notes": zod.string().optional()
+  "notes": zod.string().optional(),
+  "script": zod.string().optional(),
+  "ideation": zod.string().optional(),
+  "referenceLinks": zod.array(zod.object({
+  "label": zod.string(),
+  "url": zod.string()
+})).optional(),
+  "referenceUrl": zod.string().optional(),
+  "description": zod.string().optional()
 })
+
+
+/**
+ * @summary Create a calendar share link
+ */
+export const CreateCalendarShareBody = zod.object({
+  "clientId": zod.string(),
+  "label": zod.string().optional()
+})
+
+
+/**
+ * @summary List calendar shares
+ */
+export const ListCalendarSharesQueryParams = zod.object({
+  "clientId": zod.coerce.string().optional()
+})
+
+export const ListCalendarSharesResponseItem = zod.object({
+  "id": zod.string(),
+  "clientId": zod.string(),
+  "shareToken": zod.string(),
+  "label": zod.string().nullish(),
+  "createdAt": zod.coerce.date(),
+  "expiresAt": zod.coerce.date().nullish(),
+  "token": zod.string().optional(),
+  "user": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "systemRole": zod.string(),
+  "department": zod.string().nullish(),
+  "isActive": zod.boolean().nullish()
+}).optional()
+})
+export const ListCalendarSharesResponse = zod.array(ListCalendarSharesResponseItem)
 
 
 /**
@@ -677,19 +507,24 @@ export const GetContentPostParams = zod.object({
 
 export const GetContentPostResponse = zod.object({
   "id": zod.string(),
-  "clientId": zod.string(),
-  "clientName": zod.string().nullish(),
-  "platform": zod.string(),
-  "contentType": zod.string(),
+  "platform": zod.string().nullish(),
+  "contentType": zod.string().nullish(),
+  "status": zod.string().nullish(),
   "caption": zod.string().nullish(),
-  "hashtags": zod.string().nullish(),
-  "status": zod.string(),
   "scheduledAt": zod.string().nullish(),
-  "publishedAt": zod.string().nullish(),
-  "assigneeId": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
   "assigneeName": zod.string().nullish(),
   "notes": zod.string().nullish(),
-  "createdAt": zod.string()
+  "script": zod.string().nullish(),
+  "ideation": zod.string().nullish(),
+  "referenceLinks": zod.array(zod.object({
+  "label": zod.string(),
+  "url": zod.string()
+})).nullish(),
+  "referenceUrl": zod.string().nullish(),
+  "description": zod.string().nullish(),
+  "createdAt": zod.string().optional()
 })
 
 
@@ -701,31 +536,44 @@ export const UpdateContentPostParams = zod.object({
 })
 
 export const UpdateContentPostBody = zod.object({
-  "platform": zod.string().optional(),
-  "contentType": zod.string().optional(),
-  "caption": zod.string().optional(),
-  "hashtags": zod.string().optional(),
-  "status": zod.string().optional(),
-  "scheduledAt": zod.string().optional(),
-  "assigneeId": zod.string().optional(),
-  "notes": zod.string().optional()
+  "platform": zod.string().nullish(),
+  "contentType": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "caption": zod.string().nullish(),
+  "scheduledAt": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "assigneeId": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "script": zod.string().nullish(),
+  "ideation": zod.string().nullish(),
+  "referenceLinks": zod.array(zod.object({
+  "label": zod.string(),
+  "url": zod.string()
+})).optional(),
+  "referenceUrl": zod.string().nullish(),
+  "description": zod.string().nullish()
 })
 
 export const UpdateContentPostResponse = zod.object({
   "id": zod.string(),
-  "clientId": zod.string(),
-  "clientName": zod.string().nullish(),
-  "platform": zod.string(),
-  "contentType": zod.string(),
+  "platform": zod.string().nullish(),
+  "contentType": zod.string().nullish(),
+  "status": zod.string().nullish(),
   "caption": zod.string().nullish(),
-  "hashtags": zod.string().nullish(),
-  "status": zod.string(),
   "scheduledAt": zod.string().nullish(),
-  "publishedAt": zod.string().nullish(),
-  "assigneeId": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "clientName": zod.string().nullish(),
   "assigneeName": zod.string().nullish(),
   "notes": zod.string().nullish(),
-  "createdAt": zod.string()
+  "script": zod.string().nullish(),
+  "ideation": zod.string().nullish(),
+  "referenceLinks": zod.array(zod.object({
+  "label": zod.string(),
+  "url": zod.string()
+})).nullish(),
+  "referenceUrl": zod.string().nullish(),
+  "description": zod.string().nullish(),
+  "createdAt": zod.string().optional()
 })
 
 
@@ -738,114 +586,60 @@ export const DeleteContentPostParams = zod.object({
 
 
 /**
- * @summary Get content quota progress for a client in a given month
+ * @summary List invoices
  */
-export const GetContentQuotaParams = zod.object({
-  "clientId": zod.coerce.string(),
-  "month": zod.coerce.string()
-})
-
-export const GetContentQuotaResponse = zod.object({
-  "clientId": zod.string(),
-  "month": zod.string(),
-  "postsTarget": zod.number(),
-  "postsCompleted": zod.number(),
-  "reelsTarget": zod.number(),
-  "reelsCompleted": zod.number(),
-  "storiesTarget": zod.number(),
-  "storiesCompleted": zod.number(),
-  "carouselsTarget": zod.number().optional(),
-  "carouselsCompleted": zod.number().optional()
-})
-
-
-/**
- * @summary List all invoices
- */
-export const ListInvoicesQueryParams = zod.object({
-  "clientId": zod.coerce.string().optional(),
-  "status": zod.coerce.string().optional()
-})
-
 export const ListInvoicesResponseItem = zod.object({
   "id": zod.string(),
-  "number": zod.string(),
-  "clientId": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
   "clientName": zod.string().nullish(),
-  "status": zod.string(),
-  "lineItems": zod.array(zod.object({
-  "description": zod.string(),
-  "quantity": zod.number(),
-  "unitPrice": zod.number(),
-  "taxPercent": zod.number().optional(),
-  "discount": zod.number().optional(),
-  "total": zod.number().optional()
-})).optional(),
-  "subtotal": zod.number(),
-  "tax": zod.number(),
-  "discount": zod.number(),
-  "total": zod.number(),
-  "notes": zod.string().nullish(),
-  "paymentInstructions": zod.string().nullish(),
-  "invoiceDate": zod.string().optional(),
+  "status": zod.string().nullish(),
+  "invoiceDate": zod.string().nullish(),
   "dueDate": zod.string().nullish(),
-  "paidAt": zod.string().nullish(),
-  "createdAt": zod.string()
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
 })
 export const ListInvoicesResponse = zod.array(ListInvoicesResponseItem)
 
 
 /**
- * @summary Create an invoice
+ * @summary Create invoice
  */
 export const CreateInvoiceBody = zod.object({
-  "clientId": zod.string(),
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "invoiceDate": zod.string().nullish(),
+  "dueDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
   "lineItems": zod.array(zod.object({
-  "description": zod.string(),
-  "quantity": zod.number(),
-  "unitPrice": zod.number(),
-  "taxPercent": zod.number().optional(),
-  "discount": zod.number().optional(),
-  "total": zod.number().optional()
-})),
-  "notes": zod.string().optional(),
-  "paymentInstructions": zod.string().optional(),
-  "invoiceDate": zod.string(),
-  "dueDate": zod.string().optional()
+  "description": zod.string().optional(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
 })
 
 
 /**
- * @summary Get invoice by ID
+ * @summary Financial summary
  */
-export const GetInvoiceParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-export const GetInvoiceResponse = zod.object({
-  "id": zod.string(),
-  "number": zod.string(),
-  "clientId": zod.string(),
-  "clientName": zod.string().nullish(),
-  "status": zod.string(),
-  "lineItems": zod.array(zod.object({
-  "description": zod.string(),
-  "quantity": zod.number(),
-  "unitPrice": zod.number(),
-  "taxPercent": zod.number().optional(),
-  "discount": zod.number().optional(),
-  "total": zod.number().optional()
-})).optional(),
-  "subtotal": zod.number(),
-  "tax": zod.number(),
-  "discount": zod.number(),
-  "total": zod.number(),
-  "notes": zod.string().nullish(),
-  "paymentInstructions": zod.string().nullish(),
-  "invoiceDate": zod.string().optional(),
-  "dueDate": zod.string().nullish(),
-  "paidAt": zod.string().nullish(),
-  "createdAt": zod.string()
+export const GetFinancialSummaryResponse = zod.object({
+  "totalRevenue": zod.number().nullish(),
+  "outstanding": zod.number().nullish(),
+  "overdue": zod.number().nullish(),
+  "paidCount": zod.number().nullish(),
+  "invoiceCount": zod.number().nullish()
 })
 
 
@@ -857,45 +651,40 @@ export const UpdateInvoiceParams = zod.object({
 })
 
 export const UpdateInvoiceBody = zod.object({
-  "status": zod.string().optional(),
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "invoiceDate": zod.string().nullish(),
+  "dueDate": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
   "lineItems": zod.array(zod.object({
-  "description": zod.string(),
-  "quantity": zod.number(),
-  "unitPrice": zod.number(),
-  "taxPercent": zod.number().optional(),
-  "discount": zod.number().optional(),
-  "total": zod.number().optional()
-})).optional(),
-  "notes": zod.string().optional(),
-  "paymentInstructions": zod.string().optional(),
-  "dueDate": zod.string().optional(),
-  "paidAt": zod.string().optional()
+  "description": zod.string().optional(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
 })
 
 export const UpdateInvoiceResponse = zod.object({
   "id": zod.string(),
-  "number": zod.string(),
-  "clientId": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
   "clientName": zod.string().nullish(),
-  "status": zod.string(),
-  "lineItems": zod.array(zod.object({
-  "description": zod.string(),
-  "quantity": zod.number(),
-  "unitPrice": zod.number(),
-  "taxPercent": zod.number().optional(),
-  "discount": zod.number().optional(),
-  "total": zod.number().optional()
-})).optional(),
-  "subtotal": zod.number(),
-  "tax": zod.number(),
-  "discount": zod.number(),
-  "total": zod.number(),
-  "notes": zod.string().nullish(),
-  "paymentInstructions": zod.string().nullish(),
-  "invoiceDate": zod.string().optional(),
+  "status": zod.string().nullish(),
+  "invoiceDate": zod.string().nullish(),
   "dueDate": zod.string().nullish(),
-  "paidAt": zod.string().nullish(),
-  "createdAt": zod.string()
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
 })
 
 
@@ -908,99 +697,46 @@ export const DeleteInvoiceParams = zod.object({
 
 
 /**
- * @summary Get financial summary (revenue, outstanding, overdue)
+ * @summary List quotations
  */
-export const GetFinancialSummaryResponse = zod.object({
-  "totalRevenue": zod.number(),
-  "outstanding": zod.number(),
-  "overdue": zod.number(),
-  "invoiceCount": zod.number(),
-  "paidCount": zod.number(),
-  "revenueByClient": zod.array(zod.object({
-  "clientName": zod.string(),
-  "amount": zod.number()
-})).optional()
-})
-
-
-/**
- * @summary List all quotations
- */
-export const ListQuotationsQueryParams = zod.object({
-  "clientId": zod.coerce.string().optional()
-})
-
 export const ListQuotationsResponseItem = zod.object({
   "id": zod.string(),
-  "number": zod.string(),
-  "clientId": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
   "clientName": zod.string().nullish(),
-  "status": zod.string(),
-  "lineItems": zod.array(zod.object({
-  "description": zod.string(),
-  "quantity": zod.number(),
-  "unitPrice": zod.number(),
-  "taxPercent": zod.number().optional(),
-  "discount": zod.number().optional(),
-  "total": zod.number().optional()
-})).optional(),
-  "subtotal": zod.number(),
-  "tax": zod.number(),
-  "discount": zod.number(),
-  "total": zod.number(),
-  "notes": zod.string().nullish(),
+  "status": zod.string().nullish(),
   "validUntil": zod.string().nullish(),
-  "createdAt": zod.string()
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
 })
 export const ListQuotationsResponse = zod.array(ListQuotationsResponseItem)
 
 
 /**
- * @summary Create a quotation
+ * @summary Create quotation
  */
 export const CreateQuotationBody = zod.object({
-  "clientId": zod.string(),
-  "lineItems": zod.array(zod.object({
-  "description": zod.string(),
-  "quantity": zod.number(),
-  "unitPrice": zod.number(),
-  "taxPercent": zod.number().optional(),
-  "discount": zod.number().optional(),
-  "total": zod.number().optional()
-})),
-  "notes": zod.string().optional(),
-  "validUntil": zod.string().optional()
-})
-
-
-/**
- * @summary Get quotation by ID
- */
-export const GetQuotationParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-export const GetQuotationResponse = zod.object({
-  "id": zod.string(),
-  "number": zod.string(),
-  "clientId": zod.string(),
-  "clientName": zod.string().nullish(),
-  "status": zod.string(),
-  "lineItems": zod.array(zod.object({
-  "description": zod.string(),
-  "quantity": zod.number(),
-  "unitPrice": zod.number(),
-  "taxPercent": zod.number().optional(),
-  "discount": zod.number().optional(),
-  "total": zod.number().optional()
-})).optional(),
-  "subtotal": zod.number(),
-  "tax": zod.number(),
-  "discount": zod.number(),
-  "total": zod.number(),
-  "notes": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
   "validUntil": zod.string().nullish(),
-  "createdAt": zod.string()
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
 })
 
 
@@ -1012,40 +748,38 @@ export const UpdateQuotationParams = zod.object({
 })
 
 export const UpdateQuotationBody = zod.object({
-  "status": zod.string().optional(),
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "validUntil": zod.string().nullish(),
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
   "lineItems": zod.array(zod.object({
-  "description": zod.string(),
-  "quantity": zod.number(),
-  "unitPrice": zod.number(),
-  "taxPercent": zod.number().optional(),
-  "discount": zod.number().optional(),
-  "total": zod.number().optional()
-})).optional(),
-  "notes": zod.string().optional(),
-  "validUntil": zod.string().optional()
+  "description": zod.string().optional(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
 })
 
 export const UpdateQuotationResponse = zod.object({
   "id": zod.string(),
-  "number": zod.string(),
-  "clientId": zod.string(),
+  "number": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
   "clientName": zod.string().nullish(),
-  "status": zod.string(),
-  "lineItems": zod.array(zod.object({
-  "description": zod.string(),
-  "quantity": zod.number(),
-  "unitPrice": zod.number(),
-  "taxPercent": zod.number().optional(),
-  "discount": zod.number().optional(),
-  "total": zod.number().optional()
-})).optional(),
-  "subtotal": zod.number(),
-  "tax": zod.number(),
-  "discount": zod.number(),
-  "total": zod.number(),
-  "notes": zod.string().nullish(),
+  "status": zod.string().nullish(),
   "validUntil": zod.string().nullish(),
-  "createdAt": zod.string()
+  "subtotal": zod.number().nullish(),
+  "taxAmount": zod.number().nullish(),
+  "total": zod.number().nullish(),
+  "notes": zod.string().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().optional(),
+  "qty": zod.number().optional(),
+  "unitPrice": zod.number().optional(),
+  "taxPercent": zod.number().optional()
+})).nullish()
 })
 
 
@@ -1058,7 +792,7 @@ export const DeleteQuotationParams = zod.object({
 
 
 /**
- * @summary Convert approved quotation to invoice
+ * @summary Convert quotation to invoice
  */
 export const ConvertQuotationToInvoiceParams = zod.object({
   "id": zod.coerce.string()
@@ -1066,275 +800,39 @@ export const ConvertQuotationToInvoiceParams = zod.object({
 
 
 /**
- * @summary List all team members
- */
-export const ListUsersResponseItem = zod.object({
-  "id": zod.string(),
-  "email": zod.string(),
-  "name": zod.string(),
-  "phone": zod.string().nullish(),
-  "department": zod.string().nullish(),
-  "avatarUrl": zod.string().nullish(),
-  "systemRole": zod.string(),
-  "isActive": zod.boolean(),
-  "createdAt": zod.string()
-})
-export const ListUsersResponse = zod.array(ListUsersResponseItem)
-
-
-/**
- * @summary Create a team member
- */
-export const CreateUserBody = zod.object({
-  "email": zod.string(),
-  "name": zod.string(),
-  "password": zod.string(),
-  "phone": zod.string().optional(),
-  "department": zod.string().optional(),
-  "systemRole": zod.string()
-})
-
-
-/**
- * @summary Get user by ID
- */
-export const GetUserParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-export const GetUserResponse = zod.object({
-  "id": zod.string(),
-  "email": zod.string(),
-  "name": zod.string(),
-  "phone": zod.string().nullish(),
-  "department": zod.string().nullish(),
-  "avatarUrl": zod.string().nullish(),
-  "systemRole": zod.string(),
-  "isActive": zod.boolean(),
-  "createdAt": zod.string()
-})
-
-
-/**
- * @summary Update user
- */
-export const UpdateUserParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-export const UpdateUserBody = zod.object({
-  "name": zod.string().optional(),
-  "phone": zod.string().optional(),
-  "department": zod.string().optional(),
-  "systemRole": zod.string().optional(),
-  "isActive": zod.boolean().optional()
-})
-
-export const UpdateUserResponse = zod.object({
-  "id": zod.string(),
-  "email": zod.string(),
-  "name": zod.string(),
-  "phone": zod.string().nullish(),
-  "department": zod.string().nullish(),
-  "avatarUrl": zod.string().nullish(),
-  "systemRole": zod.string(),
-  "isActive": zod.boolean(),
-  "createdAt": zod.string()
-})
-
-
-/**
- * @summary Delete user
- */
-export const DeleteUserParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-
-/**
- * @summary List attendance records
- */
-export const ListAttendanceQueryParams = zod.object({
-  "userId": zod.coerce.string().optional(),
-  "month": zod.coerce.string().optional()
-})
-
-export const ListAttendanceResponseItem = zod.object({
-  "id": zod.string(),
-  "userId": zod.string(),
-  "userName": zod.string().nullish(),
-  "checkInAt": zod.string(),
-  "checkOutAt": zod.string().nullish(),
-  "isLate": zod.boolean().optional(),
-  "overtimeMin": zod.number().optional(),
-  "date": zod.string()
-})
-export const ListAttendanceResponse = zod.array(ListAttendanceResponseItem)
-
-
-/**
- * @summary Check in
- */
-export const CheckInResponse = zod.object({
-  "id": zod.string(),
-  "userId": zod.string(),
-  "userName": zod.string().nullish(),
-  "checkInAt": zod.string(),
-  "checkOutAt": zod.string().nullish(),
-  "isLate": zod.boolean().optional(),
-  "overtimeMin": zod.number().optional(),
-  "date": zod.string()
-})
-
-
-/**
- * @summary Check out
- */
-export const CheckOutResponse = zod.object({
-  "id": zod.string(),
-  "userId": zod.string(),
-  "userName": zod.string().nullish(),
-  "checkInAt": zod.string(),
-  "checkOutAt": zod.string().nullish(),
-  "isLate": zod.boolean().optional(),
-  "overtimeMin": zod.number().optional(),
-  "date": zod.string()
-})
-
-
-/**
- * @summary Get today's attendance status for current user
- */
-export const GetTodayAttendanceResponse = zod.object({
-  "checkedIn": zod.boolean(),
-  "checkInAt": zod.string().nullish(),
-  "checkOutAt": zod.string().nullish(),
-  "attendanceId": zod.string().nullish()
-})
-
-
-/**
- * @summary List leave requests
- */
-export const ListLeaveRequestsQueryParams = zod.object({
-  "userId": zod.coerce.string().optional(),
-  "status": zod.coerce.string().optional()
-})
-
-export const ListLeaveRequestsResponseItem = zod.object({
-  "id": zod.string(),
-  "userId": zod.string(),
-  "userName": zod.string().nullish(),
-  "type": zod.string(),
-  "startDate": zod.string(),
-  "endDate": zod.string(),
-  "reason": zod.string().nullish(),
-  "status": zod.string(),
-  "createdAt": zod.string()
-})
-export const ListLeaveRequestsResponse = zod.array(ListLeaveRequestsResponseItem)
-
-
-/**
- * @summary Submit a leave request
- */
-export const CreateLeaveRequestBody = zod.object({
-  "type": zod.string(),
-  "startDate": zod.string(),
-  "endDate": zod.string(),
-  "reason": zod.string().optional()
-})
-
-
-/**
- * @summary Approve a leave request
- */
-export const ApproveLeaveRequestParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-export const ApproveLeaveRequestResponse = zod.object({
-  "id": zod.string(),
-  "userId": zod.string(),
-  "userName": zod.string().nullish(),
-  "type": zod.string(),
-  "startDate": zod.string(),
-  "endDate": zod.string(),
-  "reason": zod.string().nullish(),
-  "status": zod.string(),
-  "createdAt": zod.string()
-})
-
-
-/**
- * @summary Reject a leave request
- */
-export const RejectLeaveRequestParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-export const RejectLeaveRequestResponse = zod.object({
-  "id": zod.string(),
-  "userId": zod.string(),
-  "userName": zod.string().nullish(),
-  "type": zod.string(),
-  "startDate": zod.string(),
-  "endDate": zod.string(),
-  "reason": zod.string().nullish(),
-  "status": zod.string(),
-  "createdAt": zod.string()
-})
-
-
-/**
  * @summary List proposals
  */
-export const ListProposalsQueryParams = zod.object({
-  "clientId": zod.coerce.string().optional()
-})
-
 export const ListProposalsResponseItem = zod.object({
   "id": zod.string(),
-  "title": zod.string(),
-  "clientId": zod.string(),
+  "title": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
   "clientName": zod.string().nullish(),
-  "status": zod.string(),
-  "content": zod.string().nullish(),
+  "status": zod.string().nullish(),
   "template": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string().optional()
+  "value": zod.number().nullish(),
+  "validUntil": zod.string().nullish(),
+  "scope": zod.string().nullish(),
+  "deliverables": zod.string().nullish(),
+  "timeline": zod.string().nullish(),
+  "notes": zod.string().nullish()
 })
 export const ListProposalsResponse = zod.array(ListProposalsResponseItem)
 
 
 /**
- * @summary Create a proposal
+ * @summary Create proposal
  */
 export const CreateProposalBody = zod.object({
-  "title": zod.string(),
-  "clientId": zod.string(),
-  "content": zod.string().optional(),
-  "template": zod.string().optional()
-})
-
-
-/**
- * @summary Get proposal by ID
- */
-export const GetProposalParams = zod.object({
-  "id": zod.coerce.string()
-})
-
-export const GetProposalResponse = zod.object({
-  "id": zod.string(),
-  "title": zod.string(),
-  "clientId": zod.string(),
-  "clientName": zod.string().nullish(),
-  "status": zod.string(),
-  "content": zod.string().nullish(),
+  "title": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
   "template": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string().optional()
+  "value": zod.number().nullish(),
+  "validUntil": zod.string().nullish(),
+  "scope": zod.string().nullish(),
+  "deliverables": zod.string().nullish(),
+  "timeline": zod.string().nullish(),
+  "notes": zod.string().nullish()
 })
 
 
@@ -1346,22 +844,31 @@ export const UpdateProposalParams = zod.object({
 })
 
 export const UpdateProposalBody = zod.object({
-  "title": zod.string().optional(),
-  "status": zod.string().optional(),
-  "content": zod.string().optional(),
-  "template": zod.string().optional()
+  "title": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
+  "status": zod.string().nullish(),
+  "template": zod.string().nullish(),
+  "value": zod.number().nullish(),
+  "validUntil": zod.string().nullish(),
+  "scope": zod.string().nullish(),
+  "deliverables": zod.string().nullish(),
+  "timeline": zod.string().nullish(),
+  "notes": zod.string().nullish()
 })
 
 export const UpdateProposalResponse = zod.object({
   "id": zod.string(),
-  "title": zod.string(),
-  "clientId": zod.string(),
+  "title": zod.string().nullish(),
+  "clientId": zod.string().nullish(),
   "clientName": zod.string().nullish(),
-  "status": zod.string(),
-  "content": zod.string().nullish(),
+  "status": zod.string().nullish(),
   "template": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string().optional()
+  "value": zod.number().nullish(),
+  "validUntil": zod.string().nullish(),
+  "scope": zod.string().nullish(),
+  "deliverables": zod.string().nullish(),
+  "timeline": zod.string().nullish(),
+  "notes": zod.string().nullish()
 })
 
 
@@ -1374,57 +881,99 @@ export const DeleteProposalParams = zod.object({
 
 
 /**
- * @summary Get agency settings
+ * @summary List users
  */
-export const GetSettingsResponse = zod.object({
+export const ListUsersResponseItem = zod.object({
   "id": zod.string(),
-  "agencyName": zod.string(),
-  "email": zod.string().nullish(),
-  "phone": zod.string().nullish(),
-  "address": zod.string().nullish(),
-  "website": zod.string().nullish(),
-  "primaryColor": zod.string().optional(),
-  "currency": zod.string().optional(),
-  "taxLabel": zod.string().optional(),
-  "taxPercent": zod.number().optional(),
-  "logoUrl": zod.string().nullish(),
-  "workDayStart": zod.string().optional(),
-  "workDayEnd": zod.string().optional()
+  "name": zod.string(),
+  "email": zod.string(),
+  "systemRole": zod.string(),
+  "department": zod.string().nullish(),
+  "isActive": zod.boolean().nullish()
+})
+export const ListUsersResponse = zod.array(ListUsersResponseItem)
+
+
+/**
+ * @summary Create user
+ */
+export const CreateUserBody = zod.object({
+  "name": zod.string(),
+  "email": zod.string(),
+  "systemRole": zod.string(),
+  "password": zod.string().nullish(),
+  "department": zod.string().nullish(),
+  "isActive": zod.boolean().nullish()
 })
 
 
 /**
- * @summary Update agency settings
+ * @summary Update user
  */
-export const UpdateSettingsBody = zod.object({
-  "agencyName": zod.string().optional(),
-  "email": zod.string().optional(),
-  "phone": zod.string().optional(),
-  "address": zod.string().optional(),
-  "website": zod.string().optional(),
-  "primaryColor": zod.string().optional(),
-  "currency": zod.string().optional(),
-  "taxLabel": zod.string().optional(),
-  "taxPercent": zod.number().optional(),
-  "logoUrl": zod.string().optional(),
-  "workDayStart": zod.string().optional(),
-  "workDayEnd": zod.string().optional()
+export const UpdateUserParams = zod.object({
+  "id": zod.coerce.string()
 })
 
-export const UpdateSettingsResponse = zod.object({
-  "id": zod.string(),
-  "agencyName": zod.string(),
-  "email": zod.string().nullish(),
-  "phone": zod.string().nullish(),
-  "address": zod.string().nullish(),
-  "website": zod.string().nullish(),
-  "primaryColor": zod.string().optional(),
-  "currency": zod.string().optional(),
-  "taxLabel": zod.string().optional(),
-  "taxPercent": zod.number().optional(),
-  "logoUrl": zod.string().nullish(),
-  "workDayStart": zod.string().optional(),
-  "workDayEnd": zod.string().optional()
+export const UpdateUserBody = zod.object({
+  "name": zod.string().optional(),
+  "email": zod.string().optional(),
+  "systemRole": zod.string().optional(),
+  "password": zod.string().nullish(),
+  "department": zod.string().nullish(),
+  "isActive": zod.boolean().nullish()
 })
+
+export const UpdateUserResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "systemRole": zod.string(),
+  "department": zod.string().nullish(),
+  "isActive": zod.boolean().nullish()
+})
+
+
+/**
+ * @summary Delete user
+ */
+export const DeleteUserParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+/**
+ * @summary Dashboard stats
+ */
+export const GetDashboardStatsResponse = zod.object({
+  "totalClients": zod.number().nullish(),
+  "activeProjects": zod.number().nullish(),
+  "openLeads": zod.number().nullish(),
+  "revenuePaid": zod.number().nullish(),
+  "outstanding": zod.number().nullish(),
+  "monthlyRevenue": zod.number().nullish(),
+  "tasksDue": zod.number().nullish()
+})
+
+
+/**
+ * @summary Revenue chart data
+ */
+export const GetRevenueChartResponseItem = zod.object({
+  "month": zod.string().optional(),
+  "revenue": zod.number().optional()
+})
+export const GetRevenueChartResponse = zod.array(GetRevenueChartResponseItem)
+
+
+/**
+ * @summary Recent activity
+ */
+export const GetRecentActivityResponseItem = zod.object({
+  "id": zod.string().optional(),
+  "type": zod.string().optional(),
+  "message": zod.string().optional(),
+  "createdAt": zod.string().optional()
+})
+export const GetRecentActivityResponse = zod.array(GetRecentActivityResponseItem)
 
 

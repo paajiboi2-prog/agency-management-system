@@ -9,5 +9,4 @@
 export type ListClientsParams = {
 search?: string;
 category?: string;
-health?: string;
 };

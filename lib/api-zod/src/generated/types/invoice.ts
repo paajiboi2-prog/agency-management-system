@@ -9,24 +9,26 @@ import type { LineItem } from './lineItem';
 
 export interface Invoice {
   id: string;
-  number: string;
-  clientId: string;
+  /** @nullable */
+  number?: string | null;
+  /** @nullable */
+  clientId?: string | null;
   /** @nullable */
   clientName?: string | null;
-  status: string;
-  lineItems?: LineItem[];
-  subtotal: number;
-  tax: number;
-  discount: number;
-  total: number;
   /** @nullable */
-  notes?: string | null;
+  status?: string | null;
   /** @nullable */
-  paymentInstructions?: string | null;
-  invoiceDate?: string;
+  invoiceDate?: string | null;
   /** @nullable */
   dueDate?: string | null;
   /** @nullable */
-  paidAt?: string | null;
-  createdAt: string;
+  subtotal?: number | null;
+  /** @nullable */
+  taxAmount?: number | null;
+  /** @nullable */
+  total?: number | null;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  lineItems?: LineItem[] | null;
 }

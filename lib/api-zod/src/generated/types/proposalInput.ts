@@ -7,8 +7,24 @@
  */
 
 export interface ProposalInput {
-  title: string;
-  clientId: string;
-  content?: string;
-  template?: string;
+  /** @nullable */
+  title?: string | null;
+  /** @nullable */
+  clientId?: string | null;
+  /** @nullable */
+  status?: string | null;
+  /** @nullable */
+  template?: string | null;
+  /** @nullable */
+  value?: number | null;
+  /** @nullable */
+  validUntil?: string | null;
+  /** @nullable */
+  scope?: string | null;
+  /** @nullable */
+  deliverables?: string | null;
+  /** @nullable */
+  timeline?: string | null;
+  /** @nullable */
+  notes?: string | null;
 }
