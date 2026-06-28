@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "vite dev",
+    "dev": "[ -d /home/runner/workspace/node_modules ] || pnpm -C /home/runner/workspace install --frozen-lockfile && vite dev",
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json --noEmit"
