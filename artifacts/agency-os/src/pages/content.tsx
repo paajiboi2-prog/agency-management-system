@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import {
   useListContentPosts, useCreateContentPost, useUpdateContentPost, useDeleteContentPost,
   useListClients, getListContentPostsQueryKey,
+  useCreateCalendarShare, useListCalendarShares,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -18,7 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Plus, ChevronLeft, ChevronRight, Calendar, Trash2,
   Instagram, Youtube, Facebook, Linkedin, Link2, Image,
-  MessageSquare, Settings2, Send, X, RotateCcw,
+  MessageSquare, Settings2, Send, X, RotateCcw, Share2, Copy, Check,
 } from "lucide-react";
 import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -41,9 +42,9 @@ const PLATFORM_ICON: Record<string, React.ReactNode> = {
   YOUTUBE: <Youtube className="h-3.5 w-3.5 text-red-500" />,
   FACEBOOK: <Facebook className="h-3.5 w-3.5 text-blue-500" />,
   LINKEDIN: <Linkedin className="h-3.5 w-3.5 text-blue-600" />,
-  TIKTOK: <span className="h-3.5 w-3.5 text-[10px] font-bold">TK</span>,
-  TWITTER: <span className="h-3.5 w-3.5 text-[10px] font-bold">𝕏</span>,
-  PINTEREST: <span className="h-3.5 w-3.5 text-[10px] font-bold">P</span>,
+  TIKTOK: <span className="h-3.5 w-3.5 text-[10px] font-bold leading-none">TK</span>,
+  TWITTER: <span className="h-3.5 w-3.5 text-[10px] font-bold leading-none">𝕏</span>,
+  PINTEREST: <span className="h-3.5 w-3.5 text-[10px] font-bold leading-none">P</span>,
 };
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -91,22 +92,31 @@ function emptyDraft(defaultDate?: string) {
   };
 }
 
+function buildShareUrl(shareToken: string) {
+  const base = import.meta.env.BASE_URL?.replace(/\/$/, "") ?? "";
+  return `${window.location.origin}${base}/share/calendar/${shareToken}`;
+}
+
 export default function ContentPage() {
   const qc = useQueryClient();
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedClientId, setSelectedClientId] = useState<string>("");
+  const [activeClientId, setActiveClientId] = useState<string>("");
   const [view, setView] = useState<"calendar" | "list">("list");
   const [panel, setPanel] = useState<PanelState>({ mode: "closed" });
   const [draft, setDraft] = useState(emptyDraft());
   const [newComment, setNewComment] = useState("");
+  const [copiedShareId, setCopiedShareId] = useState<string | null>(null);
   const commentInputRef = useRef<HTMLInputElement>(null);
 
   const month = format(currentMonth, "yyyy-MM");
   const { data: clients } = useListClients();
   const { data: posts, isLoading } = useListContentPosts({
-    clientId: selectedClientId || undefined,
+    clientId: activeClientId || undefined,
     month,
   });
+  const { data: existingShares } = useListCalendarShares(
+    activeClientId ? { clientId: activeClientId } : undefined,
+  );
 
   const createMutation = useCreateContentPost({
     mutation: {
@@ -139,8 +149,23 @@ export default function ContentPage() {
     },
   });
 
+  const shareMutation = useCreateCalendarShare({
+    mutation: {
+      onSuccess: (share) => {
+        const url = buildShareUrl(share.shareToken);
+        navigator.clipboard.writeText(url).then(() => {
+          setCopiedShareId(share.id);
+          toast.success("Share link copied to clipboard!");
+          setTimeout(() => setCopiedShareId(null), 3000);
+        });
+        qc.invalidateQueries({ queryKey: ["listCalendarShares"] });
+      },
+      onError: () => toast.error("Failed to generate share link"),
+    },
+  });
+
   function openCreate(defaultDate?: string) {
-    setDraft(emptyDraft(defaultDate));
+    setDraft(emptyDraft(defaultDate ?? ""));
     setNewComment("");
     setPanel({ mode: "create", defaultDate });
   }
@@ -185,7 +210,6 @@ export default function ContentPage() {
       customProperties: draft.customProperties.length ? draft.customProperties : undefined,
       comments: draft.comments.length ? draft.comments : undefined,
     };
-
     if (panel.mode === "create") {
       createMutation.mutate({ data: payload as any });
     } else if (panel.mode === "edit") {
@@ -217,6 +241,23 @@ export default function ContentPage() {
     setField("comments", draft.comments.filter((c) => c.id !== id));
   }
 
+  function handleShare() {
+    if (!activeClientId) return;
+    const clientName = clients?.find((c) => c.id === activeClientId)?.companyName ?? "Client";
+    shareMutation.mutate({
+      data: { clientId: activeClientId, label: `${clientName} Content Calendar` },
+    });
+  }
+
+  function copyExistingShare(shareToken: string, shareId: string) {
+    const url = buildShareUrl(shareToken);
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedShareId(shareId);
+      toast.success("Link copied!");
+      setTimeout(() => setCopiedShareId(null), 3000);
+    });
+  }
+
   const daysInMonth = getDaysInMonth(currentMonth);
   const firstDayOfWeek = getDay(startOfMonth(currentMonth));
 
@@ -230,16 +271,20 @@ export default function ContentPage() {
   });
 
   const isPending = createMutation.isPending || updateMutation.isPending;
+  const activeClient = clients?.find((c) => c.id === activeClientId);
 
   return (
     <div className="p-6 animated-fade-in space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold font-heading">Content Calendar</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{posts?.length ?? 0} posts this month</p>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            {activeClientId ? `${activeClient?.companyName} — ` : ""}{posts?.length ?? 0} posts this month
+          </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          {/* View toggle */}
           <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
             <button
               onClick={() => setView("list")}
@@ -250,15 +295,49 @@ export default function ContentPage() {
               className={cn("px-3 py-1 rounded-md text-sm font-medium transition-colors", view === "calendar" ? "bg-card shadow text-foreground" : "text-muted-foreground")}
             >Calendar</button>
           </div>
+          {/* Share button — only when a client is selected */}
+          {activeClientId && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={handleShare}
+              disabled={shareMutation.isPending}
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              Share
+            </Button>
+          )}
           <Button onClick={() => openCreate()} className="gap-2 btn-micro-anim">
             <Plus className="h-4 w-4" /> Add Post
           </Button>
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-1.5">
+      {/* Existing share links for this client */}
+      {activeClientId && existingShares && existingShares.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {existingShares.map((share) => (
+            <div key={share.id} className="flex items-center gap-2 bg-primary/5 border border-primary/20 rounded-lg px-3 py-1.5">
+              <Link2 className="h-3.5 w-3.5 text-primary shrink-0" />
+              <span className="text-xs text-muted-foreground truncate max-w-[200px]">{share.label}</span>
+              <button
+                className="shrink-0 text-muted-foreground hover:text-primary transition-colors"
+                onClick={() => copyExistingShare(share.shareToken, share.id)}
+              >
+                {copiedShareId === share.id
+                  ? <Check className="h-3.5 w-3.5 text-emerald-500" />
+                  : <Copy className="h-3.5 w-3.5" />}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── Client Tabs ── */}
+      <div className="flex items-center gap-1 overflow-x-auto pb-0.5 scrollbar-none">
+        {/* Month nav on the left */}
+        <div className="flex items-center gap-1 bg-muted/50 rounded-lg px-2 py-1.5 shrink-0 mr-2">
           <button onClick={() => setCurrentMonth((m) => subMonths(m, 1))} className="p-0.5 hover:text-primary">
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -267,18 +346,38 @@ export default function ContentPage() {
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
-        <Select value={selectedClientId} onValueChange={(val) => setSelectedClientId(val ?? "")}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="All clients" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">All clients</SelectItem>
-            {(clients ?? []).map((c) => <SelectItem key={c.id} value={c.id}>{c.companyName}</SelectItem>)}
-          </SelectContent>
-        </Select>
+
+        <div className="flex items-center gap-1.5 flex-1 overflow-x-auto scrollbar-none">
+          {/* "All" tab */}
+          <button
+            onClick={() => setActiveClientId("")}
+            className={cn(
+              "shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border",
+              activeClientId === ""
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-muted/50 border-transparent text-muted-foreground hover:text-foreground hover:bg-muted"
+            )}
+          >
+            All Clients
+          </button>
+          {(clients ?? []).map((client, idx) => (
+            <button
+              key={client.id}
+              onClick={() => setActiveClientId(client.id)}
+              className={cn(
+                "shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border whitespace-nowrap",
+                activeClientId === client.id
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-muted/50 border-transparent text-muted-foreground hover:text-foreground hover:bg-muted"
+              )}
+            >
+              {client.companyName}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Content */}
+      {/* ── Content ── */}
       {isLoading ? (
         <div className="grid grid-cols-1 gap-2">
           {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-16" />)}
@@ -289,7 +388,11 @@ export default function ContentPage() {
             <div className="text-center py-16 text-muted-foreground">
               <Calendar className="h-12 w-12 mx-auto mb-3 opacity-30" />
               <p className="font-medium">No posts this month</p>
-              <p className="text-sm mt-1">Click "Add Post" or a calendar date to get started</p>
+              <p className="text-sm mt-1">
+                {activeClientId
+                  ? `No content for ${activeClient?.companyName} yet — click "Add Post" to get started`
+                  : `Click "Add Post" or a calendar date to get started`}
+              </p>
             </div>
           ) : (
             (posts ?? []).map((post) => {
@@ -297,7 +400,7 @@ export default function ContentPage() {
               return (
                 <div
                   key={post.id}
-                  className="flex items-start justify-between gap-3 bg-card border border-border rounded-xl p-4 cursor-pointer hover:border-primary/40 transition-colors scale-hover"
+                  className="flex items-start justify-between gap-3 bg-card border border-border rounded-xl p-4 cursor-pointer hover:border-primary/40 transition-colors"
                   onClick={() => openEdit(post as PostRecord)}
                 >
                   <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -312,8 +415,11 @@ export default function ContentPage() {
                             {format(new Date(post.scheduledAt), "dd MMM, EEE")}
                           </span>
                         )}
+                        {!activeClientId && (post as any).clientName && (
+                          <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">{(post as any).clientName}</span>
+                        )}
                         {(post as any).needsRevision === "true" && (
-                          <Badge variant="outline" className="text-[11px] text-amber-600 border-amber-300 bg-amber-50">
+                          <Badge variant="outline" className="text-[11px] text-amber-600 border-amber-300 bg-amber-50 dark:bg-amber-950/30">
                             <RotateCcw className="h-2.5 w-2.5 mr-1" />Needs Revision
                           </Badge>
                         )}
@@ -335,7 +441,7 @@ export default function ContentPage() {
           )}
         </div>
       ) : (
-        /* Calendar grid */
+        /* Calendar Grid */
         <div className="rounded-xl border border-border overflow-hidden">
           <div className="grid grid-cols-7 border-b border-border bg-muted/50">
             {DAYS.map((d) => (
@@ -385,7 +491,6 @@ export default function ContentPage() {
       {/* ── Slide-over Panel ── */}
       <Sheet open={panel.mode !== "closed"} onOpenChange={(open) => { if (!open) setPanel({ mode: "closed" }); }}>
         <SheetContent className="w-full sm:max-w-xl overflow-y-auto p-0" side="right">
-          {/* Panel Header */}
           <div className="sticky top-0 z-10 bg-background border-b border-border px-6 py-4 flex items-center justify-between">
             <SheetHeader className="text-left">
               <SheetTitle className="text-base">
@@ -409,29 +514,22 @@ export default function ContentPage() {
           </div>
 
           <div className="px-6 py-5 space-y-5">
-
             {/* Name */}
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
                 <Image className="h-3.5 w-3.5" /> Name
               </Label>
-              <Input
-                placeholder="Post title or name…"
-                value={draft.title}
-                onChange={(e) => setField("title", e.target.value)}
-              />
+              <Input placeholder="Post title or name…" value={draft.title} onChange={(e) => setField("title", e.target.value)} />
             </div>
 
             <Separator />
 
-            {/* Two-col: Status + Platform */}
+            {/* Status + Platform */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Status</Label>
                 <Select value={draft.status} onValueChange={(v) => setField("status", v)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {Object.entries(STATUS_CONFIG).map(([k, v]) => (
                       <SelectItem key={k} value={k}>{v.label}</SelectItem>
@@ -442,9 +540,7 @@ export default function ContentPage() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Platform</Label>
                 <Select value={draft.platform} onValueChange={(v) => setField("platform", v)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {PLATFORM_OPTIONS.map((p) => (
                       <SelectItem key={p} value={p}>{p.charAt(0) + p.slice(1).toLowerCase()}</SelectItem>
@@ -454,34 +550,24 @@ export default function ContentPage() {
               </div>
             </div>
 
-            {/* Two-col: Post Date + Shoot Date */}
+            {/* Post Date + Shoot Date */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Post Date</Label>
-                <Input
-                  type="date"
-                  value={draft.scheduledAt?.slice(0, 10) ?? ""}
-                  onChange={(e) => setField("scheduledAt", e.target.value)}
-                />
+                <Input type="date" value={draft.scheduledAt?.slice(0, 10) ?? ""} onChange={(e) => setField("scheduledAt", e.target.value)} />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Shoot Date</Label>
-                <Input
-                  type="date"
-                  value={draft.shootDate?.slice(0, 10) ?? ""}
-                  onChange={(e) => setField("shootDate", e.target.value)}
-                />
+                <Input type="date" value={draft.shootDate?.slice(0, 10) ?? ""} onChange={(e) => setField("shootDate", e.target.value)} />
               </div>
             </div>
 
-            {/* Two-col: Format + Client */}
+            {/* Format + Client */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Format</Label>
                 <Select value={draft.format || "__none__"} onValueChange={(v) => setField("format", v === "__none__" ? "" : v)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select format" />
-                  </SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Select format" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="__none__">None</SelectItem>
                     {FORMAT_OPTIONS.map((f) => (
@@ -493,9 +579,7 @@ export default function ContentPage() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Client</Label>
                 <Select value={draft.clientId || "__none__"} onValueChange={(v) => setField("clientId", v === "__none__" ? "" : v)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select client" />
-                  </SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="__none__">No client</SelectItem>
                     {(clients ?? []).map((c) => <SelectItem key={c.id} value={c.id}>{c.companyName}</SelectItem>)}
@@ -509,22 +593,13 @@ export default function ContentPage() {
               <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
                 <Link2 className="h-3.5 w-3.5" /> Assets Link
               </Label>
-              <Input
-                placeholder="https://drive.google.com/…"
-                value={draft.assetsLink}
-                onChange={(e) => setField("assetsLink", e.target.value)}
-              />
+              <Input placeholder="https://drive.google.com/…" value={draft.assetsLink} onChange={(e) => setField("assetsLink", e.target.value)} />
             </div>
 
-            {/* Caption / Notes */}
+            {/* Caption */}
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Caption / Notes</Label>
-              <Textarea
-                placeholder="Write your caption or notes here…"
-                rows={4}
-                value={draft.caption}
-                onChange={(e) => setField("caption", e.target.value)}
-              />
+              <Textarea placeholder="Write your caption or notes here…" rows={4} value={draft.caption} onChange={(e) => setField("caption", e.target.value)} />
             </div>
 
             {/* Needs Revision */}
@@ -536,13 +611,10 @@ export default function ContentPage() {
                   <p className="text-xs text-muted-foreground">Flag this post for changes</p>
                 </div>
               </div>
-              <Switch
-                checked={draft.needsRevision as boolean}
-                onCheckedChange={(v) => setField("needsRevision", v)}
-              />
+              <Switch checked={draft.needsRevision as boolean} onCheckedChange={(v) => setField("needsRevision", v)} />
             </div>
 
-            {/* Created (read-only, edit mode only) */}
+            {/* Created (read-only, edit only) */}
             {panel.mode === "edit" && panel.post.createdAt && (
               <div className="space-y-1">
                 <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Created</Label>
@@ -570,22 +642,9 @@ export default function ContentPage() {
                 <div className="space-y-2">
                   {draft.customProperties.map((prop, i) => (
                     <div key={i} className="flex items-center gap-2">
-                      <Input
-                        className="h-8 text-sm"
-                        placeholder="Property name"
-                        value={prop.key}
-                        onChange={(e) => updateCustomProp(i, "key", e.target.value)}
-                      />
-                      <Input
-                        className="h-8 text-sm"
-                        placeholder="Value"
-                        value={prop.value}
-                        onChange={(e) => updateCustomProp(i, "value", e.target.value)}
-                      />
-                      <button
-                        className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
-                        onClick={() => removeCustomProp(i)}
-                      >
+                      <Input className="h-8 text-sm" placeholder="Property name" value={prop.key} onChange={(e) => updateCustomProp(i, "key", e.target.value)} />
+                      <Input className="h-8 text-sm" placeholder="Value" value={prop.value} onChange={(e) => updateCustomProp(i, "value", e.target.value)} />
+                      <button className="shrink-0 text-muted-foreground hover:text-destructive transition-colors" onClick={() => removeCustomProp(i)}>
                         <X className="h-4 w-4" />
                       </button>
                     </div>
@@ -607,9 +666,7 @@ export default function ContentPage() {
                     <div key={c.id} className="flex items-start gap-2 group/comment">
                       <div className="flex-1 bg-muted/60 rounded-lg px-3 py-2">
                         <p className="text-sm">{c.text}</p>
-                        <p className="text-[10px] text-muted-foreground mt-1">
-                          {format(new Date(c.createdAt), "dd MMM, hh:mm a")}
-                        </p>
+                        <p className="text-[10px] text-muted-foreground mt-1">{format(new Date(c.createdAt), "dd MMM, hh:mm a")}</p>
                       </div>
                       <button
                         className="opacity-0 group-hover/comment:opacity-100 transition-opacity mt-2 text-muted-foreground hover:text-destructive"
@@ -630,13 +687,10 @@ export default function ContentPage() {
                   onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addComment(); } }}
                   className="text-sm"
                 />
-                <Button size="sm" variant="outline" onClick={addComment} disabled={!newComment.trim()}>
-                  Add
-                </Button>
+                <Button size="sm" variant="outline" onClick={addComment} disabled={!newComment.trim()}>Add</Button>
               </div>
             </div>
 
-            {/* Bottom padding */}
             <div className="h-4" />
           </div>
         </SheetContent>

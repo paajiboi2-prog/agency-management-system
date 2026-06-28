@@ -275,6 +275,17 @@ export async function bootstrapDatabase(): Promise<void> {
       )
     `);
 
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS client_calendar_shares (
+        id TEXT PRIMARY KEY,
+        client_id TEXT NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+        share_token TEXT NOT NULL UNIQUE,
+        label TEXT,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        expires_at TIMESTAMP
+      )
+    `);
+
     const { email, password, name } = requireAdminConfig();
     const [existing] = await db.select({ id: usersTable.id }).from(usersTable).where(eq(usersTable.email, email));
     if (!existing) {
