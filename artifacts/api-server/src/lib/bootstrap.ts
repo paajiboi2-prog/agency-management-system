@@ -317,10 +317,16 @@ export async function bootstrapDatabase(): Promise<void> {
         logger.info({ email, generatedPassword: password }, "Bootstrap: one-time generated password — save this now");
       }
     } else {
-      // Always sync the password so login always works with the configured password
-      const passwordHash = await hash(password, 12);
-      await db.update(usersTable).set({ password: passwordHash }).where(eq(usersTable.email, email));
-      logger.info({ email }, "Bootstrap: admin user already exists — password synced");
+      // Only sync the password if ADMIN_PASSWORD is explicitly configured.
+      // If no env var is set, leave the existing password untouched so restarts
+      // never break login.
+      if (process.env.ADMIN_PASSWORD) {
+        const passwordHash = await hash(password, 12);
+        await db.update(usersTable).set({ password: passwordHash }).where(eq(usersTable.email, email));
+        logger.info({ email }, "Bootstrap: admin user already exists — password synced from ADMIN_PASSWORD");
+      } else {
+        logger.info({ email }, "Bootstrap: admin user already exists — password unchanged");
+      }
     }
   } catch (err) {
     logger.error({ err }, "Bootstrap failed");
