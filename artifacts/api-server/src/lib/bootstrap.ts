@@ -248,23 +248,6 @@ export async function bootstrapDatabase(): Promise<void> {
     }
 
     await db.execute(`
-      CREATE TABLE IF NOT EXISTS proforma_invoices (
-        id TEXT PRIMARY KEY,
-        proforma_number TEXT,
-        client_id TEXT REFERENCES clients(id) ON DELETE SET NULL,
-        client_name TEXT,
-        status TEXT DEFAULT 'DRAFT',
-        invoice_date TEXT,
-        valid_until TEXT,
-        subtotal NUMERIC DEFAULT 0,
-        tax NUMERIC DEFAULT 0,
-        total NUMERIC DEFAULT 0,
-        notes TEXT,
-        created_at TIMESTAMP DEFAULT NOW()
-      )
-    `);
-
-    await db.execute(`
       CREATE TABLE IF NOT EXISTS purchase_orders (
         id TEXT PRIMARY KEY,
         po_number TEXT,
@@ -281,22 +264,6 @@ export async function bootstrapDatabase(): Promise<void> {
       )
     `);
 
-    await db.execute(`
-      CREATE TABLE IF NOT EXISTS delivery_challans (
-        id TEXT PRIMARY KEY,
-        dc_number TEXT,
-        client_id TEXT REFERENCES clients(id) ON DELETE SET NULL,
-        client_name TEXT,
-        status TEXT DEFAULT 'DRAFT',
-        dc_date TEXT,
-        delivery_date TEXT,
-        subtotal NUMERIC DEFAULT 0,
-        tax NUMERIC DEFAULT 0,
-        total NUMERIC DEFAULT 0,
-        notes TEXT,
-        created_at TIMESTAMP DEFAULT NOW()
-      )
-    `);
 
     await db.execute(`
       CREATE TABLE IF NOT EXISTS proposals (
