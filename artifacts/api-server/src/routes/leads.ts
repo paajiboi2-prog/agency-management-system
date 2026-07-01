@@ -7,7 +7,7 @@ import { createError } from "../middleware/errorHandler";
 
 const router = Router();
 
-const STAGES = ["LEAD", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "CLOSED_WON", "CLOSED_LOST"];
+const STAGES = ["LEAD", "CONTACTED", "DEMO_GIVEN", "PROPOSAL_SENT", "NEGOTIATION", "WON", "LOST"];
 
 router.get("/", asyncHandler(async (req, res) => {
   const rows = await db.select().from(leadsTable);

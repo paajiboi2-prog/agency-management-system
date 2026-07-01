@@ -94,6 +94,7 @@ export async function bootstrapDatabase(): Promise<void> {
       "website_url TEXT", "content_frequency TEXT", "target_audience TEXT",
       "platforms TEXT", "social_goals TEXT", "content_types TEXT",
       "website_type TEXT", "website_features TEXT", "cms_preference TEXT", "budget_range TEXT",
+      "logo_url TEXT",
     ]) {
       const [colName] = col.split(" ");
       await db.execute(`ALTER TABLE clients ADD COLUMN IF NOT EXISTS ${col}`).catch(() => {});
@@ -112,18 +113,26 @@ export async function bootstrapDatabase(): Promise<void> {
     await db.execute(`
       CREATE TABLE IF NOT EXISTS leads (
         id TEXT PRIMARY KEY,
-        company_name TEXT NOT NULL,
-        contact_person TEXT,
+        title TEXT,
+        company_name TEXT,
+        contact_name TEXT,
         email TEXT,
-        phone TEXT,
-        stage TEXT DEFAULT 'NEW',
-        deal_value NUMERIC,
-        source TEXT,
-        notes TEXT,
-        owner_id TEXT,
+        stage TEXT DEFAULT 'LEAD',
+        value NUMERIC,
+        stage_changed_at TIMESTAMP DEFAULT NOW(),
         created_at TIMESTAMP DEFAULT NOW()
       )
     `);
+
+    // Migrate leads table to match current Drizzle schema
+    for (const col of [
+      "title TEXT",
+      "contact_name TEXT",
+      "value NUMERIC",
+      "stage_changed_at TIMESTAMP DEFAULT NOW()",
+    ]) {
+      await db.execute(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS ${col}`).catch(() => {});
+    }
 
     await db.execute(`
       CREATE TABLE IF NOT EXISTS projects (
@@ -180,19 +189,68 @@ export async function bootstrapDatabase(): Promise<void> {
     await db.execute(`
       CREATE TABLE IF NOT EXISTS invoices (
         id TEXT PRIMARY KEY,
-        invoice_number TEXT,
+        number TEXT,
         client_id TEXT REFERENCES clients(id) ON DELETE SET NULL,
-        client_name TEXT,
         status TEXT DEFAULT 'DRAFT',
         invoice_date TEXT,
         due_date TEXT,
-        subtotal NUMERIC DEFAULT 0,
-        tax NUMERIC DEFAULT 0,
-        total NUMERIC DEFAULT 0,
+        subtotal REAL DEFAULT 0,
+        tax_amount REAL DEFAULT 0,
+        discount REAL DEFAULT 0,
+        discount_type TEXT DEFAULT 'FIXED',
+        total REAL DEFAULT 0,
         notes TEXT,
+        currency TEXT DEFAULT 'INR',
+        gst_type TEXT DEFAULT 'CGST_SGST',
+        logo_url TEXT,
+        business_name TEXT,
+        business_phone TEXT,
+        business_email TEXT,
+        business_pan TEXT,
+        company_gstin TEXT,
+        business_address TEXT,
+        business_city TEXT,
+        business_postal_code TEXT,
+        business_state TEXT,
+        client_gstin TEXT,
+        client_phone TEXT,
+        client_email TEXT,
+        client_pan TEXT,
+        billing_address TEXT,
+        client_city TEXT,
+        client_postal_code TEXT,
+        client_state TEXT,
+        shipping_address TEXT,
+        terms_and_conditions TEXT,
+        signature_url TEXT,
+        bank_details JSONB,
+        line_items JSONB,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `);
+
+    // Migrate existing invoices table: add number column (was invoice_number)
+    for (const col of [
+      "number TEXT",
+      "tax_amount REAL DEFAULT 0",
+      "discount REAL DEFAULT 0",
+      "discount_type TEXT DEFAULT 'FIXED'",
+      "currency TEXT DEFAULT 'INR'",
+      "gst_type TEXT DEFAULT 'CGST_SGST'",
+      "logo_url TEXT",
+      "business_name TEXT", "business_phone TEXT", "business_email TEXT", "business_pan TEXT",
+      "company_gstin TEXT",
+      "business_address TEXT", "business_city TEXT", "business_postal_code TEXT", "business_state TEXT",
+      "client_gstin TEXT", "client_phone TEXT", "client_email TEXT", "client_pan TEXT",
+      "billing_address TEXT", "client_city TEXT", "client_postal_code TEXT", "client_state TEXT",
+      "shipping_address TEXT",
+      "terms_and_conditions TEXT",
+      "signature_url TEXT",
+      "bank_details JSONB",
+      "line_items JSONB",
+    ]) {
+      await db.execute(`ALTER TABLE invoices ADD COLUMN IF NOT EXISTS ${col}`).catch(() => {});
+    }
 
     await db.execute(`
       CREATE TABLE IF NOT EXISTS quotations (
@@ -301,6 +359,32 @@ export async function bootstrapDatabase(): Promise<void> {
         label TEXT,
         created_at TIMESTAMP NOT NULL DEFAULT NOW(),
         expires_at TIMESTAMP
+      )
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS lead_contacts (
+        id TEXT PRIMARY KEY,
+        lead_id TEXT REFERENCES leads(id) ON DELETE CASCADE NOT NULL,
+        type TEXT NOT NULL DEFAULT 'NOTE',
+        subject TEXT NOT NULL,
+        body TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS time_entries (
+        id TEXT PRIMARY KEY,
+        task_id TEXT REFERENCES tasks(id) ON DELETE CASCADE,
+        project_id TEXT REFERENCES projects(id),
+        user_id TEXT REFERENCES users(id),
+        started_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        ended_at TIMESTAMP,
+        duration_min INTEGER,
+        note TEXT,
+        is_billable BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT NOW()
       )
     `);
 

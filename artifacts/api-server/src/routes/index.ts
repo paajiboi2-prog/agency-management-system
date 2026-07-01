@@ -18,6 +18,9 @@ import purchaseOrdersRouter from "./purchase-orders";
 import socialAccountsRouter from "./social-accounts";
 import uploadsRouter from "./uploads";
 import activityLogsRouter from "./activityLogs";
+import leadContactsRouter from "./leadContacts";
+import timeRouter from "./time";
+import feedbackRouter from "./feedback";
 import { requireAuth } from "../middleware/auth";
 
 const router: IRouter = Router();
@@ -29,6 +32,7 @@ router.use(requireAuth);
 
 router.use("/clients", clientsRouter);
 router.use("/leads", leadsRouter);
+router.use("/leads", leadContactsRouter);
 router.use("/projects", projectsRouter);
 router.use("/tasks", tasksRouter);
 router.use("/content-posts", contentRouter);
@@ -44,5 +48,7 @@ router.use("/purchase-orders", purchaseOrdersRouter);
 router.use("/social-accounts", socialAccountsRouter);
 router.use("/uploads", uploadsRouter);
 router.use(activityLogsRouter);
+router.use("/time", timeRouter);
+router.use("/client", feedbackRouter);
 
 export default router;
