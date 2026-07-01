@@ -317,9 +317,6 @@ export async function bootstrapDatabase(): Promise<void> {
         isActive: true,
       });
       logger.info({ email }, "Bootstrap: admin user created");
-      if (!process.env.ADMIN_PASSWORD) {
-        logger.info({ email, generatedPassword: password }, "Bootstrap: one-time generated password — save this now");
-      }
     } else {
       // Only sync the password if ADMIN_PASSWORD is explicitly configured.
       // If no env var is set, leave the existing password untouched so restarts
