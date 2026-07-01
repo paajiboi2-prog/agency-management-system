@@ -4,8 +4,8 @@ All-in-one agency management platform for managing clients, projects, tasks, inv
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/agency-os run dev -- --host 0.0.0.0 --port 5000` — run the frontend (port 5000)
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080)
+- `pnpm --filter @workspace/agency-os run build && SERVE_STATIC=true PORT=5000 pnpm --filter @workspace/api-server run dev` — build frontend + serve via Express on port 5000 (no Vite dev server; avoids HMR WebSocket issues in Replit)
+- `PORT=8080 pnpm --filter @workspace/api-server run dev` — run the API server only on port 8080 (for API-only dev)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
