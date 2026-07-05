@@ -109,7 +109,6 @@ import TasksPage from "@/pages/tasks";
 import ContentPage from "@/pages/content";
 import InvoicesPage from "@/pages/invoices";
 import QuotationsPage from "@/pages/quotations";
-import FinancePage from "@/pages/finance";
 import UsersPage from "@/pages/users";
 import AttendancePage from "@/pages/attendance";
 import LeavesPage from "@/pages/leaves";
@@ -217,26 +216,41 @@ function AppRouter() {
           </ProtectedRoute>
         )}
       </Route>
-      <Route path="/finance">
+      <Route path="/invoices">
         {() => (
           <ProtectedRoute>
             <DashboardLayout>
-              <FinancePage />
+              <InvoicesPage />
             </DashboardLayout>
           </ProtectedRoute>
         )}
       </Route>
-      <Route path="/invoices">
-        {() => <Redirect to="/finance?tab=invoices" />}
-      </Route>
       <Route path="/quotations">
-        {() => <Redirect to="/finance?tab=quotations" />}
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <QuotationsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
       </Route>
       <Route path="/purchase-orders">
-        {() => <Redirect to="/finance?tab=purchase-orders" />}
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <PurchaseOrdersPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
       </Route>
       <Route path="/proposals">
-        {() => <Redirect to="/finance?tab=proposals" />}
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ProposalsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
       </Route>
       <Route path="/users">
         {() => (
