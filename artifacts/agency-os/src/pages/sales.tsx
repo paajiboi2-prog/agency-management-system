@@ -3,6 +3,7 @@ import {
   useListLeads, useCreateLead, useUpdateLead, useDeleteLead,
   useGetPipelineSummary, getListLeadsQueryKey,
 } from "@workspace/api-client-react";
+import { SearchBar } from "@/components/common/SearchBar";
 import type { LeadInput, Lead } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -121,6 +122,7 @@ export default function SalesPage() {
   const qc = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [activeLead, setActiveLead] = useState<any | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: leads, isLoading } = useListLeads();
   const { data: pipeline } = useGetPipelineSummary();
@@ -189,6 +191,17 @@ export default function SalesPage() {
 
   const pipelineTotal = (pipeline ?? []).reduce((sum, s) => sum + (s.totalValue ?? 0), 0);
 
+  const filteredLeads = (leads ?? []).filter((l) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      l.title?.toLowerCase().includes(q) ||
+      l.companyName?.toLowerCase().includes(q) ||
+      l.email?.toLowerCase().includes(q) ||
+      l.stage?.toLowerCase().includes(q)
+    );
+  });
+
   const dropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: "0.5" } } }),
   };
@@ -197,16 +210,19 @@ export default function SalesPage() {
     <div className="p-6 animated-fade-in space-y-5 flex gap-6">
       <div className="flex-1 space-y-5 overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
             <h1 className="text-2xl font-bold font-heading">Sales Funnel</h1>
             <p className="text-sm text-muted-foreground mt-0.5">
-              {leads?.length ?? 0} leads &nbsp;·&nbsp; Pipeline: ₹{pipelineTotal.toLocaleString("en-IN")}
+              {filteredLeads.length} leads &nbsp;·&nbsp; Pipeline: ₹{pipelineTotal.toLocaleString("en-IN")}
             </p>
           </div>
-          <Button onClick={() => { reset({ title: "", stage: "LEAD" }); setDialogOpen(true); }} className="gap-2 btn-micro-anim" data-testid="add-lead-btn">
-            <Plus className="h-4 w-4" /> Add Lead
-          </Button>
+          <div className="flex items-center gap-3">
+            <SearchBar placeholder="Search leads…" value={searchQuery} onChange={setSearchQuery} />
+            <Button onClick={() => { reset({ title: "", stage: "LEAD" }); setDialogOpen(true); }} className="gap-2 btn-micro-anim" data-testid="add-lead-btn">
+              <Plus className="h-4 w-4" /> Add Lead
+            </Button>
+          </div>
         </div>
 
         {/* Pipeline summary */}
@@ -246,7 +262,7 @@ export default function SalesPage() {
           >
             <div className="flex gap-3 overflow-x-auto pb-4 flex-1">
               {STAGES.map((stage) => {
-                const stageLeads = (leads ?? []).filter((l) => l.stage === stage.key);
+                const stageLeads = filteredLeads.filter((l) => l.stage === stage.key);
                 return (
                   <DroppableStage
                     key={stage.key}

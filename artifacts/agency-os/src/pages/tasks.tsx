@@ -23,6 +23,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Plus, Trash2, Calendar, CheckSquare } from "lucide-react";
 import { format, isBefore, parseISO, startOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
+import { SearchBar } from "@/components/common/SearchBar";
 
 const COLUMNS = [
   { key: "TODO", label: "To Do" },
@@ -48,6 +49,7 @@ const COL_STYLE: Record<string, string> = {
 export default function TasksPage() {
   const qc = useQueryClient();
   const [priorityFilter, setPriorityFilter] = useState("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [defaultStatus, setDefaultStatus] = useState("TODO");
   const [dragging, setDragging] = useState<string | null>(null);
@@ -105,6 +107,14 @@ export default function TasksPage() {
 
   const filtered = (tasks ?? []).filter((t) => {
     if (priorityFilter !== "ALL" && t.priority !== priorityFilter) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      return (
+        t.title?.toLowerCase().includes(q) ||
+        (t as any).assigneeName?.toLowerCase().includes(q) ||
+        (t as any).projectName?.toLowerCase().includes(q)
+      );
+    }
     return true;
   });
 
@@ -117,7 +127,13 @@ export default function TasksPage() {
           <h1 className="text-2xl font-bold font-heading">Tasks</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{tasks?.length ?? 0} total tasks</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <SearchBar
+            placeholder="Search tasks…"
+            value={searchQuery}
+            onChange={setSearchQuery}
+            className="max-w-xs"
+          />
           <Select value={priorityFilter} onValueChange={(val) => setPriorityFilter(val ?? "ALL")}>
             <SelectTrigger className="w-32">
               <SelectValue placeholder="Priority" />

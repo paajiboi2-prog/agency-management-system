@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { SearchBar } from "@/components/common/SearchBar";
 import {
   useListContentPosts, useCreateContentPost, useUpdateContentPost, useDeleteContentPost,
   useListClients, getListContentPostsQueryKey,
@@ -102,6 +103,7 @@ export default function ContentPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [activeClientId, setActiveClientId] = useState<string>("");
   const [view, setView] = useState<"calendar" | "list">("list");
+  const [searchQuery, setSearchQuery] = useState("");
   const [panel, setPanel] = useState<PanelState>({ mode: "closed" });
   const [draft, setDraft] = useState(emptyDraft());
   const [newComment, setNewComment] = useState("");
@@ -261,8 +263,20 @@ export default function ContentPage() {
   const daysInMonth = getDaysInMonth(currentMonth);
   const firstDayOfWeek = getDay(startOfMonth(currentMonth));
 
+  const filteredPosts = (posts ?? []).filter((p) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      p.caption?.toLowerCase().includes(q) ||
+      p.platform?.toLowerCase().includes(q) ||
+      p.status?.toLowerCase().includes(q) ||
+      p.clientName?.toLowerCase().includes(q) ||
+      p.title?.toLowerCase().includes(q)
+    );
+  });
+
   const postsByDay: Record<number, PostRecord[]> = {};
-  (posts ?? []).forEach((p) => {
+  filteredPosts.forEach((p) => {
     if (p.scheduledAt) {
       const day = new Date(p.scheduledAt).getDate();
       if (!postsByDay[day]) postsByDay[day] = [];
@@ -283,7 +297,8 @@ export default function ContentPage() {
             {activeClientId ? `${activeClient?.companyName} — ` : ""}{posts?.length ?? 0} posts this month
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <SearchBar placeholder="Search posts…" value={searchQuery} onChange={setSearchQuery} />
           {/* View toggle */}
           <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
             <button
@@ -384,18 +399,20 @@ export default function ContentPage() {
         </div>
       ) : view === "list" ? (
         <div className="space-y-2">
-          {(posts ?? []).length === 0 ? (
+          {filteredPosts.length === 0 ? (
             <div className="text-center py-16 text-muted-foreground">
               <Calendar className="h-12 w-12 mx-auto mb-3 opacity-30" />
-              <p className="font-medium">No posts this month</p>
+              <p className="font-medium">{searchQuery ? "No matching posts" : "No posts this month"}</p>
               <p className="text-sm mt-1">
-                {activeClientId
+                {searchQuery
+                  ? `No posts match "${searchQuery}"`
+                  : activeClientId
                   ? `No content for ${activeClient?.companyName} yet — click "Add Post" to get started`
                   : `Click "Add Post" or a calendar date to get started`}
               </p>
             </div>
           ) : (
-            (posts ?? []).map((post) => {
+            filteredPosts.map((post) => {
               const sc = STATUS_CONFIG[post.status ?? "IDEA"];
               return (
                 <div

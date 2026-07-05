@@ -109,6 +109,7 @@ import TasksPage from "@/pages/tasks";
 import ContentPage from "@/pages/content";
 import InvoicesPage from "@/pages/invoices";
 import QuotationsPage from "@/pages/quotations";
+import FinancePage from "@/pages/finance";
 import UsersPage from "@/pages/users";
 import AttendancePage from "@/pages/attendance";
 import LeavesPage from "@/pages/leaves";
@@ -216,32 +217,26 @@ function AppRouter() {
           </ProtectedRoute>
         )}
       </Route>
-      <Route path="/invoices">
+      <Route path="/finance">
         {() => (
           <ProtectedRoute>
             <DashboardLayout>
-              <InvoicesPage />
+              <FinancePage />
             </DashboardLayout>
           </ProtectedRoute>
         )}
+      </Route>
+      <Route path="/invoices">
+        {() => <Redirect to="/finance?tab=invoices" />}
       </Route>
       <Route path="/quotations">
-        {() => (
-          <ProtectedRoute>
-            <DashboardLayout>
-              <QuotationsPage />
-            </DashboardLayout>
-          </ProtectedRoute>
-        )}
+        {() => <Redirect to="/finance?tab=quotations" />}
       </Route>
       <Route path="/purchase-orders">
-        {() => (
-          <ProtectedRoute>
-            <DashboardLayout>
-              <PurchaseOrdersPage />
-            </DashboardLayout>
-          </ProtectedRoute>
-        )}
+        {() => <Redirect to="/finance?tab=purchase-orders" />}
+      </Route>
+      <Route path="/proposals">
+        {() => <Redirect to="/finance?tab=proposals" />}
       </Route>
       <Route path="/users">
         {() => (

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { SearchBar } from "@/components/common/SearchBar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,6 +61,7 @@ export default function HawanHubPage() {
   const [activeClientId, setActiveClientId] = useState<string>("");
   const [accounts, setAccounts] = useState<SocialAccount[]>([]);
   const [loadingAccounts, setLoadingAccounts] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [addOpen, setAddOpen] = useState(false);
   const [addPlatform, setAddPlatform] = useState("INSTAGRAM");
@@ -226,7 +228,16 @@ export default function HawanHubPage() {
     }
   }
 
-  const clientAccounts = accounts.filter((a) => a.clientId === activeClientId);
+  const clientAccounts = accounts.filter((a) => {
+    if (a.clientId !== activeClientId) return false;
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      a.platform?.toLowerCase().includes(q) ||
+      a.handle?.toLowerCase().includes(q) ||
+      a.isActive?.toLowerCase().includes(q)
+    );
+  });
   const connectedPlatformIds = new Set(clientAccounts.map((a) => a.platform));
   const activeClient = clients?.find((c) => c.id === activeClientId);
 
@@ -278,17 +289,20 @@ export default function HawanHubPage() {
 
         {/* ── Accounts tab ── */}
         <TabsContent value="accounts" className="mt-5 space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-3">
             <p className="text-sm text-muted-foreground">
               {activeClient
                 ? `${clientAccounts.length} connected platform${clientAccounts.length !== 1 ? "s" : ""} for ${activeClient.companyName}`
                 : "Select a client above"}
             </p>
-            {activeClientId && (
-              <Button size="sm" onClick={() => setAddOpen(true)} className="gap-1.5">
-                <Plus className="h-3.5 w-3.5" /> Add Handle
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              <SearchBar placeholder="Search platforms…" value={searchQuery} onChange={setSearchQuery} />
+              {activeClientId && (
+                <Button size="sm" onClick={() => setAddOpen(true)} className="gap-1.5">
+                  <Plus className="h-3.5 w-3.5" /> Add Handle
+                </Button>
+              )}
+            </div>
           </div>
 
           {loadingAccounts ? (

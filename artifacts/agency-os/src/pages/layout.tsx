@@ -12,9 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   LayoutDashboard, Users, TrendingUp, FolderKanban, CheckSquare,
-  Calendar, FileText, Receipt, ClipboardList, Clock, Umbrella,
+  Calendar, Wallet, Clock, Umbrella,
   UserCog, Settings, Sun, Moon, LogOut, ChevronRight, Briefcase, Flame,
-  ShoppingCart
 } from "lucide-react";
 
 interface NavItem {
@@ -49,10 +48,7 @@ const navGroups: NavGroup[] = [
   {
     label: "Finance & Docs",
     items: [
-      { label: "Invoices", href: "/invoices", icon: <Receipt className="h-4 w-4" /> },
-      { label: "Quotations", href: "/quotations", icon: <FileText className="h-4 w-4" /> },
-      { label: "Purchase Orders", href: "/purchase-orders", icon: <ShoppingCart className="h-4 w-4" /> },
-      { label: "Proposals", href: "/proposals", icon: <ClipboardList className="h-4 w-4" /> },
+      { label: "Finance & Docs", href: "/finance", icon: <Wallet className="h-4 w-4" /> },
     ],
   },
   {
@@ -100,6 +96,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         "/tasks": "tasks",
         "/content": "content",
         "/hawan": "hawan",
+        "/finance": "invoices",
         "/invoices": "invoices",
         "/quotations": "quotations",
         "/purchase-orders": "purchaseOrders",
@@ -145,7 +142,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </p>
               <div className="space-y-0.5">
                 {group.items.map((item) => {
-                  const isActive = location === item.href || location.startsWith(item.href + "/");
+                  const isActive = location === item.href || location.startsWith(item.href + "/") || location.startsWith(item.href + "?");
                   return (
                     <Link
                       key={item.href}
