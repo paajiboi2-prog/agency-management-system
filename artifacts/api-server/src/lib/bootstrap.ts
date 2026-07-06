@@ -424,6 +424,86 @@ export async function bootstrapDatabase(): Promise<void> {
       )
     `);
 
+    // Add priority/due_date/description to projects (schema uses these names)
+    for (const col of [
+      "priority TEXT DEFAULT 'MEDIUM'",
+      "due_date TEXT",
+      "description TEXT",
+    ]) {
+      await db.execute(`ALTER TABLE projects ADD COLUMN IF NOT EXISTS ${col}`).catch(() => {});
+    }
+
+    // Add probability/expected_close_date/source/notes to leads (schema uses these names)
+    for (const col of [
+      "probability INTEGER DEFAULT 0",
+      "expected_close_date TEXT",
+      "source TEXT",
+      "notes TEXT",
+    ]) {
+      await db.execute(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS ${col}`).catch(() => {});
+    }
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS attendance (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        check_in_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        check_out_at TIMESTAMP,
+        is_late BOOLEAN NOT NULL DEFAULT false,
+        overtime_min INTEGER NOT NULL DEFAULT 0,
+        date TEXT NOT NULL
+      )
+    `);
+
+    await db.execute(`
+      DO $$ BEGIN
+        CREATE TYPE leave_type AS ENUM ('CASUAL', 'SICK', 'EARNED', 'UNPAID');
+      EXCEPTION
+        WHEN duplicate_object THEN NULL;
+      END $$;
+    `);
+
+    await db.execute(`
+      DO $$ BEGIN
+        CREATE TYPE leave_status AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
+      EXCEPTION
+        WHEN duplicate_object THEN NULL;
+      END $$;
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS leave_requests (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        type leave_type NOT NULL,
+        start_date TEXT NOT NULL,
+        end_date TEXT NOT NULL,
+        reason TEXT,
+        status leave_status NOT NULL DEFAULT 'PENDING',
+        reviewed_by TEXT REFERENCES users(id) ON DELETE SET NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS agency_settings (
+        id TEXT PRIMARY KEY DEFAULT 'default',
+        agency_name TEXT NOT NULL DEFAULT 'Blink Beyond',
+        email TEXT,
+        phone TEXT,
+        address TEXT,
+        website TEXT,
+        primary_color TEXT NOT NULL DEFAULT '#6366f1',
+        currency TEXT NOT NULL DEFAULT 'INR',
+        tax_label TEXT NOT NULL DEFAULT 'GST',
+        tax_percent REAL NOT NULL DEFAULT 18,
+        logo_url TEXT,
+        work_day_start TEXT NOT NULL DEFAULT '09:00',
+        work_day_end TEXT NOT NULL DEFAULT '18:00',
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
     const { email, password, name } = requireAdminConfig();
     const [existing] = await db.select({ id: usersTable.id }).from(usersTable).where(eq(usersTable.email, email));
     if (!existing) {

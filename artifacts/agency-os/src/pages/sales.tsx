@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useForm, Controller } from "react-hook-form";
-import { Plus, Trash2, IndianRupee } from "lucide-react";
+import { Plus, Trash2, IndianRupee, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DndContext, useDraggable, useDroppable, DragOverlay, closestCorners, defaultDropAnimationSideEffects } from "@dnd-kit/core";
 
