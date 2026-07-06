@@ -9,7 +9,7 @@ fi
 
 # Store credentials so Replit's Git UI works too
 git config --global credential.helper store
-echo "https://nileshrajput203:${GITHUB_TOKEN}@github.com" > ~/.git-credentials
+echo "https://x-access-token:${GITHUB_TOKEN}@github.com" > ~/.git-credentials
 chmod 600 ~/.git-credentials
 
 echo "✅ Credentials configured"
