@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useForm, Controller } from "react-hook-form";
-import { Plus, Trash2, TrendingUp, IndianRupee, Lightbulb, Target, ArrowRight } from "lucide-react";
+import { Plus, Trash2, IndianRupee } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DndContext, useDraggable, useDroppable, DragOverlay, closestCorners, defaultDropAnimationSideEffects } from "@dnd-kit/core";
 
@@ -207,8 +207,8 @@ export default function SalesPage() {
   };
 
   return (
-    <div className="p-6 animated-fade-in space-y-5 flex gap-6">
-      <div className="flex-1 space-y-5 overflow-hidden flex flex-col">
+    <div className="p-6 animated-fade-in space-y-5">
+      <div className="space-y-5 flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
@@ -285,51 +285,6 @@ export default function SalesPage() {
             </DragOverlay>
           </DndContext>
         )}
-      </div>
-
-      {/* Smart Sales Tactics Sidebar */}
-      <div className="w-[300px] shrink-0 border-l border-border pl-6 space-y-6 hidden xl:block overflow-y-auto pr-2 custom-scrollbar">
-        <div>
-          <h3 className="font-semibold text-lg flex items-center gap-2 mb-4">
-            <Lightbulb className="h-5 w-5 text-amber-500" /> Smart Tactics
-          </h3>
-          <div className="space-y-4">
-            <Card className="bg-primary/5 border-primary/20 shadow-none">
-              <CardHeader className="pb-2 pt-4 px-4">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-primary">
-                  <Target className="h-4 w-4" /> Finding Leads
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="px-4 pb-4 text-xs text-muted-foreground space-y-2">
-                <p>1. <strong>LinkedIn Search:</strong> Use advanced search for "Marketing Director" in specific industries.</p>
-                <p>2. <strong>Competitor Analysis:</strong> Check who is interacting with competitor posts.</p>
-                <p>3. <strong>Local Directories:</strong> Find businesses with poor web presence.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="shadow-none">
-              <CardHeader className="pb-2 pt-4 px-4">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-blue-600">
-                  <ArrowRight className="h-4 w-4" /> Moving to Demo
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="px-4 pb-4 text-xs text-muted-foreground space-y-2">
-                <p>Ensure you have mapped their pain points before pitching. Tailor the demo directly to their biggest problem.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="shadow-none">
-              <CardHeader className="pb-2 pt-4 px-4">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-emerald-600">
-                  <TrendingUp className="h-4 w-4" /> Closing the Deal
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="px-4 pb-4 text-xs text-muted-foreground space-y-2">
-                <p>Offer a "risk-free" trial period or showcase a highly relevant case study just before the final negotiation.</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
       </div>
 
       {/* Add Lead Dialog */}
