@@ -21,7 +21,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm, Controller } from "react-hook-form";
-import { Plus, Search, Phone, Mail, Building2, Trash2, Pencil } from "lucide-react";
+import { Plus, Phone, Mail, Building2, Trash2, Pencil, Users, AlertTriangle, HeartHandshake } from "lucide-react";
+import { SearchBar } from "@/components/common/SearchBar";
 import { cn } from "@/lib/utils";
 
 const HEALTH_MAP: Record<string, { label: string; className: string }> = {
@@ -148,31 +149,56 @@ export default function ClientsPage() {
     return true;
   });
 
+  const totalRetainers = (clients ?? []).filter((c) => c.category === "RETAINER").length;
+  const totalAtRisk    = (clients ?? []).filter((c) => c.health === "YELLOW").length;
+  const totalHealthy   = (clients ?? []).filter((c) => c.health === "GREEN").length;
+
+  const statChips = [
+    { label: "Total Clients", value: clients?.length ?? 0,  accent: "border-l-primary",      icon: <Building2 className="h-4 w-4" /> },
+    { label: "Retainers",     value: totalRetainers,         accent: "border-l-emerald-500",  icon: <HeartHandshake className="h-4 w-4" /> },
+    { label: "At Risk",       value: totalAtRisk,            accent: "border-l-amber-400",    icon: <AlertTriangle className="h-4 w-4" /> },
+    { label: "Healthy",       value: totalHealthy,           accent: "border-l-emerald-400",  icon: <Users className="h-4 w-4" /> },
+  ];
+
   return (
-    <div className="p-6 space-y-5 animated-fade-in">
+    <div className="p-6 space-y-6 animated-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold font-heading">Clients</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{clients?.length ?? 0} total clients</p>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            {filtered.length} of {clients?.length ?? 0} clients shown
+          </p>
         </div>
         <Button onClick={openAdd} data-testid="add-client-btn" className="gap-2 btn-micro-anim">
           <Plus className="h-4 w-4" /> Add Client
         </Button>
       </div>
 
+      {/* Stat chips */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {statChips.map(({ label, value, accent, icon }) => (
+          <div key={label} className={cn("bg-card border border-l-[3px] rounded-xl p-4 scale-hover shadow-xs", accent)}>
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
+                <p className="text-2xl font-bold font-heading mt-1">{value}</p>
+              </div>
+              <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">{icon}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-48 max-w-80">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search clients..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
-            data-testid="client-search"
-          />
-        </div>
+        <SearchBar
+          placeholder="Search clients…"
+          value={search}
+          onChange={setSearch}
+          className="flex-1 min-w-48 max-w-80"
+          data-testid="client-search"
+        />
         <Select value={category} onValueChange={(val) => setCategory(val ?? "ALL")}>
           <SelectTrigger className="w-36" data-testid="category-filter">
             <SelectValue placeholder="Billing Type" />
@@ -206,23 +232,35 @@ export default function ClientsPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 text-muted-foreground">
-          <Building2 className="h-12 w-12 mx-auto mb-3 opacity-30" />
-          <p className="font-medium">No clients found</p>
-          <p className="text-sm">Add your first client to get started</p>
+        <div className="text-center py-20">
+          <div className="inline-flex p-4 rounded-2xl bg-muted/60 mb-4">
+            <Building2 className="h-10 w-10 text-muted-foreground/40" />
+          </div>
+          <p className="font-semibold text-foreground">No clients found</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {search || category !== "ALL" || health !== "ALL"
+              ? "Try adjusting your search or filters"
+              : "Add your first client to get started"}
+          </p>
+          {!search && category === "ALL" && health === "ALL" && (
+            <Button onClick={openAdd} className="mt-4 gap-2 btn-micro-anim" size="sm">
+              <Plus className="h-4 w-4" /> Add Client
+            </Button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map((c) => {
             const healthInfo = HEALTH_MAP[c.health ?? "GREEN"];
+            const borderAccent = c.health === "GREEN" ? "border-l-emerald-500" : c.health === "YELLOW" ? "border-l-amber-400" : "border-l-rose-500";
             return (
-              <Card key={c.id} className="scale-hover">
+              <Card key={c.id} className={cn("scale-hover border-l-[3px] group", borderAccent)}>
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between gap-2 mb-3">
-                    <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0">
                       {/* Logo / Avatar */}
                       <div className={cn(
-                        "h-9 w-9 rounded-xl border border-border overflow-hidden flex items-center justify-center shrink-0 text-xs font-bold",
+                        "h-10 w-10 rounded-xl border border-border overflow-hidden flex items-center justify-center shrink-0 text-sm font-bold",
                         c.logoUrl ? "" : "bg-gradient-to-br from-primary/20 to-primary/5 text-primary"
                       )}>
                         {c.logoUrl ? (
@@ -231,27 +269,20 @@ export default function ClientsPage() {
                           c.companyName.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()
                         )}
                       </div>
-                      <Link href={`/clients/${c.id}`} className="font-semibold text-foreground hover:text-primary transition-colors line-clamp-1">
-                        {c.companyName}
-                      </Link>
+                      <div className="min-w-0">
+                        <Link href={`/clients/${c.id}`} className="font-semibold text-foreground hover:text-primary transition-colors line-clamp-1 text-sm">
+                          {c.companyName}
+                        </Link>
+                        {c.contactPerson && (
+                          <p className="text-xs text-muted-foreground truncate mt-0.5">{c.contactPerson}</p>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1 shrink-0">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-7 w-7"
-                        onClick={() => openEdit(c)}
-                        data-testid={`edit-client-${c.id}`}
-                      >
+                    <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(c)} data-testid={`edit-client-${c.id}`}>
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-7 w-7 text-destructive hover:text-destructive"
-                        onClick={() => deleteMutation.mutate({ id: c.id })}
-                        data-testid={`delete-client-${c.id}`}
-                      >
+                      <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => deleteMutation.mutate({ id: c.id })} data-testid={`delete-client-${c.id}`}>
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
@@ -266,12 +297,9 @@ export default function ClientsPage() {
                     </Badge>
                   </div>
 
-                  <div className="space-y-1 text-xs text-muted-foreground">
-                    {c.contactPerson && (
-                      <p className="truncate">{c.contactPerson}</p>
-                    )}
+                  <div className="space-y-1.5 text-xs text-muted-foreground pt-1 border-t border-border/50">
                     {c.phone && (
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 mt-1.5">
                         <Phone className="h-3 w-3 shrink-0" />
                         <span>{c.phone}</span>
                       </div>

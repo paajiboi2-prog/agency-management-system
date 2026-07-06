@@ -20,7 +20,9 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm, Controller } from "react-hook-form";
-import { Plus, Search, FolderKanban, Trash2, Pencil, Calendar } from "lucide-react";
+import { Plus, FolderKanban, Trash2, Pencil, Calendar, PlayCircle, CheckCircle2, PauseCircle } from "lucide-react";
+import { SearchBar } from "@/components/common/SearchBar";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
@@ -129,28 +131,62 @@ export default function ProjectsPage() {
     return true;
   });
 
+  const totalInProgress = (projects ?? []).filter((p) => p.status === "IN_PROGRESS").length;
+  const totalCompleted  = (projects ?? []).filter((p) => p.status === "COMPLETED").length;
+  const totalOnHold     = (projects ?? []).filter((p) => p.status === "ON_HOLD").length;
+
+  const projectStatChips = [
+    { label: "Total Projects", value: projects?.length ?? 0, accent: "border-l-primary",     icon: <FolderKanban className="h-4 w-4" /> },
+    { label: "In Progress",    value: totalInProgress,       accent: "border-l-blue-500",    icon: <PlayCircle className="h-4 w-4" /> },
+    { label: "Completed",      value: totalCompleted,        accent: "border-l-emerald-500", icon: <CheckCircle2 className="h-4 w-4" /> },
+    { label: "On Hold",        value: totalOnHold,           accent: "border-l-amber-400",   icon: <PauseCircle className="h-4 w-4" /> },
+  ];
+
+  const STATUS_BORDER: Record<string, string> = {
+    NOT_STARTED: "border-l-slate-400",
+    IN_PROGRESS:  "border-l-blue-500",
+    UNDER_REVIEW: "border-l-amber-400",
+    COMPLETED:    "border-l-emerald-500",
+    ON_HOLD:      "border-l-orange-400",
+    CANCELLED:    "border-l-rose-400",
+  };
+
   return (
-    <div className="p-6 space-y-5 animated-fade-in">
-      <div className="flex items-center justify-between">
+    <div className="p-6 space-y-6 animated-fade-in">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold font-heading">Projects</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{projects?.length ?? 0} total projects</p>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            {filtered.length} of {projects?.length ?? 0} projects shown
+          </p>
         </div>
         <Button onClick={openAdd} className="gap-2 btn-micro-anim" data-testid="add-project-btn">
           <Plus className="h-4 w-4" /> New Project
         </Button>
       </div>
 
+      {/* Stat chips */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {projectStatChips.map(({ label, value, accent, icon }) => (
+          <div key={label} className={cn("bg-card border border-l-[3px] rounded-xl p-4 scale-hover shadow-xs", accent)}>
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
+                <p className="text-2xl font-bold font-heading mt-1">{value}</p>
+              </div>
+              <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">{icon}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       <div className="flex flex-wrap gap-3 items-center">
-        <div className="relative flex-1 min-w-48 max-w-72">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search projects..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
-          />
-        </div>
+        <SearchBar
+          placeholder="Search projects…"
+          value={search}
+          onChange={setSearch}
+          className="flex-1 min-w-48 max-w-72"
+        />
         <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val ?? "ALL")}>
           <SelectTrigger className="w-44">
             <SelectValue placeholder="Status" />
@@ -171,48 +207,65 @@ export default function ProjectsPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 text-muted-foreground">
-          <FolderKanban className="h-12 w-12 mx-auto mb-3 opacity-30" />
-          <p className="font-medium">No projects found</p>
+        <div className="text-center py-20">
+          <div className="inline-flex p-4 rounded-2xl bg-muted/60 mb-4">
+            <FolderKanban className="h-10 w-10 text-muted-foreground/40" />
+          </div>
+          <p className="font-semibold text-foreground">No projects found</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {search || statusFilter !== "ALL"
+              ? "Try adjusting your search or status filter"
+              : "Create your first project to get started"}
+          </p>
+          {!search && statusFilter === "ALL" && (
+            <Button onClick={openAdd} className="mt-4 gap-2 btn-micro-anim" size="sm">
+              <Plus className="h-4 w-4" /> New Project
+            </Button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map((p) => {
             const sc = STATUS_CONFIG[p.status ?? "NOT_STARTED"];
             const pc = PRIORITY_CONFIG[p.priority ?? "MEDIUM"];
+            const borderAccent = STATUS_BORDER[p.status ?? "NOT_STARTED"] ?? "border-l-slate-400";
+            const isOverdue = p.dueDate && p.status !== "COMPLETED" && p.status !== "CANCELLED" &&
+              new Date(p.dueDate) < new Date();
             return (
-              <Card key={p.id} className="scale-hover">
+              <Card key={p.id} className={cn("scale-hover border-l-[3px] group", borderAccent)}>
                 <CardContent className="p-5 space-y-3">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="font-semibold line-clamp-2">{p.name}</p>
-                    <div className="flex gap-1 shrink-0">
+                    <div className="min-w-0">
+                      <p className="font-semibold line-clamp-2 text-sm">{p.name}</p>
+                      {p.clientName && (
+                        <p className="text-xs text-muted-foreground mt-0.5 truncate">{p.clientName}</p>
+                      )}
+                    </div>
+                    <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(p)}>
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
-                      <Button
-                        size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive"
-                        onClick={() => deleteMutation.mutate({ id: p.id })}
-                      >
+                      <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => deleteMutation.mutate({ id: p.id })}>
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
                   </div>
 
-                  {p.clientName && (
-                    <p className="text-xs text-muted-foreground">{p.clientName}</p>
-                  )}
-
                   <div className="flex flex-wrap gap-1.5">
-                    <Badge variant="outline" className={sc.className + " text-[11px]"}>{sc.label}</Badge>
+                    <Badge variant="outline" className={sc.className + " text-[11px] border"}>{sc.label}</Badge>
                     <Badge variant="outline" className={pc.className + " text-[11px]"}>{pc.label}</Badge>
                   </div>
 
                   {(p.startDate || p.dueDate) && (
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Calendar className="h-3 w-3" />
+                    <div className={cn(
+                      "flex items-center gap-1.5 text-xs pt-2 border-t border-border/50",
+                      isOverdue ? "text-rose-500 font-medium" : "text-muted-foreground"
+                    )}>
+                      <Calendar className="h-3 w-3 shrink-0" />
                       {p.startDate && <span>{format(new Date(p.startDate), "dd MMM")}</span>}
                       {p.startDate && p.dueDate && <span>—</span>}
                       {p.dueDate && <span>{format(new Date(p.dueDate), "dd MMM yyyy")}</span>}
+                      {isOverdue && <span className="ml-auto bg-rose-100 text-rose-600 dark:bg-rose-950/40 px-1.5 py-0.5 rounded text-[10px] font-semibold">Overdue</span>}
                     </div>
                   )}
                 </CardContent>

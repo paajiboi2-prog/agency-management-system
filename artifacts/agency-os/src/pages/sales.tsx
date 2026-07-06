@@ -227,15 +227,19 @@ export default function SalesPage() {
 
         {/* Pipeline summary */}
         {pipeline && pipeline.length > 0 && (
-          <div className="flex gap-2 overflow-x-auto pb-1 shrink-0">
+          <div className="flex gap-2 overflow-x-auto pb-1 shrink-0 scrollbar-none">
             {STAGES.map((stage) => {
               const s = pipeline.find((p) => p.stage === stage.key);
+              const stageColor = stage.color.replace("border-t-", "border-l-");
               return (
-                <div key={stage.key} className="flex-1 min-w-[120px] rounded-lg border border-border bg-card p-3 text-center shrink-0 shadow-sm">
-                  <p className="text-[11px] text-muted-foreground font-medium">{stage.label}</p>
-                  <p className="text-lg font-bold font-heading mt-0.5">{s?.count ?? 0}</p>
+                <div key={stage.key} className={cn(
+                  "flex-1 min-w-[110px] rounded-xl border border-l-[3px] bg-card px-3 py-3 shrink-0 shadow-xs scale-hover",
+                  stageColor
+                )}>
+                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{stage.label}</p>
+                  <p className="text-xl font-bold font-heading mt-1">{s?.count ?? 0}</p>
                   {(s?.totalValue ?? 0) > 0 && (
-                    <p className="text-[10px] text-muted-foreground">₹{((s?.totalValue ?? 0) / 1000).toFixed(0)}k</p>
+                    <p className="text-[10px] text-primary font-medium mt-0.5">₹{((s?.totalValue ?? 0) / 1000).toFixed(0)}k</p>
                   )}
                 </div>
               );

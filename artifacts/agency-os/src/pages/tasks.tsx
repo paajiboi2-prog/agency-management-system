@@ -20,7 +20,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm, Controller } from "react-hook-form";
-import { Plus, Trash2, Calendar, CheckSquare } from "lucide-react";
+import { Plus, Trash2, Calendar, CheckSquare, Clock, AlertCircle, ListTodo, CheckCircle2 } from "lucide-react";
 import { format, isBefore, parseISO, startOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import { SearchBar } from "@/components/common/SearchBar";
@@ -120,20 +120,30 @@ export default function TasksPage() {
 
   const byStatus = (status: string) => filtered.filter((t) => t.status === status);
 
+  const totalDone      = (tasks ?? []).filter((t) => t.status === "DONE").length;
+  const totalInProg    = (tasks ?? []).filter((t) => t.status === "IN_PROGRESS").length;
+  const totalOverdue   = (tasks ?? []).filter((t) =>
+    t.status !== "DONE" && t.dueDate && isBefore(parseISO(t.dueDate), startOfDay(new Date()))
+  ).length;
+
+  const taskStatChips = [
+    { label: "Total Tasks",  value: tasks?.length ?? 0, accent: "border-l-primary",     icon: <ListTodo className="h-4 w-4" /> },
+    { label: "In Progress",  value: totalInProg,         accent: "border-l-blue-500",    icon: <Clock className="h-4 w-4" /> },
+    { label: "Completed",    value: totalDone,           accent: "border-l-emerald-500", icon: <CheckCircle2 className="h-4 w-4" /> },
+    { label: "Overdue",      value: totalOverdue,        accent: totalOverdue > 0 ? "border-l-rose-500" : "border-l-slate-300", icon: <AlertCircle className="h-4 w-4" /> },
+  ];
+
   return (
-    <div className="p-6 animated-fade-in space-y-5">
-      <div className="flex items-center justify-between">
+    <div className="p-6 animated-fade-in space-y-6">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold font-heading">Tasks</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{tasks?.length ?? 0} total tasks</p>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            {filtered.length} of {tasks?.length ?? 0} tasks shown
+          </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <SearchBar
-            placeholder="Search tasks…"
-            value={searchQuery}
-            onChange={setSearchQuery}
-            className="max-w-xs"
-          />
+          <SearchBar placeholder="Search tasks…" value={searchQuery} onChange={setSearchQuery} className="max-w-xs" />
           <Select value={priorityFilter} onValueChange={(val) => setPriorityFilter(val ?? "ALL")}>
             <SelectTrigger className="w-32">
               <SelectValue placeholder="Priority" />
@@ -152,6 +162,21 @@ export default function TasksPage() {
         </div>
       </div>
 
+      {/* Stat chips */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {taskStatChips.map(({ label, value, accent, icon }) => (
+          <div key={label} className={cn("bg-card border border-l-[3px] rounded-xl p-4 scale-hover shadow-xs", accent)}>
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
+                <p className="text-2xl font-bold font-heading mt-1">{value}</p>
+              </div>
+              <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">{icon}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {isLoading ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {COLUMNS.map((col) => (
@@ -165,7 +190,7 @@ export default function TasksPage() {
             return (
               <div
                 key={col.key}
-                className={cn("rounded-xl border border-border bg-muted/30 border-t-2", COL_STYLE[col.key])}
+                className={cn("rounded-xl border border-border bg-muted/30 border-t-2 overflow-hidden", COL_STYLE[col.key])}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
                   e.preventDefault();
@@ -175,17 +200,16 @@ export default function TasksPage() {
                   }
                 }}
               >
-                <div className="flex items-center justify-between px-3 py-2.5">
+                {/* Column header */}
+                <div className="flex items-center justify-between px-3 py-2.5 bg-card/60 border-b border-border/50">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-semibold">{col.label}</p>
-                    <Badge variant="secondary" className="text-xs px-1.5 py-0">
+                    <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-muted text-[11px] font-semibold text-muted-foreground">
                       {colTasks.length}
-                    </Badge>
+                    </span>
                   </div>
                   <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-6 w-6"
+                    size="icon" variant="ghost" className="h-6 w-6 text-muted-foreground hover:text-foreground"
                     onClick={() => openAdd(col.key)}
                     data-testid={`add-task-${col.key}`}
                   >
@@ -196,6 +220,7 @@ export default function TasksPage() {
                 <div className="p-2 space-y-2 min-h-16">
                   {colTasks.map((task) => {
                     const pc = PRIORITY_CONFIG[task.priority ?? "MEDIUM"];
+                    const isOverdue = task.dueDate && task.status !== "DONE" && isBefore(parseISO(task.dueDate), startOfDay(new Date()));
                     return (
                       <div
                         key={task.id}
@@ -203,9 +228,9 @@ export default function TasksPage() {
                         onDragStart={() => setDragging(task.id)}
                         onDragEnd={() => setDragging(null)}
                         className={cn(
-                          "bg-card rounded-lg border p-3 shadow-sm cursor-grab active:cursor-grabbing group space-y-2",
-                          task.dueDate && task.status !== "DONE" && isBefore(parseISO(task.dueDate), startOfDay(new Date()))
-                            ? "border-rose-300 bg-rose-50/50 dark:bg-rose-950/10"
+                          "bg-card rounded-lg border p-3 shadow-xs cursor-grab active:cursor-grabbing group space-y-2 transition-shadow hover:shadow-sm",
+                          isOverdue
+                            ? "border-rose-300 bg-rose-50/50 dark:bg-rose-950/10 border-l-[3px] border-l-rose-400"
                             : "border-border"
                         )}
                         data-testid={`task-card-${task.id}`}
@@ -213,9 +238,8 @@ export default function TasksPage() {
                         <div className="flex items-start justify-between gap-1.5">
                           <p className="text-sm font-medium leading-snug line-clamp-2 flex-1">{task.title}</p>
                           <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-5 w-5 shrink-0 opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive"
+                            size="icon" variant="ghost"
+                            className="h-5 w-5 shrink-0 opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive transition-opacity"
                             onClick={() => deleteMutation.mutate({ id: task.id })}
                           >
                             <Trash2 className="h-3 w-3" />
@@ -223,40 +247,38 @@ export default function TasksPage() {
                         </div>
 
                         {task.projectName && (
-                          <p className="text-[11px] text-muted-foreground">{task.projectName}</p>
+                          <p className="text-[11px] text-muted-foreground bg-muted/60 px-1.5 py-0.5 rounded inline-block">{task.projectName}</p>
                         )}
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between pt-1 border-t border-border/40">
                           <Badge variant="outline" className={cn("text-[10px] border px-1.5 py-0", pc.className)}>
                             {pc.label}
                           </Badge>
-                          {task.dueDate && (
-                            <div className={cn(
-                              "flex items-center gap-1 text-[10px]",
-                              task.status !== "DONE" && isBefore(parseISO(task.dueDate), startOfDay(new Date()))
-                                ? "text-rose-500 font-semibold"
-                                : "text-muted-foreground"
-                            )}>
-                              <Calendar className="h-2.5 w-2.5" />
-                              {format(new Date(task.dueDate), "dd MMM")}
-                              {task.status !== "DONE" && isBefore(parseISO(task.dueDate), startOfDay(new Date())) && (
-                                <span className="ml-0.5">· Overdue</span>
-                              )}
-                            </div>
-                          )}
+                          <div className="flex flex-col items-end gap-0.5">
+                            {task.dueDate && (
+                              <div className={cn(
+                                "flex items-center gap-1 text-[10px]",
+                                isOverdue ? "text-rose-500 font-semibold" : "text-muted-foreground"
+                              )}>
+                                <Calendar className="h-2.5 w-2.5" />
+                                {format(new Date(task.dueDate), "dd MMM")}
+                                {isOverdue && <span>· Overdue</span>}
+                              </div>
+                            )}
+                            {task.assigneeName && (
+                              <p className="text-[10px] text-muted-foreground truncate max-w-20">{task.assigneeName}</p>
+                            )}
+                          </div>
                         </div>
-
-                        {task.assigneeName && (
-                          <p className="text-[11px] text-muted-foreground">{task.assigneeName}</p>
-                        )}
                       </div>
                     );
                   })}
 
                   {colTasks.length === 0 && (
-                    <div className="flex flex-col items-center justify-center py-4 text-muted-foreground/50">
-                      <CheckSquare className="h-5 w-5 mb-1" />
-                      <p className="text-xs">Drop tasks here</p>
+                    <div className="flex flex-col items-center justify-center py-8 text-muted-foreground/40">
+                      <CheckSquare className="h-6 w-6 mb-1.5" />
+                      <p className="text-xs font-medium">No tasks</p>
+                      <p className="text-[10px] mt-0.5">Drag here or click +</p>
                     </div>
                   )}
                 </div>

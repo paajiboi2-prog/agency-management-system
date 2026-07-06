@@ -21,6 +21,7 @@ import {
   Plus, ChevronLeft, ChevronRight, Calendar, Trash2,
   Instagram, Youtube, Facebook, Linkedin, Link2, Image,
   MessageSquare, Settings2, Send, X, RotateCcw, Share2, Copy, Check,
+  FileText, CheckCircle2, Clock, AlertTriangle,
 } from "lucide-react";
 import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -287,8 +288,19 @@ export default function ContentPage() {
   const isPending = createMutation.isPending || updateMutation.isPending;
   const activeClient = clients?.find((c) => c.id === activeClientId);
 
+  const totalPublished   = (posts ?? []).filter((p) => p.status === "PUBLISHED").length;
+  const totalScheduled   = (posts ?? []).filter((p) => p.status === "SCHEDULED").length;
+  const totalNeedsRevision = (posts ?? []).filter((p) => (p as any).needsRevision === "true").length;
+
+  const contentStatChips = [
+    { label: "Posts This Month", value: posts?.length ?? 0,  accent: "border-l-primary",     icon: <FileText className="h-4 w-4" /> },
+    { label: "Published",        value: totalPublished,       accent: "border-l-emerald-500", icon: <CheckCircle2 className="h-4 w-4" /> },
+    { label: "Scheduled",        value: totalScheduled,       accent: "border-l-blue-500",    icon: <Clock className="h-4 w-4" /> },
+    { label: "Needs Revision",   value: totalNeedsRevision,   accent: totalNeedsRevision > 0 ? "border-l-amber-400" : "border-l-slate-300", icon: <AlertTriangle className="h-4 w-4" /> },
+  ];
+
   return (
-    <div className="p-6 animated-fade-in space-y-5">
+    <div className="p-6 animated-fade-in space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
@@ -327,6 +339,21 @@ export default function ContentPage() {
             <Plus className="h-4 w-4" /> Add Post
           </Button>
         </div>
+      </div>
+
+      {/* Stat chips */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {contentStatChips.map(({ label, value, accent, icon }) => (
+          <div key={label} className={cn("bg-card border border-l-[3px] rounded-xl p-4 scale-hover shadow-xs", accent)}>
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
+                <p className="text-2xl font-bold font-heading mt-1">{value}</p>
+              </div>
+              <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">{icon}</div>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Existing share links for this client */}

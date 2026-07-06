@@ -280,6 +280,28 @@ export default function HawanHubPage() {
         )}
       </div>
 
+      {/* Stat chips — platform coverage summary */}
+      {activeClientId && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { label: "Total Platforms", value: PLATFORMS.length,               accent: "border-l-primary",     icon: <Globe className="h-4 w-4" /> },
+            { label: "Connected",       value: connectedPlatformIds.size,       accent: "border-l-emerald-500", icon: <CheckCircle2 className="h-4 w-4" /> },
+            { label: "Not Connected",   value: PLATFORMS.length - connectedPlatformIds.size, accent: "border-l-slate-400",   icon: <LinkIcon className="h-4 w-4" /> },
+            { label: "Posts (All Time)", value: "—",                            accent: "border-l-orange-400",  icon: <BarChart3 className="h-4 w-4" /> },
+          ].map(({ label, value, accent, icon }) => (
+            <div key={label} className={cn("bg-card border border-l-[3px] rounded-xl p-4 scale-hover shadow-xs", accent)}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
+                  <p className="text-2xl font-bold font-heading mt-1">{value}</p>
+                </div>
+                <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">{icon}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full max-w-sm grid-cols-2">
