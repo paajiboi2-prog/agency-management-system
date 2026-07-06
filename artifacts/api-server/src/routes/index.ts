@@ -22,6 +22,7 @@ import leadContactsRouter from "./leadContacts";
 import timeRouter from "./time";
 import feedbackRouter from "./feedback";
 import attachmentsRouter from "./attachments";
+import aiRouter from "./ai";
 import { requireAuth } from "../middleware/auth";
 
 const router: IRouter = Router();
@@ -52,5 +53,6 @@ router.use(activityLogsRouter);
 router.use("/time", timeRouter);
 router.use("/client", feedbackRouter);
 router.use("/attachments", attachmentsRouter);
+router.use("/ai", aiRouter);
 
 export default router;

@@ -20,6 +20,12 @@ description: Features implemented — SearchBar, Finance tabbed page, Excel expo
 - `artifacts/agency-os/src/pages/dashboard.tsx` — 4 stat cards (border-l accent), AreaChart revenue (range toggle 3M/6M/12M/YTD), PieChart project health donut, sales pipeline bars, content calendar week strip (handles month boundary by fetching adjacent month), activity feed timeline.
 - `artifacts/api-server/src/routes/dashboard.ts` — replaced with new file adding `GET /dashboard/project-health` (onTrack/atRisk/delayed/completed) and `GET /dashboard/revenue-chart?range=` alongside existing stats + recent-activity endpoints.
 
+### AI writing assistant (site-wide)
+- Backend: `artifacts/api-server/src/routes/ai.ts` — `POST /api/ai/generate` using `OPENAI_API_KEY` (user-provided secret, not the Replit blueprint) + `gpt-4o-mini`, context-aware system prompts keyed by a `context` field (proposal/quotation/invoice/content-caption/task/client-notes/lead/email/general).
+- Frontend: `artifacts/agency-os/src/components/common/AiAssistButton.tsx` — reusable Popover+Sparkles button; pass `context`, `currentValue`, `onResult(text)`. Drop it next to any Textarea/rich-text field.
+- Wired into: quotations, invoices, content captions, tasks, client activity notes, proposals (Tiptap — wraps output in `<p>` tags via `field.onChange`).
+- Pattern for react-hook-form fields: needs `watch` and `setValue` destructured from `useForm` (not just `register`) to read/write the field value for the AI button.
+
 ## Pre-existing DB gaps (NOT caused by these features)
 - `leads` table: `probability`, `expected_close_date`, `source` columns missing from DB
 - `projects` table: `priority` column missing from DB

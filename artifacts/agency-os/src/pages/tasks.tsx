@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { AiAssistButton } from "@/components/common/AiAssistButton";
 import { useForm, Controller } from "react-hook-form";
 import { Plus, Trash2, Calendar, CheckSquare, Clock, AlertCircle, ListTodo, CheckCircle2 } from "lucide-react";
 import { format, isBefore, parseISO, startOfDay } from "date-fns";
@@ -87,7 +88,7 @@ export default function TasksPage() {
     },
   });
 
-  const { register, handleSubmit, control, reset } = useForm<TaskInput>({
+  const { register, handleSubmit, control, reset, watch, setValue } = useForm<TaskInput>({
     defaultValues: { title: "", status: "TODO", priority: "MEDIUM" },
   });
 
@@ -358,6 +359,11 @@ export default function TasksPage() {
             <div className="space-y-1.5">
               <Label>Description</Label>
               <Textarea {...register("description")} rows={3} placeholder="Task details..." />
+              <AiAssistButton
+                context="task"
+                currentValue={watch("description")}
+                onResult={(text) => setValue("description", text, { shouldDirty: true })}
+              />
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>

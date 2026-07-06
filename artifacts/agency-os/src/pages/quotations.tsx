@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { AiAssistButton } from "@/components/common/AiAssistButton";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -630,20 +631,34 @@ function QuotationEditor({
         <SectionCard icon={<StickyNote className="h-4 w-4" />} title="Notes & Terms">
           <div className="space-y-4">
             <Field label="Notes">
-              <Textarea
-                {...register("notes")}
-                placeholder="Any additional notes for the client…"
-                rows={3}
-                className="text-sm resize-none"
-              />
+              <div className="space-y-1.5">
+                <Textarea
+                  {...register("notes")}
+                  placeholder="Any additional notes for the client…"
+                  rows={3}
+                  className="text-sm resize-none"
+                />
+                <AiAssistButton
+                  context="quotation"
+                  currentValue={watch("notes")}
+                  onResult={(text) => setValue("notes", text, { shouldDirty: true })}
+                />
+              </div>
             </Field>
             <Field label="Terms & Conditions">
-              <Textarea
-                {...register("termsAndConditions")}
-                placeholder="Payment terms, delivery details, validity period…"
-                rows={4}
-                className="text-sm resize-none"
-              />
+              <div className="space-y-1.5">
+                <Textarea
+                  {...register("termsAndConditions")}
+                  placeholder="Payment terms, delivery details, validity period…"
+                  rows={4}
+                  className="text-sm resize-none"
+                />
+                <AiAssistButton
+                  context="quotation"
+                  currentValue={watch("termsAndConditions")}
+                  onResult={(text) => setValue("termsAndConditions", text, { shouldDirty: true })}
+                />
+              </div>
             </Field>
           </div>
         </SectionCard>

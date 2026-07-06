@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { TiptapEditor } from "@/components/ui/tiptap";
+import { AiAssistButton } from "@/components/common/AiAssistButton";
 import { useForm, Controller } from "react-hook-form";
 import { Plus, Trash2, ClipboardList, Pencil, Download } from "lucide-react";
 import { openPrintWindow, buildProposalHtml, type ProposalPdfData } from "@/lib/pdf-print";
@@ -273,7 +274,20 @@ export default function ProposalsPage() {
               )} />
             </div>
             <div className="space-y-1.5">
-              <Label>Content (Live Document View)</Label>
+              <div className="flex items-center justify-between">
+                <Label>Content (Live Document View)</Label>
+                <Controller
+                  control={control}
+                  name="notes"
+                  render={({ field }) => (
+                    <AiAssistButton
+                      context="proposal"
+                      currentValue={field.value}
+                      onResult={(text) => field.onChange(`${field.value ?? ""}<p>${text.replace(/\n/g, "</p><p>")}</p>`)}
+                    />
+                  )}
+                />
+              </div>
               <Controller
                 control={control}
                 name="notes"

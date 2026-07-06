@@ -254,9 +254,21 @@ export default function HawanHubPage() {
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">Centralized Social Media Engine — per client</p>
         </div>
-        <Button variant="outline" className="gap-2" onClick={() => toast.info("Report generation coming soon")}>
-          <FileOutput className="h-4 w-4" /> Export Report
-        </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          {activeTab === "accounts" && (
+            <>
+              <SearchBar placeholder="Search platforms…" value={searchQuery} onChange={setSearchQuery} />
+              {activeClientId && (
+                <Button size="sm" onClick={() => setAddOpen(true)} className="gap-1.5">
+                  <Plus className="h-3.5 w-3.5" /> Add Handle
+                </Button>
+              )}
+            </>
+          )}
+          <Button variant="outline" className="gap-2" onClick={() => toast.info("Report generation coming soon")}>
+            <FileOutput className="h-4 w-4" /> Export Report
+          </Button>
+        </div>
       </div>
 
       {/* Client Tabs */}
@@ -311,21 +323,11 @@ export default function HawanHubPage() {
 
         {/* ── Accounts tab ── */}
         <TabsContent value="accounts" className="mt-5 space-y-4">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <p className="text-sm text-muted-foreground">
-              {activeClient
-                ? `${clientAccounts.length} connected platform${clientAccounts.length !== 1 ? "s" : ""} for ${activeClient.companyName}`
-                : "Select a client above"}
-            </p>
-            <div className="flex items-center gap-2">
-              <SearchBar placeholder="Search platforms…" value={searchQuery} onChange={setSearchQuery} />
-              {activeClientId && (
-                <Button size="sm" onClick={() => setAddOpen(true)} className="gap-1.5">
-                  <Plus className="h-3.5 w-3.5" /> Add Handle
-                </Button>
-              )}
-            </div>
-          </div>
+          <p className="text-sm text-muted-foreground">
+            {activeClient
+              ? `${clientAccounts.length} connected platform${clientAccounts.length !== 1 ? "s" : ""} for ${activeClient.companyName}`
+              : "Select a client above"}
+          </p>
 
           {loadingAccounts ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

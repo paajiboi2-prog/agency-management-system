@@ -14,6 +14,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { AiAssistButton } from "@/components/common/AiAssistButton";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
@@ -644,6 +645,11 @@ export default function ContentPage() {
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Caption / Notes</Label>
               <Textarea placeholder="Write your caption or notes here…" rows={4} value={draft.caption} onChange={(e) => setField("caption", e.target.value)} />
+              <AiAssistButton
+                context="content-caption"
+                currentValue={draft.caption}
+                onResult={(text) => setField("caption", text)}
+              />
             </div>
 
             {/* Needs Revision */}
