@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { AiAssistButton } from "@/components/common/AiAssistButton";
+import { WriteWithAI } from "@/components/common/WriteWithAI";
 import { useForm, Controller } from "react-hook-form";
 import { Plus, Trash2, Calendar, CheckSquare, Clock, AlertCircle, ListTodo, CheckCircle2 } from "lucide-react";
 import { format, isBefore, parseISO, startOfDay } from "date-fns";
@@ -295,6 +295,15 @@ export default function TasksPage() {
             <DialogTitle>New Task</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-2">
+            <WriteWithAI
+              context="task"
+              onFill={(fields) => {
+                if (fields.title) setValue("title", fields.title, { shouldDirty: true });
+                if (fields.description) setValue("description", fields.description, { shouldDirty: true });
+                if (fields.priority) setValue("priority", fields.priority, { shouldDirty: true });
+                if (fields.dueDate) setValue("dueDate", fields.dueDate, { shouldDirty: true });
+              }}
+            />
             <div className="space-y-1.5">
               <Label>Title</Label>
               <Input {...register("title", { required: "Required" })} placeholder="Task title" data-testid="task-title" />
@@ -359,11 +368,6 @@ export default function TasksPage() {
             <div className="space-y-1.5">
               <Label>Description</Label>
               <Textarea {...register("description")} rows={3} placeholder="Task details..." />
-              <AiAssistButton
-                context="task"
-                currentValue={watch("description")}
-                onResult={(text) => setValue("description", text, { shouldDirty: true })}
-              />
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>

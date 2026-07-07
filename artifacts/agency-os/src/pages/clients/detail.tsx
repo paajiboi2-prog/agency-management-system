@@ -8,7 +8,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { AiAssistButton } from "@/components/common/AiAssistButton";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
@@ -465,11 +464,6 @@ export default function ClientDetailPage({ id }: { id: string }) {
                 onChange={e => setActivityDesc(e.target.value)}
                 placeholder="Additional details..."
                 rows={3}
-              />
-              <AiAssistButton
-                context="client-notes"
-                currentValue={activityDesc}
-                onResult={(text) => setActivityDesc(text)}
               />
             </div>
           </div>

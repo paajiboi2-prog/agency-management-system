@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { AiAssistButton } from "@/components/common/AiAssistButton";
+import { WriteWithAI } from "@/components/common/WriteWithAI";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -321,6 +321,20 @@ function QuotationEditor({
       </div>
 
       <div className="max-w-5xl mx-auto p-6 space-y-5">
+        <WriteWithAI
+          context="quotation"
+          onFill={(fields) => {
+            if (fields.clientName) setValue("clientName", fields.clientName, { shouldDirty: true });
+            if (fields.clientEmail) setValue("clientEmail", fields.clientEmail, { shouldDirty: true });
+            if (fields.clientPhone) setValue("clientPhone", fields.clientPhone, { shouldDirty: true });
+            if (fields.currency) setValue("currency", fields.currency, { shouldDirty: true });
+            if (fields.notes) setValue("notes", fields.notes, { shouldDirty: true });
+            if (fields.termsAndConditions) setValue("termsAndConditions", fields.termsAndConditions, { shouldDirty: true });
+            if (Array.isArray(fields.lineItems) && fields.lineItems.length > 0) {
+              setValue("lineItems", fields.lineItems, { shouldDirty: true });
+            }
+          }}
+        />
         <SectionCard icon={<FileText className="h-4 w-4" />} title="Quotation Details">
           <FieldGrid cols={4}>
             <Field label="Quotation No">
@@ -631,34 +645,20 @@ function QuotationEditor({
         <SectionCard icon={<StickyNote className="h-4 w-4" />} title="Notes & Terms">
           <div className="space-y-4">
             <Field label="Notes">
-              <div className="space-y-1.5">
-                <Textarea
-                  {...register("notes")}
-                  placeholder="Any additional notes for the client…"
-                  rows={3}
-                  className="text-sm resize-none"
-                />
-                <AiAssistButton
-                  context="quotation"
-                  currentValue={watch("notes")}
-                  onResult={(text) => setValue("notes", text, { shouldDirty: true })}
-                />
-              </div>
+              <Textarea
+                {...register("notes")}
+                placeholder="Any additional notes for the client…"
+                rows={3}
+                className="text-sm resize-none"
+              />
             </Field>
             <Field label="Terms & Conditions">
-              <div className="space-y-1.5">
-                <Textarea
-                  {...register("termsAndConditions")}
-                  placeholder="Payment terms, delivery details, validity period…"
-                  rows={4}
-                  className="text-sm resize-none"
-                />
-                <AiAssistButton
-                  context="quotation"
-                  currentValue={watch("termsAndConditions")}
-                  onResult={(text) => setValue("termsAndConditions", text, { shouldDirty: true })}
-                />
-              </div>
+              <Textarea
+                {...register("termsAndConditions")}
+                placeholder="Payment terms, delivery details, validity period…"
+                rows={4}
+                className="text-sm resize-none"
+              />
             </Field>
           </div>
         </SectionCard>

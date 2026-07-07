@@ -14,7 +14,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { AiAssistButton } from "@/components/common/AiAssistButton";
+import { WriteWithAI } from "@/components/common/WriteWithAI";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
@@ -559,6 +559,16 @@ export default function ContentPage() {
           </div>
 
           <div className="px-6 py-5 space-y-5">
+            <WriteWithAI
+              context="content-post"
+              onFill={(fields) => {
+                if (fields.title) setField("title", fields.title);
+                if (fields.caption) setField("caption", fields.caption);
+                if (fields.platform) setField("platform", fields.platform);
+                if (fields.contentType) setField("contentType", fields.contentType);
+                if (fields.status) setField("status", fields.status);
+              }}
+            />
             {/* Name */}
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
@@ -645,11 +655,6 @@ export default function ContentPage() {
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Caption / Notes</Label>
               <Textarea placeholder="Write your caption or notes here…" rows={4} value={draft.caption} onChange={(e) => setField("caption", e.target.value)} />
-              <AiAssistButton
-                context="content-caption"
-                currentValue={draft.caption}
-                onResult={(text) => setField("caption", text)}
-              />
             </div>
 
             {/* Needs Revision */}

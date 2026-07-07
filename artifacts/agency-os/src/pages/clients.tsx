@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { WriteWithAI } from "@/components/common/WriteWithAI";
 import { useForm, Controller } from "react-hook-form";
 import { Plus, Phone, Mail, Building2, Trash2, Pencil, Users, AlertTriangle, HeartHandshake } from "lucide-react";
 import { SearchBar } from "@/components/common/SearchBar";
@@ -85,7 +86,7 @@ export default function ClientsPage() {
     },
   });
 
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm<any>({
+  const { register, handleSubmit, control, reset, setValue, formState: { errors } } = useForm<any>({
     defaultValues: { companyName: "", category: "RETAINER", health: "GREEN", notes: "" },
   });
 
@@ -325,6 +326,17 @@ export default function ClientsPage() {
             <DialogTitle>{editClient ? "Edit Client" : "Add Client"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-2">
+            <WriteWithAI
+              context="client"
+              onFill={(fields) => {
+                if (fields.companyName) setValue("companyName", fields.companyName, { shouldDirty: true });
+                if (fields.contactPerson) setValue("contactPerson", fields.contactPerson, { shouldDirty: true });
+                if (fields.email) setValue("email", fields.email, { shouldDirty: true });
+                if (fields.phone) setValue("phone", fields.phone, { shouldDirty: true });
+                if (fields.notes) setValue("notes", fields.notes, { shouldDirty: true });
+                if (fields.category) setValue("category", fields.category, { shouldDirty: true });
+              }}
+            />
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">

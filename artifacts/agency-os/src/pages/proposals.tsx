@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { TiptapEditor } from "@/components/ui/tiptap";
-import { AiAssistButton } from "@/components/common/AiAssistButton";
+import { WriteWithAI } from "@/components/common/WriteWithAI";
 import { useForm, Controller } from "react-hook-form";
 import { Plus, Trash2, ClipboardList, Pencil, Download } from "lucide-react";
 import { openPrintWindow, buildProposalHtml, type ProposalPdfData } from "@/lib/pdf-print";
@@ -89,7 +89,7 @@ export default function ProposalsPage() {
     },
   });
 
-  const { register, handleSubmit, control, reset } = useForm<ProposalFormData>({
+  const { register, handleSubmit, control, reset, setValue } = useForm<ProposalFormData>({
     defaultValues: { title: "", clientId: "", status: "DRAFT", template: "social" },
   });
 
@@ -231,6 +231,13 @@ export default function ProposalsPage() {
             <DialogTitle>{editId ? "Edit Proposal" : "New Proposal"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-2">
+            <WriteWithAI
+              context="proposal"
+              onFill={(fields) => {
+                if (fields.title) setValue("title", fields.title, { shouldDirty: true });
+                if (fields.notes) setValue("notes", fields.notes, { shouldDirty: true });
+              }}
+            />
             <div className="space-y-1.5">
               <Label>Title</Label>
               <Input {...register("title", { required: "Required" })} placeholder="Social Media Management Proposal" data-testid="proposal-title" />
@@ -274,20 +281,7 @@ export default function ProposalsPage() {
               )} />
             </div>
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <Label>Content (Live Document View)</Label>
-                <Controller
-                  control={control}
-                  name="notes"
-                  render={({ field }) => (
-                    <AiAssistButton
-                      context="proposal"
-                      currentValue={field.value}
-                      onResult={(text) => field.onChange(`${field.value ?? ""}<p>${text.replace(/\n/g, "</p><p>")}</p>`)}
-                    />
-                  )}
-                />
-              </div>
+              <Label>Content (Live Document View)</Label>
               <Controller
                 control={control}
                 name="notes"

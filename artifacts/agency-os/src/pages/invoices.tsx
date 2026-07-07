@@ -13,7 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { AiAssistButton } from "@/components/common/AiAssistButton";
+import { WriteWithAI } from "@/components/common/WriteWithAI";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
@@ -277,6 +277,17 @@ function InvoiceBuilder({ onBack, editData }: { onBack: () => void; editData?: R
       </div>
 
       <div className="max-w-4xl mx-auto p-6 space-y-5">
+        <WriteWithAI
+          context="invoice"
+          onFill={(fields) => {
+            if (fields.currency) setValue("currency", fields.currency, { shouldDirty: true });
+            if (fields.notes) setValue("notes", fields.notes, { shouldDirty: true });
+            if (fields.termsAndConditions) setValue("termsAndConditions", fields.termsAndConditions, { shouldDirty: true });
+            if (Array.isArray(fields.lineItems) && fields.lineItems.length > 0) {
+              setValue("lineItems", fields.lineItems, { shouldDirty: true });
+            }
+          }}
+        />
 
         {/* ── Invoice Info ── */}
         <Card>
@@ -634,20 +645,10 @@ function InvoiceBuilder({ onBack, editData }: { onBack: () => void; editData?: R
                 <div className="space-y-1.5">
                   <Label className="text-xs">Terms & Conditions</Label>
                   <Textarea {...register("termsAndConditions")} placeholder="Payment due within 30 days…" className="text-xs resize-none h-20" />
-                  <AiAssistButton
-                    context="invoice"
-                    currentValue={watch("termsAndConditions")}
-                    onResult={(text) => setValue("termsAndConditions", text, { shouldDirty: true })}
-                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">Notes</Label>
                   <Textarea {...register("notes")} placeholder="Thank you for your business!" className="text-xs resize-none h-16" />
-                  <AiAssistButton
-                    context="invoice"
-                    currentValue={watch("notes")}
-                    onResult={(text) => setValue("notes", text, { shouldDirty: true })}
-                  />
                 </div>
               </div>
             </div>

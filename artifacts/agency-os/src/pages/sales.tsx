@@ -19,6 +19,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { WriteWithAI } from "@/components/common/WriteWithAI";
 import { useForm, Controller } from "react-hook-form";
 import { Plus, Trash2, IndianRupee, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -156,7 +157,7 @@ export default function SalesPage() {
     },
   });
 
-  const { register, handleSubmit, control, reset } = useForm<LeadInput>({
+  const { register, handleSubmit, control, reset, setValue } = useForm<LeadInput>({
     defaultValues: { title: "", stage: "LEAD" },
   });
 
@@ -294,6 +295,17 @@ export default function SalesPage() {
             <DialogTitle>New Lead</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-2">
+            <WriteWithAI
+              context="lead"
+              onFill={(fields) => {
+                if (fields.title) setValue("title", fields.title, { shouldDirty: true });
+                if (fields.companyName) setValue("companyName", fields.companyName, { shouldDirty: true });
+                if (fields.contactName) setValue("contactName", fields.contactName, { shouldDirty: true });
+                if (fields.email) setValue("email", fields.email, { shouldDirty: true });
+                if (fields.value) setValue("value", Number(fields.value) as any, { shouldDirty: true });
+                if (fields.stage) setValue("stage", fields.stage, { shouldDirty: true });
+              }}
+            />
             <div className="space-y-1.5">
               <Label>Lead Title</Label>
               <Input {...register("title", { required: "Required" })} placeholder="Social Media Management" data-testid="lead-title" />

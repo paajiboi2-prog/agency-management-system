@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { WriteWithAI } from "@/components/common/WriteWithAI";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -259,6 +260,16 @@ export default function PurchaseOrdersPage() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-4xl mx-auto">
+          <WriteWithAI
+            context="purchase-order"
+            onFill={(fields) => {
+              if (fields.notes) setValue("notes", fields.notes, { shouldDirty: true });
+              if (fields.termsAndConditions) setValue("termsAndConditions", fields.termsAndConditions, { shouldDirty: true });
+              if (Array.isArray(fields.lineItems) && fields.lineItems.length > 0) {
+                setValue("lineItems", fields.lineItems, { shouldDirty: true });
+              }
+            }}
+          />
           {/* Meta */}
           <Card><CardContent className="p-5 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-1.5">
