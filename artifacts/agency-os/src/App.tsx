@@ -119,6 +119,7 @@ import NotFound from "@/pages/not-found";
 import ClientPortalPage from "@/pages/portal";
 import PublicCalendarPage from "@/pages/public-calendar";
 import PurchaseOrdersPage from "@/pages/purchase-orders";
+import ExcelReportsPage from "@/pages/excel-reports";
 
 // ─── Protected route wrapper ────────────────────────────────────
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -284,6 +285,15 @@ function AppRouter() {
           <ProtectedRoute>
             <DashboardLayout>
               <ProposalsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/excel-reports">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ExcelReportsPage />
             </DashboardLayout>
           </ProtectedRoute>
         )}

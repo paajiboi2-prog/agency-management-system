@@ -13,7 +13,7 @@ import {
 import {
   LayoutDashboard, Users, TrendingUp, FolderKanban, CheckSquare,
   Calendar, Receipt, FileText, ShoppingCart, ClipboardList, Clock, Umbrella,
-  UserCog, Settings, Sun, Moon, LogOut, ChevronRight, Briefcase, Flame,
+  UserCog, Settings, Sun, Moon, LogOut, ChevronRight, Briefcase, Flame, Sheet,
 } from "lucide-react";
 
 interface NavItem {
@@ -52,6 +52,7 @@ const navGroups: NavGroup[] = [
       { label: "Quotations",      href: "/quotations",      icon: <FileText className="h-4 w-4" /> },
       { label: "Purchase Orders", href: "/purchase-orders", icon: <ShoppingCart className="h-4 w-4" /> },
       { label: "Proposals",       href: "/proposals",       icon: <ClipboardList className="h-4 w-4" /> },
+      { label: "Excel Reports",   href: "/excel-reports",   icon: <Sheet className="h-4 w-4 text-green-600" /> },
     ],
   },
   {
